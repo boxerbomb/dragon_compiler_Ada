@@ -1,0 +1,24 @@
+[GENERATED OBJECT FILE]
+b__main.o
+[PROJECT FILES]
+/home/boxerbomb/git/ada_dragon_compiler/default.gpr
+20211229201614 4ef69119aafdabd3f42cb1e5d20aabc0
+[BOUND OBJECT FILES]
+/home/boxerbomb/git/ada_dragon_compiler/obj/common.o
+/home/boxerbomb/git/ada_dragon_compiler/obj/lexer.o
+/home/boxerbomb/git/ada_dragon_compiler/obj/main.o
+[GENERATED SOURCE FILES]
+b__main.ads
+b__main.adb
+b__main.ali
+[RESULTING OPTIONS]
+-L/home/boxerbomb/git/ada_dragon_compiler/obj/
+-L/home/boxerbomb/git/ada_dragon_compiler/obj/
+-L/usr/lib/gcc/x86_64-linux-gnu/10/adalib/
+-shared
+-shared-libgcc
+-lgnat-10
+-ldl
+[RUN PATH OPTION]
+/usr/lib/gcc/x86_64-linux-gnu/10/adalib/
+/usr/lib

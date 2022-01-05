@@ -1,0 +1,133 @@
+V "GNAT Lib v10"
+A -gnatA
+A -mtune=generic
+A -march=x86-64
+P SS ZX
+
+RN
+RV NO_EXCEPTION_HANDLERS
+RV NO_EXCEPTION_PROPAGATION
+RV NO_EXCEPTIONS
+RV NO_STANDARD_STORAGE_POOLS
+RV NO_IMPLEMENTATION_PRAGMAS
+RV SPARK_05
+
+U common%b		common.adb		c6922478 NE OO PK IL
+Z ada.tags%s		a-tags.adb		a-tags.ali
+
+U common%s		common.ads		47e1ba03 EE NE OO PK IL
+W ada%s			ada.ads			ada.ali
+Z ada.exceptions%s	a-except.adb		a-except.ali
+W ada.strings%s		a-string.ads		a-string.ali
+W ada.strings.unbounded%s  a-strunb.adb		a-strunb.ali
+Z ada.tags%s		a-tags.adb		a-tags.ali
+Z system%s		system.ads		system.ali
+
+D ada.ads		20200723063517 76789da1 ada%s
+D a-charac.ads		20200723063517 2d3ec45b ada.characters%s
+D a-chlat1.ads		20200723063517 66457d31 ada.characters.latin_1%s
+D a-except.ads		20200723063517 a7106115 ada.exceptions%s
+D a-finali.ads		20200723063517 bf4f806b ada.finalization%s
+D a-stream.ads		20200723063517 119b8fb3 ada.streams%s
+D a-string.ads		20200723063517 90ac6797 ada.strings%s
+D a-strmap.ads		20200723063517 e8bb714a ada.strings.maps%s
+D a-strunb.ads		20200723063517 1656705b ada.strings.unbounded%s
+D a-tags.ads		20200723063517 491b781d ada.tags%s
+D a-unccon.ads		20200723063517 0e9b276f ada.unchecked_conversion%s
+D common.ads		20220105050454 51b7ca58 common%s
+D common.adb		20220105050514 9725ee20 common%b
+D system.ads		20200723063517 4635ec04 system%s
+D s-atocou.ads		20200723063517 b45c2d8d system.atomic_counters%s
+D s-exctab.ads		20200723063517 54135002 system.exception_table%s
+D s-finmas.ads		20200723063517 7811a767 system.finalization_masters%s
+D s-finroo.ads		20200723063517 4ff27390 system.finalization_root%s
+D s-parame.ads		20200723063517 48ec542b system.parameters%s
+D s-secsta.ads		20200723063517 20bbe636 system.secondary_stack%s
+D s-soflin.ads		20200723063517 a7318a92 system.soft_links%s
+D s-stache.ads		20200723063517 a37c21ec system.stack_checking%s
+D s-stalib.ads		20200723063517 09bd3940 system.standard_library%s
+D s-stoele.ads		20200723063517 2dc34a04 system.storage_elements%s
+D s-stopoo.ads		20200723063517 b16154c2 system.storage_pools%s
+D s-stposu.ads		20200723063517 97a6219c system.storage_pools.subpools%s
+D s-stratt.ads		20200723063517 aedef97e system.stream_attributes%s
+D s-traent.ads		20200723063517 005bf670 system.traceback_entries%s
+D s-unstyp.ads		20200723063517 34867c83 system.unsigned_types%s
+G a e
+G c Z s b [add_to_node common 23 14 none]
+G c Z s s [tokenDI common 6 7 none]
+G c Z s s [tokenDA common 6 7 none]
+G c Z s s [tokenDF common 6 7 none]
+G c Z s s [tokenIP common 6 7 none]
+G c Z s s [nodeIP common 15 7 none]
+X 1 ada.ads
+16K9*Ada 20e8 12|1r6 9r18
+X 7 a-string.ads
+16K13*Strings 35e16 12|1r10 9r22
+X 9 a-strunb.ads
+82K21*Unbounded 756e26 12|1w18 9r30
+87R9*Unbounded_String<5|43R9> 739e14 12|9r40
+X 12 common.ads
+2K9*common 25l5 25e11 13|1b14 9l5 9t11
+4E7*token_types 4e575 8r19
+4n23*t_INVALID{4E7}
+4n34*t_PROGRAM{4E7}
+4n45*t_PROCEDURE{4E7}
+4n58*t_IS_STATEMENT{4E7}
+4n74*t_VARIABLE{4E7}
+4n86*t_BEGIN{4E7}
+4n95*t_END{4E7}
+4n102*t_DOT{4E7}
+4n109*t_LINE_COMMENT{4E7}
+4n125*t_INTEGER{4E7}
+4n136*t_BOOL{4E7}
+4n144*t_FLOAT{4E7}
+4n153*t_STRING{4E7}
+4n163*t_STRING_VALUE{4E7}
+4n179*t_CHAR{4E7}
+4n187*t_IF{4E7}
+4n193*t_RETURN{4E7}
+4n203*t_THEN{4E7}
+4n211*t_ELSE{4E7}
+4n219*t_FOR{4E7}
+4n226*t_WHILE{4E7}
+4n235*t_SWITCH{4E7}
+4n245*t_CASE{4E7}
+4n253*t_MULT_OP{4E7}
+4n264*t_DIVIDE_OP{4E7}
+4n277*t_AND{4E7}
+4n284*t_ADD_OP{4E7}
+4n294*t_SUBTRACT_OP{4E7}
+4n309*t_GLOBAL{4E7}
+4n319*t_OR{4E7}
+4n325*t_NOT{4E7}
+4n332*t_ASSIGN{4E7}
+4n342*t_EQUALS{4E7}
+4n352*t_DOUBLE_EQUALS{4E7}
+4n369*t_NOT_EQUAL{4E7}
+4n382*t_LESS_THAN{4E7}
+4n395*t_LESS_THAN_OR_EQUAL{4E7}
+4n417*t_GREATER_THAN{4E7}
+4n433*t_GREATER_THAN_OR_EQUAL{4E7}
+4n458*t_ID{4E7}
+4n464*t_NUMBER{4E7}
+4n474*t_COLON{4E7}
+4n483*t_SEMI_COLON{4E7}
+4n497*t_LEFT_PAREN{4E7}
+4n511*t_RIGHT_PAREN{4E7}
+4n526*t_LEFT_BRACKET{4E7}
+4n542*t_RIGHT_BRACKET{4E7}
+4n559*t_TRUE{4E7}
+4n567*t_FALSE{4E7}
+6R7*token 10e17
+8e10*t_type{4E7}
+9r10*value{9|87R9}
+13R7*Node 14r26 15c7 21e17
+14P7*Node_Ptr(13R7) 18r15 19r16 20r17 23r35 23r55 13|4r34 4r54
+17i9*Value{integer}
+18p9*Left{14P7} 13|6m12
+19p9*Right{14P7}
+20p9*Center{14P7}
+23U14*add_to_node 23>26 23>45 13|4b13 7l7 7t18
+23p26 inNode{14P7} 13|4b25 6r5
+23p45 addNode{14P7} 13|4b44 6r20
+
