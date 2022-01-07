@@ -3,6 +3,7 @@ with Ada.Text_IO;
 with Ada.Strings.Unbounded;
 with common;
 with lexer;
+with parser;
 
 
 procedure Main is
@@ -17,6 +18,8 @@ begin
     loop
       temp_token := lexer.get_next_token;
       Ada.Text_IO.Put_Line(Count'Image & ' ' &temp_token.t_type'Image);
-    end loop;
+   end loop;
+
+   parser.parser_main;
 
 end Main;

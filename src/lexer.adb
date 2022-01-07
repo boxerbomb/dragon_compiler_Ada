@@ -11,9 +11,6 @@ package body lexer is
 
    EOLReached    : Boolean := False;
 
-   function tub(Source : String) return Ada.Strings.Unbounded.Unbounded_String renames Ada.Strings.Unbounded.To_Unbounded_String;
-   function ub2s(Source : Ada.Strings.Unbounded.Unbounded_String) return String renames Ada.Strings.Unbounded.To_String;
-
    procedure openSourceFile is
    begin
       Ada.Text_IO.Open(File => InputFile,  Mode => Ada.Text_IO.In_File,  Name => "input.txt");
@@ -49,10 +46,10 @@ package body lexer is
       return_token : common.token;
       token_text_in : Ada.Strings.Unbounded.Unbounded_String;
    begin
-      token_text_in := tub(Ada.Characters.Handling.To_Upper(Ada.Strings.Unbounded.To_String(inWord)));
+      token_text_in := common.tub(Ada.Characters.Handling.To_Upper(Ada.Strings.Unbounded.To_String(inWord)));
 
       return_token.t_type := common.t_INVALID;
-      return_token.value := tub("");
+      return_token.value := common.tub("");
 
       if Ada.Strings.Unbounded."="("PROGRAM",token_text_in) then
          return_token.t_type := common.t_PROGRAM;
@@ -183,9 +180,9 @@ package body lexer is
             -- If cur_char+next_char in two dig seperators
             if cur_char&next_char in ":="|"<="|">="|"=="|"!="|"//"|"*/" then
                temp_char := get_next_char;
-               return identify_token(tub(cur_char&next_char));
+               return identify_token(common.tub(cur_char&next_char));
             elsif cur_char in ','|';'|'('|')'|'['|']'|'+'|'-'|'/'|'*'|':'|'.' then
-                  return identify_token(tub(""&cur_char));
+                  return identify_token(common.tub(""&cur_char));
             end if;
 
             if not isWhiteSpace(cur_char) then
@@ -203,7 +200,7 @@ package body lexer is
       end loop;
 
       return_token.t_type := common.t_INVALID;
-      return_token.value := tub("aaa");
+      return_token.value := common.tub("aaa");
       return return_token;
    end get_next_token;
 
