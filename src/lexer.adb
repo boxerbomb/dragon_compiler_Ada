@@ -171,7 +171,9 @@ package body lexer is
 
 
          if cur_char=Character'Val(0) then
-            return_token.t_type := common.t_INVALID;
+            --Ada.Text_IO.Put_Line("SET EOF");
+            return_token.t_type := common.t_EOF;
+            return return_token;
          end if;
 
          --Ada.Text_IO.Put_Line(cur_char&next_char);
@@ -208,8 +210,10 @@ package body lexer is
       CurrentChar   : Character;
    begin
       if Ada.Text_IO.End_Of_File(File => InputFile) then
+         --Ada.Text_IO.Put_Line("XXXXXXXXX END OF FILE XXXXXXXXX");
          return Character'Val(0);
       end if;
+
       Ada.Text_IO.Get(File => InputFile, Item => CurrentChar);
       return CurrentChar;
    end get_next_char;

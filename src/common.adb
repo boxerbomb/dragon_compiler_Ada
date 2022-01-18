@@ -1,9 +1,18 @@
 package body common is
 
 
-  procedure add_to_node(inNode : Node_Ptr; addNode : Node_Ptr) is
-  begin
-    inNode.Left := addNode;
-   end add_to_node;
+  procedure add(parentNode : Node_Ptr; newNode : Node_Ptr) is
+   begin
+      if parentNode.Num_Entries=0 then
+         parentNode.Left := newNode;
+         parentNode.Num_Entries := parentNode.Num_Entries + 1;
+      elsif parentNode.Num_Entries=1 then
+         parentNode.Right := newNode;
+         parentNode.Num_Entries := parentNode.Num_Entries + 1;
+      elsif parentNode.Num_Entries=2 then
+         parentNode.Center := newNode;
+         parentNode.Num_Entries := parentNode.Num_Entries + 1;
+      end if;
+   end add;
 
 end common;
