@@ -1,4 +1,0 @@
-lexer.adb:161:07: warning: variable "textMode" is read but never assigned
-lexer.adb:162:07: warning: variable "commentMode" is read but never assigned
-lexer.adb:163:07: warning: variable "multiLineCount" is never read and never assigned
-lexer.adb:205:27: warning: unreachable code
