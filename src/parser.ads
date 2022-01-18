@@ -1,6 +1,7 @@
 with common;
 with Ada.Containers;
 with Ada.Containers.Vectors;
+with Ada.Strings.Unbounded;
 with gstack;
 
 package parser is
@@ -27,7 +28,7 @@ package parser is
 
    function id_no_pop_no_child(parent_node : common.Node_Ptr) return Boolean;
    function id(parent_node : common.Node_Ptr; inType : common.branch_types := common.b_NONE) return Boolean;
-   function statement_list(parent_node : common.Node_Ptr) return Boolean;
+   function statement_list(parent_node : common.Node_Ptr; inType : common.branch_types := common.b_NONE) return Boolean;
    function statement(parent_node : common.Node_Ptr) return Boolean;
    function return_statement(parent_node : common.Node_Ptr) return Boolean;
    function loop_statement(parent_node : common.Node_Ptr) return Boolean;
@@ -35,10 +36,10 @@ package parser is
    function assignment_statement(parent_node : common.Node_Ptr) return Boolean;
    function destination(parent_node : common.Node_Ptr) return Boolean;
    function expression_prime(parent_node : common.Node_Ptr) return Boolean;
-   function expression(parent_node : common.Node_Ptr) return Boolean;
+   function expression(parent_node : common.Node_Ptr; inType : common.branch_types := common.b_NONE) return Boolean;
    function argument_list(parent_node : common.Node_Ptr) return Boolean;
-   function function_call_stripped(parent_node : common.Node_Ptr) return Boolean;
-   function name_stripped(parent_node : common.Node_Ptr) return Boolean;
+   function function_call_stripped(parent_node : common.Node_Ptr; id_name : Ada.Strings.Unbounded.Unbounded_String) return Boolean;
+   function name_stripped(parent_node : common.Node_Ptr; id_name : Ada.Strings.Unbounded.Unbounded_String) return Boolean;
    function number(parent_node : common.Node_Ptr) return Boolean;
    function string(parent_node : common.Node_Ptr) return Boolean;
    function factor(parent_node : common.Node_Ptr) return Boolean;
@@ -52,11 +53,11 @@ package parser is
    function declaration_list(parent_node : common.Node_Ptr) return Boolean;
    function function_declaration(parent_node : common.Node_Ptr) return Boolean;
    function function_body(parent_node : common.Node_Ptr) return Boolean;
-   function function_header(parent_node : common.Node_Ptr) return Boolean;
+   function function_header(parent_node : common.Node_Ptr) return Ada.Strings.Unbounded.Unbounded_String;
    function parameter(parent_node : common.Node_Ptr) return Boolean;
    function parameter_list(parent_node : common.Node_Ptr) return Boolean;
-   function type_mark(parent_node : common.Node_Ptr) return Boolean;
+   function type_mark(parent_node : common.Node_Ptr; inType : common.branch_types := common.b_NONE) return Boolean;
    function variable_declaration(parent_node : common.Node_Ptr) return Boolean;
-   function bound(parent_node : common.Node_Ptr) return Boolean;
+   function bound(parent_node : common.Node_Ptr; inType : common.branch_types := common.b_NONE) return Boolean;
 
 end parser;
