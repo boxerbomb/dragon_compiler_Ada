@@ -11,5 +11,7 @@ package lexer is
    function get_next_char return Character;
    function peek_next_char return Character;
 private
+
+   -- This will be replaced by the symbol table
    function identify_token(inWord : Ada.Strings.Unbounded.Unbounded_String) return common.token;
 end lexer;

@@ -6,20 +6,7 @@ with Ada.Text_IO;
 package body parser is
    -- This "use" line seems to be needed to compare token_types with a "=" operator
    use type common.token_types;
-
-   procedure parser_main is
-      new_node : common.Node_Ptr := new common.Node'(common.tub("ROOT"),common.b_NONE ,0,Null,Null,Null);
-   begin
-      next_token := get_token;
-
-      if program(new_node) then
-         Ada.Text_IO.Put_Line("Program Success.");
-      else
-         Ada.Text_IO.Put_Line("Program Failure.");
-      end if;
-
-      --Ada.Text_IO.Put_Line (common.ub2s(root_nodes(0).value));
-   end parser_main;
+   use type common.Node_Ptr;
 
 
    function get_token return common.token is
@@ -655,5 +642,40 @@ package body parser is
       end if;
       return False;
    end bound;
+
+
+
+
+   procedure print_preorder(in_node : common.Node_Ptr) is
+   begin
+         if in_node=Null then
+            return;
+         end if;
+         Ada.Text_IO.Put_Line(common.ub2s(in_node.Name) & " : " & in_node.Branch_Type'Image);
+
+         print_preorder(in_node.Left);
+         print_preorder(in_node.Center);
+         print_preorder(in_node.Right);
+
+   end print_preorder;
+
+   procedure parser_main is
+      new_node : common.Node_Ptr := new common.Node'(common.tub("ROOT"),common.b_NONE ,0,Null,Null,Null);
+   begin
+      next_token := get_token;
+
+      if program(new_node) then
+         Ada.Text_IO.Put_Line("Program Success.");
+      else
+         Ada.Text_IO.Put_Line("Program Failure.");
+      end if;
+
+      Ada.Text_IO.Put_Line("");
+      Ada.Text_IO.Put_Line("");
+      Ada.Text_IO.Put_Line("");
+      parser.print_preorder(new_node);
+
+      --Ada.Text_IO.Put_Line (common.ub2s(root_nodes(0).value));
+   end parser_main;
 
 end parser;

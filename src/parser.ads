@@ -17,15 +17,18 @@ package parser is
 
    package matchStack is new gstack(100,common.token);
 
+   -- Public Functions
    procedure parser_main;
-   function get_token return common.token;
+   procedure print_preorder(in_node : common.Node_Ptr);
 
+   -- Helper Functions
+   function get_token return common.token;
    function match(inType : common.token_types) return Boolean;
 
+   -- Parsing Functions
    function program(parent_node : common.Node_Ptr) return Boolean;
    function program_header(parent_node : common.Node_Ptr) return Boolean;
    function program_body(parent_node : common.Node_Ptr) return Boolean;
-
    function id_no_pop_no_child(parent_node : common.Node_Ptr) return Boolean;
    function id(parent_node : common.Node_Ptr; inType : common.branch_types := common.b_NONE) return Boolean;
    function statement_list(parent_node : common.Node_Ptr; inType : common.branch_types := common.b_NONE) return Boolean;
