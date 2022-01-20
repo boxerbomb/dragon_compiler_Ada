@@ -38,7 +38,7 @@ package parser is
    function expression_prime(parent_node : common.Node_Ptr) return Boolean;
    function expression(parent_node : common.Node_Ptr; inType : common.branch_types := common.b_NONE) return Boolean;
    function argument_list(parent_node : common.Node_Ptr) return Boolean;
-   function function_call_stripped(parent_node : common.Node_Ptr; id_name : Ada.Strings.Unbounded.Unbounded_String) return Boolean;
+   function procedure_call_stripped(parent_node : common.Node_Ptr; id_name : Ada.Strings.Unbounded.Unbounded_String) return Boolean;
    function name_stripped(parent_node : common.Node_Ptr; id_name : Ada.Strings.Unbounded.Unbounded_String) return Boolean;
    function number(parent_node : common.Node_Ptr) return Boolean;
    function string(parent_node : common.Node_Ptr) return Boolean;
@@ -51,9 +51,9 @@ package parser is
    function arith_op(parent_node : common.Node_Ptr) return Boolean;
    function declaration(parent_node : common.Node_Ptr) return Boolean;
    function declaration_list(parent_node : common.Node_Ptr) return Boolean;
-   function function_declaration(parent_node : common.Node_Ptr) return Boolean;
-   function function_body(parent_node : common.Node_Ptr) return Boolean;
-   function function_header(parent_node : common.Node_Ptr) return Ada.Strings.Unbounded.Unbounded_String;
+   function procedure_declaration(parent_node : common.Node_Ptr) return Boolean;
+   function procedure_body(parent_node : common.Node_Ptr) return Boolean;
+   function procedure_header(parent_node : common.Node_Ptr) return Ada.Strings.Unbounded.Unbounded_String;
    function parameter(parent_node : common.Node_Ptr) return Boolean;
    function parameter_list(parent_node : common.Node_Ptr) return Boolean;
    function type_mark(parent_node : common.Node_Ptr; inType : common.branch_types := common.b_NONE) return Boolean;

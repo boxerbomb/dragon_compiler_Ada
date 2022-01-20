@@ -1,0 +1,11 @@
+ A few of the notes I have when working with Ada.
+
+* The difference between "and" and "and then". The operator "and then" is the way that I expect conditional statements to work, if it reaches a false, it will not continue to check the other conditions.
+
+
+* The unbounded strings was also a little bit of an issue, I felt like using an unbounded string was wrong in a language as strictly typed as Ada. But I will try and replace strings as much as I can with enums. 
+
+
+* Also a symbol table needs to start being used, and hopefully pointers to the symbol tables can be used for tokens as descibed in the lecture on 1/18/22.
+
+

@@ -182,8 +182,9 @@ package body lexer is
             -- If cur_char+next_char in two dig seperators
             if cur_char&next_char in ":="|"<="|">="|"=="|"!="|"//"|"*/" then
                temp_char := get_next_char;
+               Ada.Text_IO.Put_Line("BRackets for now");
                return identify_token(common.tub(cur_char&next_char));
-            elsif cur_char in ','|';'|'('|')'|'['|']'|'+'|'-'|'/'|'*'|':'|'.' then
+            elsif cur_char in ','|';'|'('|')'|'['|']'|'+'|'-'|'/'|'*'|':'|'.'|'<'|'>' then
                   return identify_token(common.tub(""&cur_char));
             end if;
 
@@ -191,7 +192,7 @@ package body lexer is
                word := Ada.Strings.Unbounded."&"(word, cur_char);
             end if;
 
-            if next_char in ','|';'|'('|')'|'['|']'|'+'|'-'|'/'|'*'|':'|'.' or isWhiteSpace(next_char) then
+            if next_char in ','|';'|'('|')'|'['|']'|'+'|'-'|'/'|'*'|':'|'.'|'<'|'>' or isWhiteSpace(next_char) then
                if Ada.Strings.Unbounded.Length(word) /= 0 then
                   return identify_token(word);
                end if;
@@ -210,7 +211,8 @@ package body lexer is
       CurrentChar   : Character;
    begin
       if Ada.Text_IO.End_Of_File(File => InputFile) then
-         --Ada.Text_IO.Put_Line("XXXXXXXXX END OF FILE XXXXXXXXX");
+         Ada.Text_IO.Put_Line("XXXXXXXXX END OF FILE XXXXXXXXX");
+         Ada.Text_IO.Put_Line(CurrentChar'Image);
          return Character'Val(0);
       end if;
 

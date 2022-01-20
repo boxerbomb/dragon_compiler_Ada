@@ -20,11 +20,12 @@ package common is
    --  b_ACCEPT_IF,
    --  b_DECLINE_IF,
    --  b_BOUND
- function tub(Source : String) return Ada.Strings.Unbounded.Unbounded_String renames Ada.Strings.Unbounded.To_Unbounded_String;
- function ub2s(Source : Ada.Strings.Unbounded.Unbounded_String) return String renames Ada.Strings.Unbounded.To_String;
+   function tub(Source : String) return Ada.Strings.Unbounded.Unbounded_String renames Ada.Strings.Unbounded.To_Unbounded_String;
+   function ub2s(Source : Ada.Strings.Unbounded.Unbounded_String) return String renames Ada.Strings.Unbounded.To_String;
 
- type token is
-    record
+
+   type token is
+      record
          t_type : token_types;
          value : Ada.Strings.Unbounded.Unbounded_String;
       end record;
@@ -33,9 +34,10 @@ package common is
    empty_token : token := (t_INVALID,tub("INVALID"));
 
 
- type Node;
- type Node_Ptr is access Node;
- type Node is
+
+   type Node;
+   type Node_Ptr is access Node;
+   type Node is
       record
         Name: Ada.Strings.Unbounded.Unbounded_String;
         Branch_Type : common.branch_types;
