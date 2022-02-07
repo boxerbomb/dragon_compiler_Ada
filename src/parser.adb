@@ -1,5 +1,6 @@
 with common;
 with lexer;
+with symbol_table;
 with Ada.Strings.Unbounded;
 with Ada.Text_IO;
 
@@ -662,6 +663,10 @@ package body parser is
    procedure parser_main is
       new_node : common.Node_Ptr := new common.Node'(common.tub("ROOT"),common.b_NONE ,0,Null,Null,Null);
    begin
+
+      -- Setup Symbol Table
+
+      symbol_table.populate_reserved_words;
       next_token := get_token;
 
       if program(new_node) then
@@ -673,7 +678,12 @@ package body parser is
       Ada.Text_IO.Put_Line("");
       Ada.Text_IO.Put_Line("");
       Ada.Text_IO.Put_Line("");
-      parser.print_preorder(new_node);
+      --parser.print_preorder(new_node);
+
+
+
+      symbol_table.print_entries;
+
 
       --Ada.Text_IO.Put_Line (common.ub2s(root_nodes(0).value));
    end parser_main;
