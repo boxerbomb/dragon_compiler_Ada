@@ -15,4 +15,21 @@ package body common is
       end if;
    end add;
 
+
+   function get_children_of_node(inNode : Node_Ptr) return Node_Vectors.Vector is
+      return_vector : common.Node_Vectors.Vector;
+   begin
+      if inNode.Left /= null then
+         return_vector.Append(inNode.Left);
+      end if;
+      if inNode.Right /= null then
+         return_vector.Append(inNode.Right);
+      end if;
+       if inNode.Center /= null then
+         return_vector.Append(inNode.Center);
+      end if;
+
+      return return_vector;
+   end get_children_of_node;
+
 end common;

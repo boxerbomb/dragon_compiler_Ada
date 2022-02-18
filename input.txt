@@ -1,25 +1,38 @@
 PROGRAM grant IS
-    global variable JAKE : integer[1];
-    global variable ryan : integer;
+    global variable JAKE : integer;
+    global variable ryan : integer[3];
     global variable zach : integer;
     variable tmp : integer;
 
     procedure if_proc : integer()
-        variable declaration : integer;
+        variable i : integer;
+        procedure dummy: float()
+        variable i: float;
+        variable tst : bool;
         begin
-        if(true) then jake := jake + 1;
-        else zach := zach + RYAN[2];
-        end if;
-        return (0);
+            i := 4.5;
+            i := 4*5+20+(10-8);
+            i := 1+2+3+4+5+6;
+            i := (1+2)+(3+4)+(4+5)+6;
+            tst := putString("passed");
+            return (0);
+        end procedure;
+        begin
+            if(true) then
+                jake := jake + 1;
+            else
+                zach := zach + RYAN[2];
+            end if;
+            return (0);
     end procedure;
 
     procedure for_proc : integer()
                 variable i : integer;
         begin
-        for(i := 0; i < zach)
-            ryan[1] := zach + i;
-        end for;
-        return (0);
+            for(in := 0; in < zach)
+bobob := 10;
+            end for;
+            return 1;
         end procedure;
 
     begin

@@ -5,17 +5,23 @@ with Ada.Strings.Unbounded;
 with gstack;
 
 package parser is
-   use type common.token;
-   package Token_Vectors is new
-     Ada.Containers.Vectors
-       (Index_Type   => Natural,
-        Element_Type => common.token);
+   use type common.Node_Ptr;
 
-   root_nodes : Token_Vectors.Vector;
+   -- These two Identifiers will be tied together.
+   -- Each new procedure will make a new scope_id
+   -- A scope ID in itself does not tell you much about what other scopes it is a part of
+   -- But a symbol table can be linked to another table
+   -- **NEW IDEA** Because Symbol Table Entries are added in the Lexer, not the parser,
+   -- assing each token an ascending identifier int, then add that to the symbol_table as well
+   -- Then when we find the tokens that specify scope boundaries, we can cut up the list relative to the ascending int id values
+   -- And split them off into each their own hash table along with a part of the hash table object that refers to other scopes that they belong to
+   -- For example every item is in scope with 0 (global) and depending on design choices -1(reserved words)
+   current_scope : Integer;
+   root_nodes : common.Node_Vectors.Vector;
 
    next_token : common.token;
 
-   package matchStack is new gstack(100,common.token);
+   package matchStack is new gstack(300,common.token);
 
    -- Public Functions
    procedure parser_main;
@@ -62,5 +68,12 @@ package parser is
    function type_mark(parent_node : common.Node_Ptr; inType : common.branch_types := common.b_NONE) return Boolean;
    function variable_declaration(parent_node : common.Node_Ptr) return Boolean;
    function bound(parent_node : common.Node_Ptr; inType : common.branch_types := common.b_NONE) return Boolean;
+
+   function solve_tree(root : common.Node_Ptr) return common.Node_Ptr;
+   function int_to_string_trimmed(inInt : Integer) return Ada.Strings.Unbounded.Unbounded_String;
+   procedure gen_dot_files(parent_node : common.Node_Ptr);
+
+
+   procedure viewMatchStack;
 
 end parser;
