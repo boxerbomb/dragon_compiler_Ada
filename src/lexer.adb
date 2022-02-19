@@ -64,13 +64,12 @@ package body lexer is
 
       use type common.token_types;
    begin
-      token_text_in :=
-        common.tub
-          (Ada.Characters.Handling.To_Upper
-             (Ada.Strings.Unbounded.To_String (inWord)));
-
+      token_text_in :=common.tub(Ada.Characters.Handling.To_Upper(Ada.Strings.Unbounded.To_String (inWord)));
       return_token.t_type := common.t_ID;
       return_token.value  := common.tub ("");
+      -- Assign Token Index and Add 1
+      return_token.token_id := common.token_index;
+      common.token_index := common.token_index + 1;
 
 -- First Check if it is number, because this will not go into the symbol table
       if is_number (token_text_in) then
@@ -82,16 +81,19 @@ package body lexer is
 -- Search the symbol table for the text, return t_INVALID if there is no match
       lookup_return := symbol_table.lookup (token_text_in);
 
-      -- No match and Valid ID name
-      if lookup_return.t_type = common.t_INVALID and
-        is_valid_ID_name (token_text_in)
+      -- If lookup does not return a token(INVALID) or it returns an ID name that doesn't equal -1 (a user made ID)
+      -- This is because we actually want to add tokens multiple times, this is allow for variables to be added in different scopes
+      -- At this point every time a user references a var_name such as "tempInt", it will be added again, but they will be chopped out later
+      if (lookup_return.t_type = common.t_INVALID or lookup_return.token_id /= -1) and is_valid_ID_name (token_text_in)
       then
          -- FIX THE SCOPING HERE!!!!
          -- TODO
-         symbol_table.insert_entry (token_text_in, common.t_ID, 0);
+         symbol_table.insert_entry (token_text_in, common.t_ID, return_token.token_id, symbol_table.LastEntry);
          return_token.t_type := common.t_ID;
          return_token.value  := token_text_in;
-         return identify_token(inWord);
+
+         --Return the newly created token
+         return return_token;
       else
          --Match
          return_token.t_type := lookup_return.t_type;

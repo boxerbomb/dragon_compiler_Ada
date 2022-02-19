@@ -11,15 +11,13 @@ with st_entry_pkg;
 use type common.token_types;
 
 procedure Main is
-   temp_token : common.token;
-
    temp_node : common.Node_Ptr := new common.Node'(common.tub(""), common.b_NONE ,0,Null,Null,Null,0);
 
    test_char : Character;
    test_peek : Character;
    test_token : common.token;
 
-   run_test : Integer := 4;
+   run_test : Integer := 0;
 
    test_entry : st_entry_pkg.st_entry;
 begin

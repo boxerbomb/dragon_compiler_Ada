@@ -14,7 +14,7 @@ package body parser is
       return lexer.get_next_token;
    end get_token;
 
-   function match (inType : common.token_types) return Boolean is
+   function match (inType : common.token_types; setDeclared : Boolean := False) return Boolean is
    begin
 
       --  -- This was needed for when I did not initilize CUR_CHAR and NEXT_CHAR in lexer
@@ -30,6 +30,19 @@ package body parser is
       if next_token.t_type = inType then
          matchStack.push (next_token);
          Ada.Text_IO.Put_Line (Ada.Text_IO.Standard_Output,"Matched: " & next_token.t_type'Image);
+
+         -- Modifies the given token's scope value in the symbol table
+         -- If the token is not in the symbol table, nothing happens
+         symbol_table.mod_scope_by_ID(next_token.token_id, current_scope);
+
+         -- If requested, set the set_declared flag true on a symbol table entry
+         -- The above function keeps track of where a variable is being used
+         -- This decides whether or not that variable has been declared in this scope
+         -- ID match calls from procedure_declaration and variable_declaration will use this
+         if setDeclared = True then
+            symbol_table.set_declared(next_token.token_id);
+         end if;
+
          next_token := get_token;
          return True;
       else
@@ -96,21 +109,21 @@ package body parser is
       end if;
    end program;
 
-   function id_no_pop_no_child (parent_node : common.Node_Ptr) return Boolean
+   function id_no_pop_no_child (parent_node : common.Node_Ptr; set_declared : Boolean := False) return Boolean
    is
    begin
-      if match (common.t_ID) then
+      if match (common.t_ID , set_declared) then
          return True;
       end if;
       return False;
    end id_no_pop_no_child;
 
-   function id(parent_node : common.Node_Ptr; inType : common.branch_types := common.b_NONE) return Boolean
+   function id(parent_node : common.Node_Ptr; inType : common.branch_types := common.b_NONE; set_declared :Boolean := False) return Boolean
    is
       new_node : common.Node_Ptr := new common.Node'(common.tub ("id"), inType, 0, null, null, null, 0);
       popped_token : common.token;
    begin
-      if match (common.t_ID) then
+      if match (common.t_ID,set_declared) then
          --Check to see if this can be done with one line.
          Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
          Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
@@ -612,10 +625,7 @@ package body parser is
       --Note, program_header function actually returns a string
       procedure_name := procedure_header (new_root_node);
 
-      if
-        (not Ada.Strings.Unbounded."="
-           (procedure_name, Ada.Strings.Unbounded.Null_Unbounded_String))
-        and then procedure_body (new_root_node)
+      if(not Ada.Strings.Unbounded."="(procedure_name, Ada.Strings.Unbounded.Null_Unbounded_String)) and then procedure_body (new_root_node)
       then
          --if procedure_name /= Ada.Strings.Unbounded.Null_Unbounded_String and procedure_body(new_root_node) then
          new_node.Name := procedure_name;
@@ -623,6 +633,7 @@ package body parser is
          Ada.Text_IO.Put_Line ("-------------BEFORE------------");
          root_nodes.Append (new_root_node);
          Ada.Text_IO.Put_Line ("-------------AFTER------------");
+         current_scope := current_scope -1;
          return True;
       end if;
 
@@ -659,14 +670,9 @@ package body parser is
 
 -- This function should actually return a unbounded String and not a Boolean
 -- On fail it should return either an official NULL string or I can make one up
-   function procedure_header
-     (parent_node : common.Node_Ptr)
-      return Ada.Strings.Unbounded.Unbounded_String
+   function procedure_header(parent_node : common.Node_Ptr) return Ada.Strings.Unbounded.Unbounded_String
    is
-      new_node : common.Node_Ptr :=
-        new common.Node'
-          (common.tub ("procedure_header"), common.b_NONE, 0, null, null, null,
-           0);
+      new_node : common.Node_Ptr := new common.Node'(common.tub ("procedure_header"), common.b_NONE, 0, null, null, null,0);
       popped_token   : common.token;
       procedure_name : Ada.Strings.Unbounded.Unbounded_String;
       temp_bool      : Boolean;
@@ -674,14 +680,12 @@ package body parser is
       if match (common.t_PROCEDURE) and then id_no_pop_no_child (new_node) then
          matchStack.pop (popped_token);
          procedure_name := popped_token.value;
-         if match (common.t_COLON)
-           and then type_mark (new_node, common.b_RETURN_TYPE)
-           and then match (common.t_LEFT_PAREN)
-         then
+         if match (common.t_COLON) and then type_mark (new_node, common.b_RETURN_TYPE) and then match (common.t_LEFT_PAREN) then
             temp_bool := parameter_list (new_node);
             if match (common.t_RIGHT_PAREN) then
                parent_node.Name := procedure_name;
                common.add (parent_node, new_node);
+               current_scope := current_scope + 1;
                return procedure_name;
             end if;
          end if;
@@ -736,16 +740,10 @@ package body parser is
 
    function variable_declaration (parent_node : common.Node_Ptr) return Boolean
    is
-      new_node : common.Node_Ptr :=
-        new common.Node'
-          (common.tub ("variable_declaration"), common.b_NONE, 0, null, null,
-           null, 0);
+      new_node : common.Node_Ptr := new common.Node'(common.tub ("variable_declaration"), common.b_NONE, 0, null, null,null, 0);
    begin
 
-      if match (common.t_VARIABLE)
-        and then id (new_node, common.b_VARIABLE_NAME)
-        and then match (common.t_COLON)
-        and then type_mark (new_node, common.b_VARIABLE_TYPE)
+      if match (common.t_VARIABLE) and then id (new_node, common.b_VARIABLE_NAME, True) and then match (common.t_COLON) and then type_mark (new_node, common.b_VARIABLE_TYPE)
       then
          -- Optional Bound for Array
          -- I believe that a bound will need to be constant. I will have to figure out have dynamic memory allocation works.
@@ -939,8 +937,6 @@ package body parser is
    procedure parser_main is
       active_node : common.Node_Ptr;
    begin
-      -- Setup Symbol Table
-      symbol_table.populate_reserved_words;
       next_token := get_token;
 
       -- Append a starting node to the root_nodes list.
@@ -966,13 +962,17 @@ package body parser is
          parser.print_preorder (E);
       end loop;
 
-      --symbol_table.print_entries;
-
       for parent_Element of root_nodes loop
          parent_Element := solve_tree (parent_Element);
          gen_dot_files (parent_Element);
          --viewMatchStack;
       end loop;
+
+      symbol_table.print_entries;
+      symbol_table.generate_declared;
+      symbol_table.print_entries(symbol_table.DeclaredTableStart);
+      symbol_table.check_scope;
+
 
       --Ada.Text_IO.Put_Line (common.ub2s(root_nodes(0).value));
    end parser_main;

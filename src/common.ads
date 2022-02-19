@@ -26,15 +26,16 @@ package common is
    function tub(Source : String) return Ada.Strings.Unbounded.Unbounded_String renames Ada.Strings.Unbounded.To_Unbounded_String;
    function ub2s(Source : Ada.Strings.Unbounded.Unbounded_String) return String renames Ada.Strings.Unbounded.To_String;
 
-
+   token_index : Integer := 0;
    type token is
       record
          t_type : token_types;
          value : Ada.Strings.Unbounded.Unbounded_String;
+         token_id : Integer;
       end record;
 
    --empty_token : token(t_type <= t_INVALID, value <= tub("INVALID"));
-   empty_token : token := (t_INVALID,tub("INVALID"));
+   empty_token : token := (t_INVALID,tub("INVALID"),-1);
 
 
 
