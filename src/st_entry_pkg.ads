@@ -8,11 +8,13 @@ package st_entry_pkg is
 
    type st_entry is
       record
+         keyword : Ada.Strings.Unbounded.Unbounded_String;
          entry_type : entry_types;
          string_value : Ada.Strings.Unbounded.Unbounded_String;
          integer_value : Integer;
          float_value : Float;
          boolean_value : Boolean;
+         token_id : Integer;
          scope : Integer;
       end record;
 

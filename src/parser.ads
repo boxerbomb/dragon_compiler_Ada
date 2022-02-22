@@ -17,6 +17,7 @@ package parser is
    -- And split them off into each their own hash table along with a part of the hash table object that refers to other scopes that they belong to
    -- For example every item is in scope with 0 (global) and depending on design choices -1(reserved words)
    current_scope : Integer := 0;
+   scope_max     : Integer := 0;
    root_nodes : common.Node_Vectors.Vector;
 
    next_token : common.token;

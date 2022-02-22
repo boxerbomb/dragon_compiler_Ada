@@ -685,7 +685,13 @@ package body parser is
             if match (common.t_RIGHT_PAREN) then
                parent_node.Name := procedure_name;
                common.add (parent_node, new_node);
-               current_scope := current_scope + 1;
+
+               current_scope := scope_max + 1;
+               -- Using Scope max prevents multiple copies of the same scope for procedures on the same "level"
+               if current_scope > scope_max then
+                  scope_max := current_scope;
+               end if;
+
                return procedure_name;
             end if;
          end if;
@@ -784,8 +790,7 @@ package body parser is
       if in_node = null then
          return;
       end if;
-      Ada.Text_IO.Put_Line
-        (common.ub2s (in_node.Name) & " : " & in_node.Branch_Type'Image);
+      Ada.Text_IO.Put_Line(common.ub2s (in_node.Name) & " : " & in_node.Branch_Type'Image);
 
       print_preorder (in_node.Left);
       print_preorder (in_node.Center);

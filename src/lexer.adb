@@ -86,9 +86,8 @@ package body lexer is
       -- At this point every time a user references a var_name such as "tempInt", it will be added again, but they will be chopped out later
       if (lookup_return.t_type = common.t_INVALID or lookup_return.token_id /= -1) and is_valid_ID_name (token_text_in)
       then
-         -- FIX THE SCOPING HERE!!!!
-         -- TODO
-         symbol_table.insert_entry (token_text_in, common.t_ID, return_token.token_id, symbol_table.LastEntry);
+         -- table entry is just added raw here, token_type and scope information will be added later by the parser
+         symbol_table.insert_entry (token_text_in, common.t_INVALID, return_token.token_id, 1, False,symbol_table.LastEntry);
          return_token.t_type := common.t_ID;
          return_token.value  := token_text_in;
 

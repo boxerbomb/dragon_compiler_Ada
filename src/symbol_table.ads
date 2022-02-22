@@ -23,7 +23,8 @@ package symbol_table is
 
 
 
-
+   -- The scope defined symbol_tables will be hash tables to facilitate with keyword lookup
+   -- This "all scopes" table is most accessed by searching each and every table in order, thus a linked-list makes more logical sense in terms of desired access
    TableStart : Table_Entry_ptr := new Table_Entry'(common.tub("Start"),common.t_INVALID,-1,-1,NULL,False);
    LastEntry : Table_Entry_ptr := TableStart;
 
@@ -34,7 +35,7 @@ package symbol_table is
 
    -- Add the reserved words "if","then" and so on to the symbol table, these will be global
    procedure populate_reserved_words;
-   procedure insert_entry(in_keyword : Ada.Strings.Unbounded.Unbounded_String; in_type : common.token_types; in_scope : Integer; insert_location : IN OUT Table_Entry_ptr);
+   procedure insert_entry(in_keyword : Ada.Strings.Unbounded.Unbounded_String; in_type : common.token_types; in_id_num : Integer; in_scope : Integer; in_declared : Boolean; insert_location : IN OUT Table_Entry_ptr);
 
 
    function lookup(id_key : Integer) return Table_Entry_ptr;
