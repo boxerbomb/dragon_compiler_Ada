@@ -17,7 +17,7 @@ package id_value_pkg is
          scope : Integer;
       end record;
 
-   empty_value :
+   empty_value : id_value := (t_INVALID,common.tub(""),0,0.0,False,-1,-1);
 
    procedure test(in_entry : id_value);
 

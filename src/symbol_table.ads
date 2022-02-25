@@ -27,10 +27,10 @@ package symbol_table is
 
    -- The scope defined symbol_tables will be hash tables to facilitate with keyword lookup
    -- This "all scopes" table is most accessed by searching each and every table in order, thus a linked-list makes more logical sense in terms of desired access
-   TableStart : Table_Entry_ptr := new Table_Entry'(common.tub("Start"),common.t_INVALID,-1,-1,False,NULL);
+   TableStart : Table_Entry_ptr := new Table_Entry'(common.tub("Start"),common.t_INVALID,-1,-1,False,NULL,id_value_pkg.empty_value);
    LastEntry : Table_Entry_ptr := TableStart;
 
-   DeclaredTableStart : Table_Entry_ptr := new Table_Entry'(common.tub("Start"),common.t_INVALID,-1,-1,False,NULL);
+   DeclaredTableStart : Table_Entry_ptr := new Table_Entry'(common.tub("Start"),common.t_INVALID,-1,-1,False,NULL,id_value_pkg.empty_value);
    DeclaredLastEntry  : Table_Entry_ptr := DeclaredTableStart;
 
 

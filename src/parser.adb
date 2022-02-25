@@ -959,8 +959,7 @@ package body parser is
       for E of root_nodes loop
          Ada.Text_IO.Put_Line ("");
          Ada.Text_IO.Put_Line ("");
-         Ada.Text_IO.Put_Line
-           ("######### " & common.ub2s (E.Name) & " #########");
+         Ada.Text_IO.Put_Line("######### " & common.ub2s (E.Name) & " #########");
          parser.print_preorder (E);
       end loop;
 
@@ -970,9 +969,9 @@ package body parser is
          --viewMatchStack;
       end loop;
 
-      symbol_table.print_entries;
-      symbol_table.generate_declared;
-      symbol_table.print_entries(symbol_table.DeclaredTableStart);
+      --symbol_table.print_entries;
+      --symbol_table.generate_declared;
+      --symbol_table.print_entries(symbol_table.DeclaredTableStart);
       symbol_table.print_entries;
       symbol_table.check_scope;
 
