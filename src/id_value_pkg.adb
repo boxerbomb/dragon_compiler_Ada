@@ -6,15 +6,16 @@ with Ada.Strings.Unbounded;
 package body id_value_pkg is
 
    procedure test(in_entry : id_value) is
+      use type common.id_types;
    begin
 
-      if in_entry.entry_type = t_STRING then
+      if in_entry.id_type = common.id_STRING then
          Ada.Text_IO.Put_Line(common.ub2s(in_entry.string_value));
-      elsif in_entry.entry_type = t_INTEGER then
+      elsif in_entry.id_type = common.id_INTEGER then
          Ada.Text_IO.Put_Line(in_entry.integer_value'Image);
-      elsif in_entry.entry_type = t_FLOAT then
+      elsif in_entry.id_type = common.id_FLOAT then
          Ada.Text_IO.Put_Line(in_entry.float_value'Image);
-      elsif in_entry.entry_type = t_BOOLEAN then
+      elsif in_entry.id_type = common.id_BOOLEAN then
          if in_entry.boolean_value = True then
             Ada.Text_IO.Put_Line("True");
          else
@@ -26,52 +27,36 @@ package body id_value_pkg is
 
    end test;
 
-   function init(keyword: Ada.Strings.Unbounded.Unbounded_String; in_type : common.token_types; in_value : Ada.Strings.Unbounded.Unbounded_String; in_scope : Integer) return id_value is
+   function init(in_id_type : common.id_types) return id_value is
       return_entry : id_value;
    begin
-      return_entry.entry_type := id_value_pkg.t_STRING;
+      return_entry.id_type:= common.id_STRING;
 
-      return_entry.string_value := in_value;
+      return_entry.string_value := common.tub("");
       return_entry.boolean_value := False;
       return_entry.integer_value := 0;
       return_entry.float_value := 0.0;
       return return_entry;
    end init;
 
-   function init(keyword: Ada.Strings.Unbounded.Unbounded_String; in_type : common.token_types; in_value : Integer; in_scope : Integer) return id_value is
-      return_entry : id_value;
+   procedure modify_value(selected_value : IN OUT id_value; in_value : Integer) is
    begin
-      return_entry.entry_type := id_value_pkg.t_INTEGER;
+      selected_value.integer_value := in_value;
+   end modify_value;
 
-      return_entry.string_value := common.tub("");
-      return_entry.boolean_value := False;
-      return_entry.integer_value := in_value;
-      return_entry.float_value := 0.0;
-      return return_entry;
-   end init;
-
-   function init(keyword: Ada.Strings.Unbounded.Unbounded_String; in_type : common.token_types; in_value : Float; in_scope : Integer) return id_value is
-      return_entry : id_value;
+   procedure modify_value(selected_value : IN OUT id_value; in_value : Float) is
    begin
-      return_entry.entry_type := id_value_pkg.t_FLOAT;
+      selected_value.float_value := in_value;
+   end modify_value;
 
-      return_entry.string_value := common.tub("");
-      return_entry.boolean_value := False;
-      return_entry.integer_value := 0;
-      return_entry.float_value := in_value;
-      return return_entry;
-   end init;
-
-   function init(keyword: Ada.Strings.Unbounded.Unbounded_String; in_type : common.token_types; in_value : Boolean; in_scope : Integer) return id_value is
-      return_entry : id_value;
+   procedure modify_value(selected_value : IN OUT id_value; in_value : Boolean) is
    begin
-      return_entry.entry_type := id_value_pkg.t_BOOLEAN;
+      selected_value.boolean_value := in_value;
+   end modify_value;
 
-      return_entry.string_value := common.tub("");
-      return_entry.boolean_value := in_value;
-      return_entry.integer_value := 0;
-      return_entry.float_value := 0.0;
-      return return_entry;
-   end init;
+   procedure modify_value(selected_value : IN OUT id_value; in_value : Ada.Strings.Unbounded.Unbounded_String) is
+   begin
+      selected_value.string_value := in_value;
+   end modify_value;
 
 end id_value_pkg;

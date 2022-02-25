@@ -4,27 +4,24 @@ with Ada.Strings.Unbounded;
 
 package id_value_pkg is
 
-   type entry_types is (t_STRING, t_INTEGER, t_FLOAT, t_BOOLEAN, t_INVALID);
-
    type id_value is
       record
-         entry_type : entry_types;
+         id_type : common.id_types;
          string_value : Ada.Strings.Unbounded.Unbounded_String;
          integer_value : Integer;
          float_value : Float;
          boolean_value : Boolean;
-         token_id : Integer;
-         scope : Integer;
       end record;
 
-   empty_value : id_value := (t_INVALID,common.tub(""),0,0.0,False,-1,-1);
+   empty_value : id_value := (common.id_INVALID ,common.tub(""),0,0.0,False);
 
    procedure test(in_entry : id_value);
 
-   function init(keyword: Ada.Strings.Unbounded.Unbounded_String; in_type : common.token_types; in_value : Ada.Strings.Unbounded.Unbounded_String; in_scope : Integer) return id_value;
-   function init(keyword: Ada.Strings.Unbounded.Unbounded_String; in_type : common.token_types; in_value : Integer; in_scope : Integer) return id_value;
-   function init(keyword: Ada.Strings.Unbounded.Unbounded_String; in_type : common.token_types; in_value : Float; in_scope : Integer) return id_value;
-   function init(keyword: Ada.Strings.Unbounded.Unbounded_String; in_type : common.token_types; in_value : Boolean; in_scope : Integer) return id_value;
+   function init(in_id_type : common.id_types) return id_value;
+   procedure modify_value(selected_value : IN OUT id_value; in_value : Integer);
+   procedure modify_value(selected_value : IN OUT id_value; in_value : Float);
+   procedure modify_value(selected_value : IN OUT id_value; in_value : Boolean);
+   procedure modify_value(selected_value : IN OUT id_value; in_value : Ada.Strings.Unbounded.Unbounded_String);
 
 
 end id_value_pkg;

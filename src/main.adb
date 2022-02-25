@@ -47,7 +47,7 @@ begin
       Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Done with String");
 
    elsif run_test=4 then
-      test_entry := id_value_pkg.init(common.tub("HELLO"),common.t_ID,common.tub("HELLO"),0);
+      test_entry := id_value_pkg.init(common.id_STRING);
       id_value_pkg.test(test_entry);
    else
       parser.parser_main;

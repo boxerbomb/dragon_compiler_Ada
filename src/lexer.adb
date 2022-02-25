@@ -162,8 +162,6 @@ package body lexer is
       token_text_in :=common.tub(Ada.Characters.Handling.To_Upper(Ada.Strings.Unbounded.To_String (inWord)));
       return_token.t_type := common.t_ID;
       return_token.value  := common.tub ("");
-      -- Assign Token Index and Add 1
-      return_token.token_id := common.token_index;
       common.token_index := common.token_index + 1;
 
 -- First Check if it is number, because this will not go into the symbol table
@@ -181,8 +179,8 @@ package body lexer is
          return return_token;
       end if;
 
-      if is_valid_ID_name(inWord) then
-         return_token.value := inWord;
+      if is_valid_ID_name(token_text_in) then
+         return_token.value := token_text_in;
          return_token.t_type := common.t_ID;
          return return_token;
       end if;
@@ -201,12 +199,12 @@ package body lexer is
       next_char : Character := ' ';
       temp_char : Character;
 
-      loop_count : Integer := 0;
    begin
       --Main While Loop
       loop
-         loop_count := loop_count +1;
-         --Ada.Text_IO.Put_Line("Loop Count: "&loop_count'Image&" word -> "&common.ub2s(word)&"  -> "&cur_char&" , "&next_char);
+
+         --Start with setting the token scope
+         return_token.scope := common.current_scope;
 
          cur_char  := get_next_char2;
          next_char := peek_next_char2;

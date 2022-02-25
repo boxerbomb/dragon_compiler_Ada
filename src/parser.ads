@@ -16,8 +16,6 @@ package parser is
    -- Then when we find the tokens that specify scope boundaries, we can cut up the list relative to the ascending int id values
    -- And split them off into each their own hash table along with a part of the hash table object that refers to other scopes that they belong to
    -- For example every item is in scope with 0 (global) and depending on design choices -1(reserved words)
-   current_scope : Integer := 0;
-   scope_max     : Integer := 0;
    root_nodes : common.Node_Vectors.Vector;
 
    next_token : common.token;
@@ -30,14 +28,14 @@ package parser is
 
    -- Helper Functions
    function get_token return common.token;
-   function match(inType : common.token_types; setDeclared : Boolean := False) return Boolean;
+   function match(inType : common.token_types) return Boolean;
 
    -- Parsing Functions
    function program(parent_node : common.Node_Ptr) return Boolean;
    function program_header(parent_node : common.Node_Ptr) return Boolean;
    function program_body(parent_node : common.Node_Ptr) return Boolean;
-   function id_no_pop_no_child (parent_node : common.Node_Ptr; set_declared : Boolean := False) return Boolean;
-   function id(parent_node : common.Node_Ptr; inType : common.branch_types := common.b_NONE; set_declared :Boolean := False) return Boolean;
+   function id_no_pop_no_child (parent_node : common.Node_Ptr) return Boolean;
+   function id(parent_node : common.Node_Ptr; inType : common.branch_types := common.b_NONE) return Boolean;
    function statement_list(parent_node : common.Node_Ptr; inType : common.branch_types := common.b_NONE) return Boolean;
    function statement(parent_node : common.Node_Ptr) return Boolean;
    function return_statement(parent_node : common.Node_Ptr) return Boolean;
@@ -73,6 +71,9 @@ package parser is
    function solve_tree(root : common.Node_Ptr) return common.Node_Ptr;
    function int_to_string_trimmed(inInt : Integer) return Ada.Strings.Unbounded.Unbounded_String;
    procedure gen_dot_files(parent_node : common.Node_Ptr);
+
+   function get_next_token_scope return Integer;
+   function add_ID_to_sym_table(parent_node : common.Node_Ptr; in_id_type : common.id_types := common.id_INVALID) return Boolean;
 
 
    procedure viewMatchStack;

@@ -3,6 +3,7 @@ with lexer;
 with symbol_table;
 with Ada.Strings.Unbounded;
 with Ada.Text_IO;
+with id_value_pkg;
 
 package body parser is
    -- This "use" line seems to be needed to compare token_types with a "=" operator
@@ -14,7 +15,7 @@ package body parser is
       return lexer.get_next_token;
    end get_token;
 
-   function match (inType : common.token_types; setDeclared : Boolean := False) return Boolean is
+   function match (inType : common.token_types) return Boolean is
    begin
 
       --  -- This was needed for when I did not initilize CUR_CHAR and NEXT_CHAR in lexer
@@ -31,18 +32,6 @@ package body parser is
          matchStack.push (next_token);
          Ada.Text_IO.Put_Line (Ada.Text_IO.Standard_Output,"Matched: " & next_token.t_type'Image);
 
-         -- Modifies the given token's scope value in the symbol table
-         -- If the token is not in the symbol table, nothing happens
-         symbol_table.mod_scope_by_ID(next_token.token_id, current_scope);
-
-         -- If requested, set the set_declared flag true on a symbol table entry
-         -- The above function keeps track of where a variable is being used
-         -- This decides whether or not that variable has been declared in this scope
-         -- ID match calls from procedure_declaration and variable_declaration will use this
-         if setDeclared = True then
-            symbol_table.set_declared(next_token.token_id);
-         end if;
-
          next_token := get_token;
          return True;
       else
@@ -52,11 +41,32 @@ package body parser is
 
    end match;
 
+   function get_next_token_scope return Integer is
+   begin
+      return next_token.scope;
+   end get_next_token_scope;
+
+   function add_ID_to_sym_table(parent_node : common.Node_Ptr; in_id_type : common.id_types := common.id_INVALID) return Boolean is
+      -- Take the next token scope, but it is not confirmed that this in fact a valid ID.
+      -- If it is a valid ID, this will be used later
+      possible_id_scope : Integer;
+      matched_token : common.token;
+      new_id_value : id_value_pkg.id_value;
+   begin
+      possible_id_scope := get_next_token_scope;
+      if match(common.t_ID) then
+         matchStack.pop(matched_token);
+         new_id_value := id_value_pkg.init(in_id_type);
+         symbol_table.insert_entry(matched_token.value, matched_token.t_type, matched_token.scope, new_id_value, symbol_table.LastEntry);
+         return False;
+      else
+         Ada.Text_IO.Put_Line("Not a game breaking error this might be called when just 'looking'");
+         return False;
+      end if;
+   end add_ID_to_sym_table;
+
    function program_header (parent_node : common.Node_Ptr) return Boolean is
-      new_node : common.Node_Ptr :=
-        new common.Node'
-          (common.tub ("program_header"), common.b_NONE, 0, null, null, null,
-           0);
+      new_node : common.Node_Ptr :=new common.Node'(common.tub ("program_header"), common.b_NONE, 0, null, null, null,0);
    begin
       if match (common.t_PROGRAM) and then id (new_node)
         and then match (common.t_IS_STATEMENT)
@@ -109,21 +119,21 @@ package body parser is
       end if;
    end program;
 
-   function id_no_pop_no_child (parent_node : common.Node_Ptr; set_declared : Boolean := False) return Boolean
+   function id_no_pop_no_child (parent_node : common.Node_Ptr) return Boolean
    is
    begin
-      if match (common.t_ID , set_declared) then
+      if match (common.t_ID) then
          return True;
       end if;
       return False;
    end id_no_pop_no_child;
 
-   function id(parent_node : common.Node_Ptr; inType : common.branch_types := common.b_NONE; set_declared :Boolean := False) return Boolean
+   function id(parent_node : common.Node_Ptr; inType : common.branch_types := common.b_NONE) return Boolean
    is
       new_node : common.Node_Ptr := new common.Node'(common.tub ("id"), inType, 0, null, null, null, 0);
       popped_token : common.token;
    begin
-      if match (common.t_ID,set_declared) then
+      if match (common.t_ID) then
          --Check to see if this can be done with one line.
          Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
          Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
@@ -630,7 +640,7 @@ package body parser is
          Ada.Text_IO.Put_Line ("-------------BEFORE------------");
          root_nodes.Append (new_root_node);
          Ada.Text_IO.Put_Line ("-------------AFTER------------");
-         current_scope := current_scope -1;
+         common.current_scope := common.current_scope -1;
          return True;
       end if;
 
@@ -683,10 +693,10 @@ package body parser is
                parent_node.Name := procedure_name;
                common.add (parent_node, new_node);
 
-               current_scope := scope_max + 1;
+               common.current_scope := common.scope_max + 1;
                -- Using Scope max prevents multiple copies of the same scope for procedures on the same "level"
-               if current_scope > scope_max then
-                  scope_max := current_scope;
+               if common.current_scope > common.scope_max then
+                  common.scope_max := common.current_scope;
                end if;
 
                return procedure_name;
@@ -746,7 +756,7 @@ package body parser is
       new_node : common.Node_Ptr := new common.Node'(common.tub ("variable_declaration"), common.b_NONE, 0, null, null,null, 0);
    begin
 
-      if match (common.t_VARIABLE) and then id (new_node, common.b_VARIABLE_NAME, True) and then match (common.t_COLON) and then type_mark (new_node, common.b_VARIABLE_TYPE)
+      if match (common.t_VARIABLE) and then id (new_node, common.b_VARIABLE_NAME) and then match (common.t_COLON) and then type_mark (new_node, common.b_VARIABLE_TYPE)
       then
          -- Optional Bound for Array
          -- I believe that a bound will need to be constant. I will have to figure out have dynamic memory allocation works.
@@ -956,12 +966,12 @@ package body parser is
          return;
       end if;
 
-      for E of root_nodes loop
-         Ada.Text_IO.Put_Line ("");
-         Ada.Text_IO.Put_Line ("");
-         Ada.Text_IO.Put_Line("######### " & common.ub2s (E.Name) & " #########");
-         parser.print_preorder (E);
-      end loop;
+      --for E of root_nodes loop
+      --   Ada.Text_IO.Put_Line ("");
+      --   Ada.Text_IO.Put_Line ("");
+      --   Ada.Text_IO.Put_Line("######### " & common.ub2s (E.Name) & " #########");
+     --    parser.print_preorder (E);
+     -- end loop;
 
       for parent_Element of root_nodes loop
          parent_Element := solve_tree (parent_Element);
@@ -969,11 +979,11 @@ package body parser is
          --viewMatchStack;
       end loop;
 
-      --symbol_table.print_entries;
+      symbol_table.print_entries;
       --symbol_table.generate_declared;
       --symbol_table.print_entries(symbol_table.DeclaredTableStart);
-      symbol_table.print_entries;
-      symbol_table.check_scope;
+      --symbol_table.print_entries;
+      --symbol_table.check_scope;
 
 
       --Ada.Text_IO.Put_Line (common.ub2s(root_nodes(0).value));
