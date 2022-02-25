@@ -3,9 +3,9 @@ with Ada.Text_IO;
 with Ada.Strings.Unbounded;
 
 
-package body st_entry_pkg is
+package body id_value_pkg is
 
-   procedure test(in_entry : st_entry) is
+   procedure test(in_entry : id_value) is
    begin
 
       if in_entry.entry_type = t_STRING then
@@ -26,10 +26,10 @@ package body st_entry_pkg is
 
    end test;
 
-   function init(keyword: Ada.Strings.Unbounded.Unbounded_String; in_type : common.token_types; in_value : Ada.Strings.Unbounded.Unbounded_String; in_scope : Integer) return st_entry is
-      return_entry : st_entry;
+   function init(keyword: Ada.Strings.Unbounded.Unbounded_String; in_type : common.token_types; in_value : Ada.Strings.Unbounded.Unbounded_String; in_scope : Integer) return id_value is
+      return_entry : id_value;
    begin
-      return_entry.entry_type := st_entry_pkg.t_STRING;
+      return_entry.entry_type := id_value_pkg.t_STRING;
 
       return_entry.string_value := in_value;
       return_entry.boolean_value := False;
@@ -38,10 +38,10 @@ package body st_entry_pkg is
       return return_entry;
    end init;
 
-   function init(keyword: Ada.Strings.Unbounded.Unbounded_String; in_type : common.token_types; in_value : Integer; in_scope : Integer) return st_entry is
-      return_entry : st_entry;
+   function init(keyword: Ada.Strings.Unbounded.Unbounded_String; in_type : common.token_types; in_value : Integer; in_scope : Integer) return id_value is
+      return_entry : id_value;
    begin
-      return_entry.entry_type := st_entry_pkg.t_INTEGER;
+      return_entry.entry_type := id_value_pkg.t_INTEGER;
 
       return_entry.string_value := common.tub("");
       return_entry.boolean_value := False;
@@ -50,10 +50,10 @@ package body st_entry_pkg is
       return return_entry;
    end init;
 
-   function init(keyword: Ada.Strings.Unbounded.Unbounded_String; in_type : common.token_types; in_value : Float; in_scope : Integer) return st_entry is
-      return_entry : st_entry;
+   function init(keyword: Ada.Strings.Unbounded.Unbounded_String; in_type : common.token_types; in_value : Float; in_scope : Integer) return id_value is
+      return_entry : id_value;
    begin
-      return_entry.entry_type := st_entry_pkg.t_FLOAT;
+      return_entry.entry_type := id_value_pkg.t_FLOAT;
 
       return_entry.string_value := common.tub("");
       return_entry.boolean_value := False;
@@ -62,10 +62,10 @@ package body st_entry_pkg is
       return return_entry;
    end init;
 
-   function init(keyword: Ada.Strings.Unbounded.Unbounded_String; in_type : common.token_types; in_value : Boolean; in_scope : Integer) return st_entry is
-      return_entry : st_entry;
+   function init(keyword: Ada.Strings.Unbounded.Unbounded_String; in_type : common.token_types; in_value : Boolean; in_scope : Integer) return id_value is
+      return_entry : id_value;
    begin
-      return_entry.entry_type := st_entry_pkg.t_BOOLEAN;
+      return_entry.entry_type := id_value_pkg.t_BOOLEAN;
 
       return_entry.string_value := common.tub("");
       return_entry.boolean_value := in_value;
@@ -74,4 +74,4 @@ package body st_entry_pkg is
       return return_entry;
    end init;
 
-end st_entry_pkg;
+end id_value_pkg;

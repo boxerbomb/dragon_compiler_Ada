@@ -6,7 +6,7 @@ with lexer;
 with parser;
 
 -- This is just used in a compiler test, it can be removed
-with st_entry_pkg;
+with id_value_pkg;
 
 use type common.token_types;
 
@@ -19,7 +19,7 @@ procedure Main is
 
    run_test : Integer := 0;
 
-   test_entry : st_entry_pkg.st_entry;
+   test_entry : id_value_pkg.id_value;
 begin
    lexer.openSourceFile;
    if run_test = 1 then
@@ -47,8 +47,8 @@ begin
       Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Done with String");
 
    elsif run_test=4 then
-      test_entry := st_entry_pkg.init(common.tub("HELLO"),common.t_ID,common.tub("HELLO"),0);
-      st_entry_pkg.test(test_entry);
+      test_entry := id_value_pkg.init(common.tub("HELLO"),common.t_ID,common.tub("HELLO"),0);
+      id_value_pkg.test(test_entry);
    else
       parser.parser_main;
    end if;

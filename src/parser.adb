@@ -583,8 +583,7 @@ package body parser is
 
    function declaration (parent_node : common.Node_Ptr) return Boolean is
       new_node : common.Node_Ptr :=
-        new common.Node'
-          (common.tub ("declaration"), common.b_NONE, 0, null, null, null, 0);
+        new common.Node'(common.tub ("declaration"), common.b_NONE, 0, null, null, null, 0);
       temp_bool : Boolean;
    begin
       -- This needs to be implemented
@@ -600,9 +599,7 @@ package body parser is
 
    function declaration_list (parent_node : common.Node_Ptr) return Boolean is
       new_node : common.Node_Ptr :=
-        new common.Node'
-          (common.tub ("declaration_list"), common.b_NONE, 0, null, null, null,
-           0);
+        new common.Node'(common.tub ("declaration_list"), common.b_NONE, 0, null, null, null,0);
       temp_bool : Boolean;
    begin
       if declaration (new_node) then
@@ -976,6 +973,7 @@ package body parser is
       symbol_table.print_entries;
       symbol_table.generate_declared;
       symbol_table.print_entries(symbol_table.DeclaredTableStart);
+      symbol_table.print_entries;
       symbol_table.check_scope;
 
 

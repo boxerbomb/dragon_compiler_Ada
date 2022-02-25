@@ -1,5 +1,6 @@
 with common;
 with Ada.Strings.Unbounded;
+with id_value_pkg;
 
 
 -- It seems that a hash table, might be more effcient.
@@ -17,18 +18,19 @@ package symbol_table is
          -- 0 can be global scope, and each function can be given a "function ID"
          token_id : Integer;
          token_scope: Integer;
-         next_entry : Table_Entry_ptr;
          defined : Boolean;
+         next_entry : Table_Entry_ptr;
+         value : id_value_pkg.id_value;
       end record;
 
 
 
    -- The scope defined symbol_tables will be hash tables to facilitate with keyword lookup
    -- This "all scopes" table is most accessed by searching each and every table in order, thus a linked-list makes more logical sense in terms of desired access
-   TableStart : Table_Entry_ptr := new Table_Entry'(common.tub("Start"),common.t_INVALID,-1,-1,NULL,False);
+   TableStart : Table_Entry_ptr := new Table_Entry'(common.tub("Start"),common.t_INVALID,-1,-1,False,NULL);
    LastEntry : Table_Entry_ptr := TableStart;
 
-   DeclaredTableStart : Table_Entry_ptr := new Table_Entry'(common.tub("Start"),common.t_INVALID,-1,-1,NULL,False);
+   DeclaredTableStart : Table_Entry_ptr := new Table_Entry'(common.tub("Start"),common.t_INVALID,-1,-1,False,NULL);
    DeclaredLastEntry  : Table_Entry_ptr := DeclaredTableStart;
 
 

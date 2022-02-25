@@ -54,7 +54,7 @@ package body symbol_table is
 
 
    procedure insert_entry(in_keyword : Ada.Strings.Unbounded.Unbounded_String; in_type : common.token_types; in_id_num : Integer; in_scope : Integer; in_declared : Boolean; insert_location : IN OUT Table_Entry_ptr) is
-      new_entry : Table_Entry_ptr := new Table_Entry'(in_keyword,in_type,in_id_num,in_scope,NULL,in_declared);
+      new_entry : Table_Entry_ptr := new Table_Entry'(in_keyword,in_type,in_id_num,in_scope,in_declared,NULL);
    begin
       insert_location.next_entry := new_entry;
       insert_location := new_entry;
@@ -107,7 +107,7 @@ package body symbol_table is
 
    function lookup(id_key : Integer) return Table_Entry_ptr is
       currentEntry : Table_Entry_ptr := TableStart;
-      InvalidEntry : Table_Entry_ptr := new Table_Entry'(common.tub(""),common.t_INVALID,-1,-1,NULL,False);
+      InvalidEntry : Table_Entry_ptr := new Table_Entry'(common.tub(""),common.t_INVALID,-1,-1,False,NULL);
    begin
 
       while True loop
@@ -132,7 +132,7 @@ package body symbol_table is
 
    function lookup(keyword : Ada.Strings.Unbounded.Unbounded_String) return Table_Entry_ptr is
       currentEntry : Table_Entry_ptr := TableStart;
-      InvalidEntry : Table_Entry_ptr := new Table_Entry'(common.tub(""),common.t_INVALID,-1,-1,NULL,False);
+      InvalidEntry : Table_Entry_ptr := new Table_Entry'(common.tub(""),common.t_INVALID,-1,-1,False,NULL);
    begin
 
       while True loop
