@@ -33,7 +33,7 @@ package common is
       record
          t_type : token_types;
          value : Ada.Strings.Unbounded.Unbounded_String;
-         scope : Integer;
+         scope : Integer := 99;
       end record;
 
    --empty_token : token(t_type <= t_INVALID, value <= tub("INVALID"));

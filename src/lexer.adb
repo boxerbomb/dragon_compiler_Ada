@@ -159,6 +159,9 @@ package body lexer is
 
       use type common.token_types;
    begin
+      -- Add Current Scope to this token
+      return_token.scope := common.current_scope;
+
       token_text_in :=common.tub(Ada.Characters.Handling.To_Upper(Ada.Strings.Unbounded.To_String (inWord)));
       return_token.t_type := common.t_ID;
       return_token.value  := common.tub ("");
@@ -185,7 +188,7 @@ package body lexer is
          return return_token;
       end if;
 
-
+      return return_token;
    end identify_token;
 
    function get_next_token return common.token is

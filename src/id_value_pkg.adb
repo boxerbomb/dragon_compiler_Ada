@@ -30,7 +30,7 @@ package body id_value_pkg is
    function init(in_id_type : common.id_types) return id_value is
       return_entry : id_value;
    begin
-      return_entry.id_type:= common.id_STRING;
+      return_entry.id_type:= in_id_type;
 
       return_entry.string_value := common.tub("");
       return_entry.boolean_value := False;

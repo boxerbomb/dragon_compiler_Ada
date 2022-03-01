@@ -73,7 +73,7 @@ package parser is
    procedure gen_dot_files(parent_node : common.Node_Ptr);
 
    function get_next_token_scope return Integer;
-   function add_ID_to_sym_table(parent_node : common.Node_Ptr; in_id_type : common.id_types := common.id_INVALID) return Boolean;
+   function add_ID_to_sym_table(parent_node : common.Node_Ptr; in_id_type : common.id_types := common.id_INVALID) return Ada.Strings.Unbounded.Unbounded_String;
 
 
    procedure viewMatchStack;
