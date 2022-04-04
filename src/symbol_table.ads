@@ -29,7 +29,6 @@ package symbol_table is
    empty_hash_map : hash_table.Map;
    scope_hash_vector : VectTableHash.Vector;
    package Integer_Vectors is new Ada.Containers.Vectors(Index_Type   => Natural, Element_Type => Integer);
-   scope_parent_vector : Integer_Vectors.Vector;
 
 
 

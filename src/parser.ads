@@ -20,7 +20,7 @@ package parser is
 
    next_token : common.token;
 
-   package matchStack is new gstack(300,common.token);
+   package matchStack is new gstack(400,common.token);
 
    -- Public Functions
    procedure parser_main;
@@ -32,7 +32,7 @@ package parser is
 
    -- Parsing Functions
    function program(parent_node : common.Node_Ptr) return Boolean;
-   function program_header(parent_node : common.Node_Ptr) return Boolean;
+   function program_header(parent_node : common.Node_Ptr) return Ada.Strings.Unbounded.Unbounded_String;
    function program_body(parent_node : common.Node_Ptr) return Boolean;
    function id_no_pop_no_child (parent_node : common.Node_Ptr) return Boolean;
    function id(parent_node : common.Node_Ptr; inType : common.branch_types := common.b_NONE) return Boolean;
@@ -54,7 +54,7 @@ package parser is
    function relation_prime(parent_node : common.Node_Ptr) return Boolean;
    function relation(parent_node : common.Node_Ptr) return Boolean;
    function term_prime(parent_node : common.Node_Ptr) return Boolean;
-   function term(parent_node : common.Node_Ptr) return Boolean;
+   function term(parent_node : common.Node_Ptr; in_type : common.branch_types := common.b_NONE) return Boolean;
    function arith_op_prime(parent_node : common.Node_Ptr) return Boolean;
    function arith_op(parent_node : common.Node_Ptr) return Boolean;
    function declaration(parent_node : common.Node_Ptr) return Boolean;

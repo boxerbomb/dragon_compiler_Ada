@@ -4,6 +4,7 @@ with Ada.Strings.Unbounded;
 with common;
 with lexer;
 with parser;
+with code_gen;
 
 -- This is just used in a compiler test, it can be removed
 with id_value_pkg;
@@ -51,6 +52,8 @@ begin
       id_value_pkg.test(test_entry);
    else
       parser.parser_main;
+      Ada.Text_IO.Put_Line("------- Generate Preorder ------");
+      code_gen.print_preorder(parser.root_nodes.Element(0));
    end if;
    lexer.closeSourceFile;
 

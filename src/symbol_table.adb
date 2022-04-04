@@ -128,10 +128,7 @@ package body symbol_table is
       --  end if;
 
       if returnEntry = InvalidEntry then
-         Ada.Text_IO.Put_Line("[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]");
-         Ada.Text_IO.Put_Line("[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]");
-         Ada.Text_IO.Put_Line("     "&in_scope'Image&" "&scope_parent_vector.Element(in_scope)'Image);
-         return lookupHash(keyword, scope_parent_vector.Element(in_scope));
+         return lookupHash(keyword, 0);
       end if;
 
       return returnEntry;
