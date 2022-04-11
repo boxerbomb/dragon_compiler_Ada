@@ -235,12 +235,13 @@ package body code_gen is
    end add_parameters_to_list;
 
 
-   procedure add_arguments_to_list(in_node : common.Node_Ptr) is
+   procedure add_arguments_to_list(in_node : common.Node_Ptr; primary_call : Boolean := False) is
       use type common.branch_types;
       use type common.Node_Ptr;
       argument_record : argument_data;
 
       value_id : Integer;
+      proc_length : Natural;
    begin
       -- Note Start with a clear, but not in this function
       --Parameter_Vectors_Package.Clear(parameter_list);
@@ -249,10 +250,28 @@ package body code_gen is
          return;
       end if;
 
+      -- Needs to check only if not primary call as all calls are procedure names
+      if primary_call = False then
+         -- This cuts the tree if another procedure is found.
+         -- This avoids using arguments for a nested procedure call
+         proc_length := Ada.Strings.Unbounded.Length(in_node.Name);
+         if proc_length > 1 and then Ada.Strings.Unbounded.Slice(in_node.Name,proc_length-1,proc_length) = "()" then
+            Ada.Text_IO.Put_Line("Found a Procedure!!!: " & common.ub2s(in_node.Name));
+            return;
+         end if;
+      end if;
+
       if in_node.Branch_Type = common.b_ARGUMENT then
-         value_id := parse_value_from_tree(in_node,True);
-         argument_record.argument_value := common.tub("%t" & common.int_to_String(value_id));
+
+         if common.ub2s(Ada.Strings.Unbounded.Head(in_node.Name,1)) = "%" then
+            argument_record.argument_value := in_node.Name;
+         else
+             value_id := parse_value_from_tree(in_node,True, size_of_tree(in_node));
+            argument_record.argument_value := common.tub("%t" & common.int_to_String(value_id));
+         end if;
+
          argument_list.Append(argument_record);
+         return;
       end if;
 
       add_arguments_to_list(in_node.Left);
@@ -292,6 +311,7 @@ package body code_gen is
 
       return_id : Integer;
       return_value_tree : common.Node_Ptr;
+
    begin
 
       if in_node = null then
@@ -444,7 +464,6 @@ package body code_gen is
       use type symbol_table.Table_Entry_ptr;
       slice_test : Ada.Strings.Unbounded.Unbounded_String := common.tub("Nathan Henry");
       proc_length : Natural;
-      argument_node : common.Node_Ptr;
 
       delete_this : Integer;
 
@@ -456,11 +475,14 @@ package body code_gen is
       var_name_tree : common.Node_Ptr;
       index_tree : common.Node_Ptr;
 
+      argument_string : Ada.Strings.Unbounded.Unbounded_String;
+      argument_index : Integer := 0;
    begin
 
       if in_node = null then
          return -1;
       end if;
+
 
       if tree_length = 1 then
          current_temp_var_id := current_temp_var_id + 1;
@@ -503,47 +525,63 @@ package body code_gen is
       elsif common.ub2s(in_node.Name) = "Variable_Value" then
          var_name_tree := get_child_of_branch(in_node,common.b_VARIABLE_NAME);
          index_tree := get_child_of_branch(in_node, common.b_INDEX);
+
+         Ada.Text_IO.Put_Line("Found Variable! :" & common.ub2s(var_name_tree.Name));
+
          if common.ub2s(symbol_table.lookupHash(var_name_tree.Name,in_node.scope).keyword) /= "" then
-            Ada.Text_IO.Put_Line("Important Find HEre: "&common.ub2s(var_name_tree.Name)&"  "&common.int_to_String(current_temp_var_id));
             current_temp_var_id := current_temp_var_id +1;
-            Ada.Text_IO.Put_Line("AFTER: "&common.int_to_String(current_temp_var_id));
-            Ada.Text_IO.Put_Line(F,"; Only searching scope 1, this needs to be fixed later");
             --Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(current_temp_var_id) & " BOGUS BUGUS SDUSHDOUSHDSU " & common.ub2s(in_node.Left.Name) & " , " & common.ub2s(in_node.Right.Name));
             Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(current_temp_var_id) & "= load i32, i32* %v" & common.int_to_String(symbol_table.lookupHash(var_name_tree.Name,in_node.scope).variable_id));
             in_node.Name := common.tub("%t" & common.int_to_String(current_temp_var_id));
          end if;
       elsif proc_length > 1 and then Ada.Strings.Unbounded.Slice(in_node.Name,proc_length-1,proc_length) = "()" then
-         --Ada.Text_IO.Put_Line("Before Increment: "&current_temp_var_id'Image);
-         argument_node := get_child_of_branch(in_node, common.b_ARGUMENT);
-         if argument_node = null then
-            Ada.Text_IO.Put_Line("No Argument");
-         end if;
 
-         if size_of_tree(argument_node) > 0 then
+        Ada.Text_IO.Put_Line("Working on proc: " & common.ub2s(in_node.Name));
 
-            argument_value_id := parse_value_from_tree(argument_node,True,size_of_tree(argument_node));
+         Argument_Vectors_Package.Clear(argument_list);
+         -- Add to that list with all found arguments
+         add_arguments_to_list(in_node,True);
 
-            current_temp_var_id := current_temp_var_id + 1;
-            procedure_return_value_id := current_temp_var_id;
+         argument_index := 0;
+         for element of argument_list loop
+            if argument_index /= 0 then
+               argument_string := Ada.Strings.Unbounded."&"(argument_string,',');
+            end if;
 
-            Ada.Text_IO.Put_Line("Current: "&common.int_to_String(current_temp_var_id)&"   "&common.int_to_String(argument_value_id));
-            --Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(procedure_return_value_id) & " = calling " & common.ub2s(in_node.Name) & " with arguments: t" & common.int_to_String(argument_value_id));
-
-            --Ada.Text_IO.Put_Line(F, "%t" & common.int_to_String(procedure_return_value_id) & " = call i32 @""PUTINTEGER""(i32 %t"& common.int_to_String(argument_value_id)&")");
-
-            Ada.Text_IO.Put_Line(F, "%t" & common.int_to_String(procedure_return_value_id) & " = call i32 @""" & Ada.Strings.Unbounded.Slice(in_node.Name,1,proc_length-2) & """(i32 %t"& common.int_to_String(argument_value_id)&")");
+            argument_string := Ada.Strings.Unbounded."&" (argument_string, "i32 "& common.ub2s(element.argument_value));
+            argument_index := argument_index + 1;
+         end loop;
 
 
+         current_temp_var_id := current_temp_var_id + 1;
+         procedure_return_value_id := current_temp_var_id;
 
-            -- End procedure call
-         else
-            current_temp_var_id := current_temp_var_id + 1;
-            procedure_return_value_id := current_temp_var_id;
+         Ada.Text_IO.Put_Line(F, "%t" & common.int_to_String(procedure_return_value_id) & " = call i32 @""" & Ada.Strings.Unbounded.Slice(in_node.Name,1,proc_length-2) & """(" & common.ub2s(argument_string) & ")");
 
-            Ada.Text_IO.Put_Line(F, "%t" & common.int_to_String(procedure_return_value_id) & " = call i32 @""" & Ada.Strings.Unbounded.Slice(in_node.Name,1,proc_length-2) & """()");
-            --%"GETINTEGER_call" = call i32 @"GETINTEGER"()
-            --Ada.Text_IO.Put_Line(F,"This is in fact a procedure of name: " & common.ub2s(in_node.Name) & " with no arguments");
-         end if;
+
+         --  if size_of_tree(argument_node) > 0 then
+         --
+         --     argument_value_id := parse_value_from_tree(argument_node,True,size_of_tree(argument_node));
+         --
+         --     current_temp_var_id := current_temp_var_id + 1;
+         --     procedure_return_value_id := current_temp_var_id;
+         --
+         --     Ada.Text_IO.Put_Line("Current: "&common.int_to_String(current_temp_var_id)&"   "&common.int_to_String(argument_value_id));
+         --     --Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(procedure_return_value_id) & " = calling " & common.ub2s(in_node.Name) & " with arguments: t" & common.int_to_String(argument_value_id));
+         --
+         --     --Ada.Text_IO.Put_Line(F, "%t" & common.int_to_String(procedure_return_value_id) & " = call i32 @""PUTINTEGER""(i32 %t"& common.int_to_String(argument_value_id)&")");
+         --
+         --     Ada.Text_IO.Put_Line(F, "%t" & common.int_to_String(procedure_return_value_id) & " = call i32 @""" & Ada.Strings.Unbounded.Slice(in_node.Name,1,proc_length-2) & """(i32 %t"& common.int_to_String(argument_value_id)&")");
+         --
+         --     -- End procedure call
+         --  else
+         --     current_temp_var_id := current_temp_var_id + 1;
+         --     procedure_return_value_id := current_temp_var_id;
+         --
+         --     Ada.Text_IO.Put_Line(F, "%t" & common.int_to_String(procedure_return_value_id) & " = call i32 @""" & Ada.Strings.Unbounded.Slice(in_node.Name,1,proc_length-2) & """()");
+         --     --%"GETINTEGER_call" = call i32 @"GETINTEGER"()
+         --     --Ada.Text_IO.Put_Line(F,"This is in fact a procedure of name: " & common.ub2s(in_node.Name) & " with no arguments");
+         --  end if;
 
          return procedure_return_value_id;
 
@@ -561,8 +599,6 @@ package body code_gen is
          return current_temp_var_id;
       end if;
 
-      -- This will return values generated by math
-      Ada.Text_IO.Put_Line("RETURINGING: "&common.int_to_String(current_temp_var_id));
       return current_temp_var_id;
 
    end parse_value_from_tree;

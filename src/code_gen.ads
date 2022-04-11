@@ -44,7 +44,7 @@ package code_gen is
 
 
    procedure add_parameters_to_list(in_node : common.Node_Ptr);
-   procedure add_arguments_to_list(in_node : common.Node_Ptr);
+   procedure add_arguments_to_list(in_node : common.Node_Ptr; primary_call : Boolean := False);
 
 
    function parse_value_from_tree(in_node : common.Node_Ptr; primary_call : Boolean; tree_length : Integer := 99) return Integer;
