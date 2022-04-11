@@ -8,6 +8,8 @@ with Ada.Strings.Hash;
 -- It seems that a hash table, might be more effcient.
 -- It looks like Ada has some sort of built in hash table data structure but I might be able to keep the API the same
 package symbol_table is
+
+
    type Table_Entry;
    type Table_Entry_ptr is access Table_Entry;
    type Table_Entry is
@@ -16,7 +18,10 @@ package symbol_table is
          token_scope: Integer;
          value : id_value_pkg.id_value;
          next_entry : Table_Entry_ptr;
+         variable_id : Integer;
       end record;
+
+   current_variable_id : Integer := 0;
 
    -- Determines of symbol table entries are equal
    --function "=" (L,R : Table_Entry_ptr) return Boolean;
@@ -34,8 +39,9 @@ package symbol_table is
 
    -- The scope defined symbol_tables will be hash tables to facilitate with keyword lookup
    -- This "all scopes" table is most accessed by searching each and every table in order, thus a linked-list makes more logical sense in terms of desired access
-   TableStart : Table_Entry_ptr := new Table_Entry'(common.tub("Start"),-1,id_value_pkg.empty_value,NULL);
+   TableStart : Table_Entry_ptr := new Table_Entry'(common.tub("Start"),-1,id_value_pkg.empty_value,NULL,-1);
    LastEntry : Table_Entry_ptr := TableStart;
+   InvalidEntry : Table_Entry_ptr := new Table_Entry'(common.tub(""),-1,id_value_pkg.empty_value,NULL,-1);
 
    procedure insert_entry(in_keyword : Ada.Strings.Unbounded.Unbounded_String; in_scope : Integer; in_value : id_value_pkg.id_value; insert_location : IN OUT Table_Entry_ptr);
 
@@ -49,5 +55,6 @@ package symbol_table is
    procedure check_scope;
 
    procedure test_vector;
+
 
 end symbol_table;

@@ -220,13 +220,13 @@ package body lexer is
 
          --Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,cur_char&next_char);
 
-         if textMode = False and commentMode = False then
+         if textMode = False and commentMode = False and cur_char&next_char/="//" and cur_char&next_char/="/*" then
             -- If cur_char+next_char in two dig seperators
             if cur_char & next_char in ":=" | "<=" | ">=" | "==" | "!=" | "//" | "*/"
             then
                -- Now it actually consumes this char, instead of jsut peeking
                temp_char := get_next_char2;
-               Ada.Text_IO.Put_Line ("BRackets for now");
+               Ada.Text_IO.Put_Line ("Brackets for now");
                return identify_token (common.tub (cur_char & next_char));
             elsif cur_char in ',' | ';' | '(' | ')' | '[' | ']' | '+' | '-' | '/' | '*' | ':' | '.' | '<' | '>' then
                return identify_token (common.tub ("" & cur_char));
@@ -241,6 +241,48 @@ package body lexer is
                if Ada.Strings.Unbounded.Length (word) /= 0 then
                   return identify_token (word);
                end if;
+            end if;
+
+            if cur_char='"' then
+               textMode := True;
+            end if;
+         else
+            if cur_char&next_char="//" then
+               commentMode := True;
+               temp_char := get_next_char2;
+            end if;
+            if cur_char&next_char="/*" then
+               Ada.Text_IO.Put_Line("Comment Mode Begin");
+               commentMode := True;
+               multiLineCount := multiLineCount + 1;
+               temp_char := get_next_char2;
+            end if;
+
+            if commentMode=True then
+               if cur_char=Character'Val (13) and multiLineCount=0 then
+                  commentMode := False;
+               end if;
+               if cur_char&next_char="*/" then
+                  Ada.Text_IO.Put_Line("End Comment");
+                  multiLineCount := multiLineCount - 1;
+                  if multiLineCount=0 then
+                     Ada.Text_IO.Put_Line("Done");
+                     commentMode := False;
+                  end if;
+               end if;
+            end if;
+
+            if textMode=True then
+               if cur_char/='"' then
+                  word := Ada.Strings.Unbounded."&" (word, cur_char);
+               end if;
+
+               if cur_char='"' then
+                  textMode := False;
+                  return_token := common.empty_token;
+                  return_token.t_type := common.t_STRING_VALUE;
+                  return return_token;
+                end if;
             end if;
 
          end if;

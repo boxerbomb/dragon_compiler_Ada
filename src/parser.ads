@@ -20,6 +20,8 @@ package parser is
 
    next_token : common.token;
 
+   found_program_name : Ada.Strings.Unbounded.Unbounded_String;
+
    package matchStack is new gstack(400,common.token);
 
    -- Public Functions
@@ -65,7 +67,7 @@ package parser is
    function parameter(parent_node : common.Node_Ptr) return Boolean;
    function parameter_list(parent_node : common.Node_Ptr) return Boolean;
    function type_mark(parent_node : common.Node_Ptr; inType : common.branch_types := common.b_NONE) return Boolean;
-   function variable_declaration(parent_node : common.Node_Ptr) return Boolean;
+   function variable_declaration (parent_node : common.Node_Ptr; is_Parameter : Boolean := False) return Boolean;
    function bound(parent_node : common.Node_Ptr; inType : common.branch_types := common.b_NONE) return Boolean;
 
    function solve_tree(root : common.Node_Ptr) return common.Node_Ptr;

@@ -5,10 +5,14 @@ with common;
 package body symbol_table is
 
    procedure insert_entry(in_keyword : Ada.Strings.Unbounded.Unbounded_String; in_scope : Integer; in_value : id_value_pkg.id_value; insert_location : IN OUT Table_Entry_ptr) is
-      new_entry : Table_Entry_ptr := new Table_Entry'(in_keyword, in_scope, in_value, NULL);
+      new_entry : Table_Entry_ptr := new Table_Entry'(in_keyword, in_scope, in_value, NULL,-1);
    begin
+
       insert_location.next_entry := new_entry;
       insert_location := new_entry;
+
+      current_variable_id := current_variable_id + 1;
+      insert_location.variable_id := current_variable_id;
 
       if in_scope > (Integer(scope_hash_vector.Length)-1) then
          scope_hash_vector.Append(empty_hash_map);
@@ -79,7 +83,7 @@ package body symbol_table is
             currentKey := hash_table.Key(hash_entry);
             currentElement := hash_table.Element(hash_entry);
 
-            Ada.Text_IO.Put(Ada.Text_IO.Standard_Output,common.ub2s(currentElement.keyword)&" | scope -> "&currentElement.token_scope'Image);
+            Ada.Text_IO.Put(Ada.Text_IO.Standard_Output,common.ub2s(currentElement.keyword)&" | scope -> "&currentElement.token_scope'Image & " Var ID:" & currentElement.variable_id'Image);
 
             if currentElement.value.id_type=common.id_INTEGER then
                Ada.Text_IO.Put_Line(" Type-> Integer");
@@ -106,7 +110,7 @@ package body symbol_table is
 
    -- Used on Line 183 of parser
    function lookupHash(keyword : Ada.Strings.Unbounded.Unbounded_String; in_scope : Integer) return Table_Entry_ptr is
-      InvalidEntry : Table_Entry_ptr := new Table_Entry'(common.tub(""),-1,id_value_pkg.empty_value,NULL);
+      InvalidEntry : Table_Entry_ptr := new Table_Entry'(common.tub(""),-1,id_value_pkg.empty_value,NULL,-1);
       returnEntry : Table_Entry_ptr;
    begin
 
@@ -127,7 +131,7 @@ package body symbol_table is
       --     end if;
       --  end if;
 
-      if returnEntry = InvalidEntry then
+      if returnEntry = InvalidEntry and in_scope /= 0 then
          return lookupHash(keyword, 0);
       end if;
 
@@ -137,7 +141,7 @@ package body symbol_table is
 
    function lookup(keyword : Ada.Strings.Unbounded.Unbounded_String; in_scope : Integer) return Table_Entry_ptr is
       currentEntry : Table_Entry_ptr := TableStart;
-      InvalidEntry : Table_Entry_ptr := new Table_Entry'(common.tub(""),-1,id_value_pkg.empty_value,NULL);
+      InvalidEntry : Table_Entry_ptr := new Table_Entry'(common.tub(""),-1,id_value_pkg.empty_value,NULL,-1);
    begin
 
       -- Break this
@@ -161,13 +165,17 @@ package body symbol_table is
       -- One of the values tied to it will be "parent_scope" and it will be able to follow the chain
       -- Currently with one hash table it is looking for a scope identifier to be the same
       -- So I am making a hacky solution that only applies to this current program now
-      if currentEntry = InvalidEntry then
-         if in_scope = 1 or in_scope =3 then
-            return lookup(keyword,0);
-         end if;
-         if in_scope = 2 then
-            return lookup(keyword,1);
-         end if;
+      --  if currentEntry = InvalidEntry then
+      --     if in_scope = 1 or in_scope =3 then
+      --        return lookup(keyword,0);
+      --     end if;
+      --     if in_scope = 2 then
+      --        return lookup(keyword,1);
+      --     end if;
+      --  end if;
+
+      if currentEntry = InvalidEntry and in_scope /= 0 then
+         return lookupHash(keyword, 0);
       end if;
 
       --Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Found: "&common.ub2s(currentEntry.keyword));

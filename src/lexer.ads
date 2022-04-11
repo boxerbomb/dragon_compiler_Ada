@@ -15,6 +15,7 @@ package lexer is
    function get_next_char2 return Character;
    function peek_next_char2 return Character;
 
+
    WorkingLine : Ada.Strings.Unbounded.Unbounded_String := common.tub("");
    WorkingLine_Index : Integer := 0;
    LineCount : Integer := 0;
