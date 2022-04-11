@@ -1,6 +1,7 @@
 with common;
 with Ada.Text_IO;
 with Ada.Strings.Unbounded;
+with Ada.Containers.Vectors;
 
 
 package code_gen is
@@ -14,7 +15,37 @@ package code_gen is
       record
          location : Integer;
          offset : Integer;
-   end record;
+      end record;
+
+   type parameter_data is
+      record
+         parameter_name : Ada.Strings.Unbounded.Unbounded_String;
+         parameter_type : Ada.Strings.Unbounded.Unbounded_String;
+      end record;
+
+   package Parameter_Vectors_Package is new
+     Ada.Containers.Vectors
+       (Index_Type   => Natural,
+        Element_Type => parameter_data);
+
+   parameter_list : Parameter_Vectors_Package.Vector;
+
+   type argument_data is
+      record
+         argument_value : Ada.Strings.Unbounded.Unbounded_String;
+      end record;
+
+   package Argument_Vectors_Package is new
+     Ada.Containers.Vectors
+       (Index_Type   => Natural,
+        Element_Type => argument_data);
+
+   argument_list : Argument_Vectors_Package.Vector;
+
+
+   procedure add_parameters_to_list(in_node : common.Node_Ptr);
+   procedure add_arguments_to_list(in_node : common.Node_Ptr);
+
 
    function parse_value_from_tree(in_node : common.Node_Ptr; primary_call : Boolean; tree_length : Integer := 99) return Integer;
    function parse_destination_from_tree(in_node : common.Node_Ptr) return destination_record;

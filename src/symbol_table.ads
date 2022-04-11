@@ -19,6 +19,7 @@ package symbol_table is
          value : id_value_pkg.id_value;
          next_entry : Table_Entry_ptr;
          variable_id : Integer;
+         is_param : Boolean;
       end record;
 
    current_variable_id : Integer := 0;
@@ -39,11 +40,11 @@ package symbol_table is
 
    -- The scope defined symbol_tables will be hash tables to facilitate with keyword lookup
    -- This "all scopes" table is most accessed by searching each and every table in order, thus a linked-list makes more logical sense in terms of desired access
-   TableStart : Table_Entry_ptr := new Table_Entry'(common.tub("Start"),-1,id_value_pkg.empty_value,NULL,-1);
+   TableStart : Table_Entry_ptr := new Table_Entry'(common.tub("Start"),-1,id_value_pkg.empty_value,NULL,-1,False);
    LastEntry : Table_Entry_ptr := TableStart;
-   InvalidEntry : Table_Entry_ptr := new Table_Entry'(common.tub(""),-1,id_value_pkg.empty_value,NULL,-1);
+   InvalidEntry : Table_Entry_ptr := new Table_Entry'(common.tub(""),-1,id_value_pkg.empty_value,NULL,-1,False);
 
-   procedure insert_entry(in_keyword : Ada.Strings.Unbounded.Unbounded_String; in_scope : Integer; in_value : id_value_pkg.id_value; insert_location : IN OUT Table_Entry_ptr);
+   procedure insert_entry(in_keyword : Ada.Strings.Unbounded.Unbounded_String; in_scope : Integer; in_value : id_value_pkg.id_value; insert_location : IN OUT Table_Entry_ptr; is_Param : Boolean := False);
 
    --procedure print_entries(print_start : Table_Entry_ptr := TableStart);
    procedure print_hash_entries;

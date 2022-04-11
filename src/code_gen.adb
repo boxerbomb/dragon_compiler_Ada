@@ -48,6 +48,9 @@ package body code_gen is
       currentKey : Ada.Strings.Unbounded.Unbounded_String;
       currentElement : symbol_table.Table_Entry_ptr;
       hash_table_index : Integer := 0;
+
+      parameter_string : Ada.Strings.Unbounded.Unbounded_String;
+      parameter_index : Integer := 0;
    begin
 
 
@@ -136,7 +139,23 @@ package body code_gen is
          if common.ub2s(parser.found_program_name) = common.ub2s(parent_Element.Name) then
             Ada.Text_IO.Put_Line(F,"define i32 @""main""()");
          else
-            Ada.Text_IO.Put_Line(F,"define i32 @""" & common.ub2s(parent_Element.Name) & """()");
+            Parameter_Vectors_Package.Clear(parameter_list);
+
+            add_parameters_to_list(parent_Element);
+            parameter_string := common.tub("");
+
+            parameter_index := 0;
+
+            for element of parameter_list loop
+               if parameter_index /= 0 then
+                  parameter_string := Ada.Strings.Unbounded."&"(parameter_string,',');
+               end if;
+
+               parameter_string := Ada.Strings.Unbounded."&" (parameter_string, "i32 %""" & common.ub2s(element.parameter_name)&"_arg""");
+               parameter_index := parameter_index + 1;
+            end loop;
+
+            Ada.Text_IO.Put_Line(F,"define i32 @""" & common.ub2s(parent_Element.Name) & """("&common.ub2s(parameter_string)&")");
          end if;
 
          Ada.Text_IO.Put_Line(F,"{");
@@ -158,6 +177,9 @@ package body code_gen is
                   if currentElement.value.id_type=common.id_INTEGER then
                      Ada.Text_IO.Put_Line(F,"; Variable Name: " & common.ub2s(currentElement.keyword));
                      Ada.Text_IO.Put_Line(F, "%""v" & common.int_to_String(currentElement.variable_id) & """ = alloca i32");
+                     if currentElement.is_param = True then
+                        Ada.Text_IO.Put_Line(F,"store i32 %""" & common.ub2s(currentElement.keyword)&"_arg"", i32* %""v"& common.int_to_String(currentElement.variable_id) &"""");
+                     end if;
                   elsif currentElement.value.id_type=common.id_STRING then
                      Ada.Text_IO.Put_Line(F,"; Variable Name: " & common.ub2s(currentElement.keyword));
                   elsif currentElement.value.id_type=common.id_FLOAT then
@@ -182,6 +204,65 @@ package body code_gen is
 
 
    end gen_program_header;
+
+
+   procedure add_parameters_to_list(in_node : common.Node_Ptr) is
+      use type common.branch_types;
+      use type common.Node_Ptr;
+      param_record : parameter_data;
+
+      name_node : common.Node_Ptr;
+      type_node : common.Node_Ptr;
+   begin
+      -- Note Start with a clear, but not in this function
+      --Parameter_Vectors_Package.Clear(parameter_list);
+
+      if in_node=null then
+         return;
+      end if;
+
+      if in_node.Branch_Type = common.b_PARAMETER then
+         name_node := get_child_of_branch(in_node, common.b_VARIABLE_NAME);
+         type_node := get_child_of_branch(in_node, common.b_VARIABLE_TYPE);
+         param_record.parameter_name := name_node.Name;
+         param_record.parameter_type := type_node.Name;
+         parameter_list.Append(param_record);
+      end if;
+
+      add_parameters_to_list(in_node.Left);
+      add_parameters_to_list(in_node.Center);
+      add_parameters_to_list(in_node.Right);
+   end add_parameters_to_list;
+
+
+   procedure add_arguments_to_list(in_node : common.Node_Ptr) is
+      use type common.branch_types;
+      use type common.Node_Ptr;
+      argument_record : argument_data;
+
+      value_id : Integer;
+   begin
+      -- Note Start with a clear, but not in this function
+      --Parameter_Vectors_Package.Clear(parameter_list);
+
+      if in_node=null then
+         return;
+      end if;
+
+      if in_node.Branch_Type = common.b_ARGUMENT then
+         value_id := parse_value_from_tree(in_node,True);
+         argument_record.argument_value := common.tub("%t" & common.int_to_String(value_id));
+         argument_list.Append(argument_record);
+      end if;
+
+      add_arguments_to_list(in_node.Left);
+      add_arguments_to_list(in_node.Center);
+      add_arguments_to_list(in_node.Right);
+   end add_arguments_to_list;
+
+
+
+
 
 
    procedure print_preorder (in_node : common.Node_Ptr) is
@@ -210,6 +291,7 @@ package body code_gen is
       end_if_label_id : Integer;
 
       return_id : Integer;
+      return_value_tree : common.Node_Ptr;
    begin
 
       if in_node = null then
@@ -300,10 +382,12 @@ package body code_gen is
          --End If Label, now to get with the rest of the program
          Ada.Text_IO.Put_Line(F,"label_" & common.int_to_String(end_if_label_id) & ":");
 
-      elsif in_node.Branch_Type = common.b_RETURN_STATEMENT then
-         return_id := parse_value_from_tree(in_node,False);
-         Ada.Text_IO.Put_Line("ZZZZZZZZZZZZZZZ <--->  "&common.ub2s(in_node.Name));
-         Ada.Text_IO.Put_Line(F,"ret i32 "&common.ub2s(in_node.Name));
+      elsif in_node.Branch_Type = common.b_RETURN_STATEMENT or common.ub2s(in_node.Name) = "return_statement" then
+         return_value_tree := get_child_of_branch(in_node, common.b_VALUE);
+
+         return_id := parse_value_from_tree(return_value_tree,True);
+
+         Ada.Text_IO.Put_Line(F,"ret i32 %t" & common.int_to_String(return_id));
       else
          print_preorder (in_node.Left);
          print_preorder (in_node.Center);
@@ -368,6 +452,10 @@ package body code_gen is
 
       procedure_return_value_id : Integer := 999;
 
+
+      var_name_tree : common.Node_Ptr;
+      index_tree : common.Node_Ptr;
+
    begin
 
       if in_node = null then
@@ -379,6 +467,7 @@ package body code_gen is
          Ada.Text_IO.Put_Line(F,"%t"&common.int_to_String(current_temp_var_id) & " = " & "add i32 0 , "&common.ub2s(in_node.Name));
          return current_temp_var_id;
       end if;
+
 
       --  if in_node.Left = null and then in_node.Center = null and then in_node.Right = null then
       --     Ada.Text_IO.Put_Line("t"&current_temp_var_id'Image & " = " & common.ub2s(in_node.Name));
@@ -411,19 +500,33 @@ package body code_gen is
          current_temp_var_id := current_temp_var_id + 1;
          Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(current_temp_var_id) & " = sub i32 " & common.ub2s(in_node.Left.Name) & " , " & common.ub2s(in_node.Right.Name));
          in_node.Name := common.tub("%t" & common.int_to_String(current_temp_var_id));
+      elsif common.ub2s(in_node.Name) = "Variable_Value" then
+         var_name_tree := get_child_of_branch(in_node,common.b_VARIABLE_NAME);
+         index_tree := get_child_of_branch(in_node, common.b_INDEX);
+         if common.ub2s(symbol_table.lookupHash(var_name_tree.Name,in_node.scope).keyword) /= "" then
+            Ada.Text_IO.Put_Line("Important Find HEre: "&common.ub2s(var_name_tree.Name)&"  "&common.int_to_String(current_temp_var_id));
+            current_temp_var_id := current_temp_var_id +1;
+            Ada.Text_IO.Put_Line("AFTER: "&common.int_to_String(current_temp_var_id));
+            Ada.Text_IO.Put_Line(F,"; Only searching scope 1, this needs to be fixed later");
+            --Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(current_temp_var_id) & " BOGUS BUGUS SDUSHDOUSHDSU " & common.ub2s(in_node.Left.Name) & " , " & common.ub2s(in_node.Right.Name));
+            Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(current_temp_var_id) & "= load i32, i32* %v" & common.int_to_String(symbol_table.lookupHash(var_name_tree.Name,in_node.scope).variable_id));
+            in_node.Name := common.tub("%t" & common.int_to_String(current_temp_var_id));
+         end if;
       elsif proc_length > 1 and then Ada.Strings.Unbounded.Slice(in_node.Name,proc_length-1,proc_length) = "()" then
          --Ada.Text_IO.Put_Line("Before Increment: "&current_temp_var_id'Image);
-         current_temp_var_id := current_temp_var_id + 1;
-         procedure_return_value_id := current_temp_var_id;
-
          argument_node := get_child_of_branch(in_node, common.b_ARGUMENT);
          if argument_node = null then
             Ada.Text_IO.Put_Line("No Argument");
          end if;
 
          if size_of_tree(argument_node) > 0 then
+
             argument_value_id := parse_value_from_tree(argument_node,True,size_of_tree(argument_node));
 
+            current_temp_var_id := current_temp_var_id + 1;
+            procedure_return_value_id := current_temp_var_id;
+
+            Ada.Text_IO.Put_Line("Current: "&common.int_to_String(current_temp_var_id)&"   "&common.int_to_String(argument_value_id));
             --Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(procedure_return_value_id) & " = calling " & common.ub2s(in_node.Name) & " with arguments: t" & common.int_to_String(argument_value_id));
 
             --Ada.Text_IO.Put_Line(F, "%t" & common.int_to_String(procedure_return_value_id) & " = call i32 @""PUTINTEGER""(i32 %t"& common.int_to_String(argument_value_id)&")");
@@ -434,13 +537,17 @@ package body code_gen is
 
             -- End procedure call
          else
+            current_temp_var_id := current_temp_var_id + 1;
+            procedure_return_value_id := current_temp_var_id;
+
             Ada.Text_IO.Put_Line(F, "%t" & common.int_to_String(procedure_return_value_id) & " = call i32 @""" & Ada.Strings.Unbounded.Slice(in_node.Name,1,proc_length-2) & """()");
             --%"GETINTEGER_call" = call i32 @"GETINTEGER"()
             --Ada.Text_IO.Put_Line(F,"This is in fact a procedure of name: " & common.ub2s(in_node.Name) & " with no arguments");
          end if;
 
          return procedure_return_value_id;
-      elsif common.ub2s(symbol_table.lookupHash(in_node.Name,1).keyword) /= "" and primary_call=True then
+
+      elsif common.ub2s(symbol_table.lookupHash(in_node.Name,in_node.scope).keyword) /= "" and primary_call=True then
 
          Ada.Text_IO.Put_Line("Found Variable: " & common.ub2s(symbol_table.lookupHash(in_node.Name,1).keyword));
 
@@ -448,13 +555,14 @@ package body code_gen is
 
          --Ada.Text_IO.Put_Line(F,"store i32 %t" & common.int_to_String(current_temp_var_id) & " , i32* %v" & common.int_to_String(symbol_table.lookupHash(in_node.Name,1).variable_id));
 
-         Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(current_temp_var_id) & "= load i32, i32* %v" & common.int_to_String(symbol_table.lookupHash(in_node.Name,1).variable_id));
+         Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(current_temp_var_id) & "= load i32, i32* %v" & common.int_to_String(symbol_table.lookupHash(in_node.Name,in_node.scope).variable_id));
 
          --Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(current_temp_var_id) & " = %v" & common.int_to_String(symbol_table.lookupHash(in_node.Name,1).variable_id));
          return current_temp_var_id;
       end if;
 
       -- This will return values generated by math
+      Ada.Text_IO.Put_Line("RETURINGING: "&common.int_to_String(current_temp_var_id));
       return current_temp_var_id;
 
    end parse_value_from_tree;
@@ -476,7 +584,7 @@ package body code_gen is
 
          current_temp_var_id := current_temp_var_id + 1;
          --Ada.Text_IO.Put_Line("%t" & current_temp_var_id & " = icmp eq i32 %\"" & left_var_id'Image & "\", %\" & right_var_id'Image & \"");
-         Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(current_temp_var_id) & " = icmp slt i32 %t" & common.int_to_String(left_var_id) & ", %t" & common.int_to_String(right_var_id) & """ ");
+         Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(current_temp_var_id) & " = icmp slt i32 %t" & common.int_to_String(left_var_id) & ", %t" & common.int_to_String(right_var_id));
 
          -- The variable that contains the comparison result
          return current_temp_var_id;

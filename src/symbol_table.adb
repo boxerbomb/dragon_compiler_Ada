@@ -4,8 +4,8 @@ with common;
 
 package body symbol_table is
 
-   procedure insert_entry(in_keyword : Ada.Strings.Unbounded.Unbounded_String; in_scope : Integer; in_value : id_value_pkg.id_value; insert_location : IN OUT Table_Entry_ptr) is
-      new_entry : Table_Entry_ptr := new Table_Entry'(in_keyword, in_scope, in_value, NULL,-1);
+   procedure insert_entry(in_keyword : Ada.Strings.Unbounded.Unbounded_String; in_scope : Integer; in_value : id_value_pkg.id_value; insert_location : IN OUT Table_Entry_ptr; is_param : Boolean := False) is
+      new_entry : Table_Entry_ptr := new Table_Entry'(in_keyword, in_scope, in_value, NULL,-1,is_param);
    begin
 
       insert_location.next_entry := new_entry;
@@ -83,7 +83,7 @@ package body symbol_table is
             currentKey := hash_table.Key(hash_entry);
             currentElement := hash_table.Element(hash_entry);
 
-            Ada.Text_IO.Put(Ada.Text_IO.Standard_Output,common.ub2s(currentElement.keyword)&" | scope -> "&currentElement.token_scope'Image & " Var ID:" & currentElement.variable_id'Image);
+            Ada.Text_IO.Put(Ada.Text_IO.Standard_Output,common.ub2s(currentElement.keyword)&" | scope -> "&currentElement.token_scope'Image & " Var ID:" & currentElement.variable_id'Image & " is_params: " & currentElement.is_param'Image );
 
             if currentElement.value.id_type=common.id_INTEGER then
                Ada.Text_IO.Put_Line(" Type-> Integer");
@@ -110,7 +110,7 @@ package body symbol_table is
 
    -- Used on Line 183 of parser
    function lookupHash(keyword : Ada.Strings.Unbounded.Unbounded_String; in_scope : Integer) return Table_Entry_ptr is
-      InvalidEntry : Table_Entry_ptr := new Table_Entry'(common.tub(""),-1,id_value_pkg.empty_value,NULL,-1);
+      InvalidEntry : Table_Entry_ptr := new Table_Entry'(common.tub(""),-1,id_value_pkg.empty_value,NULL,-1,False);
       returnEntry : Table_Entry_ptr;
    begin
 
@@ -141,7 +141,7 @@ package body symbol_table is
 
    function lookup(keyword : Ada.Strings.Unbounded.Unbounded_String; in_scope : Integer) return Table_Entry_ptr is
       currentEntry : Table_Entry_ptr := TableStart;
-      InvalidEntry : Table_Entry_ptr := new Table_Entry'(common.tub(""),-1,id_value_pkg.empty_value,NULL,-1);
+      InvalidEntry : Table_Entry_ptr := new Table_Entry'(common.tub(""),-1,id_value_pkg.empty_value,NULL,-1,False);
    begin
 
       -- Break this

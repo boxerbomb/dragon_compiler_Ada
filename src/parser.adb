@@ -134,7 +134,7 @@ package body parser is
          end if;
          new_id_value := id_value_pkg.init(given_id_type);
 
-         symbol_table.insert_entry(return_string, possible_id_scope, new_id_value, symbol_table.LastEntry);
+         symbol_table.insert_entry(return_string, possible_id_scope, new_id_value, symbol_table.LastEntry, is_Parameter);
          return return_string;
       else
          Ada.Text_IO.Put_Line("Not a game breaking error this might be called when just 'looking'");
@@ -255,8 +255,7 @@ package body parser is
    end statement_list;
 
    function statement (parent_node : common.Node_Ptr) return Boolean is
-      new_node : common.Node_Ptr :=
-        new common.Node'(common.tub ("statement"), common.b_NONE, 0, null, null, null, 0,parent_node.scope);
+      new_node : common.Node_Ptr := new common.Node'(common.tub ("statement"), common.b_NONE, 0, null, null, null, 0,parent_node.scope);
    begin
       if assignment_statement (new_node) or if_statement (new_node) or
         loop_statement (new_node) or return_statement (new_node)
@@ -269,8 +268,10 @@ package body parser is
 
    function return_statement (parent_node : common.Node_Ptr) return Boolean is
       new_node : common.Node_Ptr := new common.Node'(common.tub ("return_statement"), common.b_RETURN_STATEMENT, 0, null, null, null,0,parent_node.scope);
+      return_type_node : common.Node_Ptr := new common.Node'(common.tub ("Check Symbol Table"), common.b_RETURN_TYPE, 0, null, null, null,0,parent_node.scope);
    begin
-      if match (common.t_RETURN) and then expression (new_node) then
+      if match (common.t_RETURN) and then expression (new_node,common.b_VALUE) then
+         common.add(new_node,return_type_node);
          common.add (parent_node, new_node);
          return True;
       end if;
@@ -365,6 +366,10 @@ package body parser is
       return False;
    end destination;
 
+
+
+
+
    function expression_prime (parent_node : common.Node_Ptr) return Boolean is
       new_node : common.Node_Ptr := new common.Node'(common.tub ("LEFT BLANK"), common.b_NONE, 0, null, null, null, 0,parent_node.scope);
    begin
@@ -400,13 +405,12 @@ package body parser is
    end expression;
 
    function argument_list (parent_node : common.Node_Ptr) return Boolean is
-      new_node : common.Node_Ptr := new common.Node'(common.tub ("argument_list"), common.b_ARGUMENT, 0, null, null, null,0,parent_node.scope);
+      new_node : common.Node_Ptr := new common.Node'(common.tub ("argument_list"), common.b_NONE, 0, null, null, null,0,parent_node.scope);
       temp_bool : Boolean;
    begin
-      -- Currently only one argument works, no list, I need to work on that
-      if expression (new_node) then
-         -- THIS NEEDS TO BE A COMMA NOT A COLON!!!!!!
-         temp_bool := match (common.t_COLON);
+      if expression (new_node, common.b_ARGUMENT) then
+
+         temp_bool := match (common.t_COMMA);
          temp_bool := argument_list (new_node);
 
          common.add (parent_node, new_node);
@@ -439,26 +443,51 @@ package body parser is
       return False;
    end procedure_call_stripped;
 
+   --  function name_stripped(parent_node : common.Node_Ptr; id_name     : Ada.Strings.Unbounded.Unbounded_String) return Boolean
+   --  is
+   --     new_node : common.Node_Ptr :=new common.Node'(common.tub ("name_stripped"), common.b_VARIABLE_NAME, 0, null, null, null,0,parent_node.scope);
+   --     index_node : common.Node_Ptr := new common.Node'(id_name, common.b_NONE, 0, null, null, null, 0,parent_node.scope);
+   --     default_index_node : common.Node_Ptr :=new common.Node'(common.tub ("0"), common.b_INDEX, 0, null, null, null, 0,parent_node.scope);
+   --  begin
+   --     if match (common.t_LEFT_BRACKET) then
+   --        if expression (index_node, common.b_INDEX) and then match (common.t_RIGHT_BRACKET) then
+   --           common.add (index_node, new_node);
+   --           common.add (parent_node, index_node);
+   --           return True;
+   --        end if;
+   --     end if;
+   --
+   --     common.add (index_node, default_index_node);
+   --     new_node.Name := id_name;
+   --     common.add (index_node, new_node);
+   --     common.add (parent_node, index_node);
+   --     return True;
+   --  end name_stripped;
+
+
    function name_stripped(parent_node : common.Node_Ptr; id_name     : Ada.Strings.Unbounded.Unbounded_String) return Boolean
    is
       new_node : common.Node_Ptr :=new common.Node'(common.tub ("name_stripped"), common.b_VARIABLE_NAME, 0, null, null, null,0,parent_node.scope);
-      index_node : common.Node_Ptr := new common.Node'(id_name, common.b_NONE, 0, null, null, null, 0,parent_node.scope);
+      var_node : common.Node_Ptr := new common.Node'(common.tub("Variable_Value"), common.b_VARIABLE_VALUE, 0, null, null, null, 0,parent_node.scope);
       default_index_node : common.Node_Ptr :=new common.Node'(common.tub ("0"), common.b_INDEX, 0, null, null, null, 0,parent_node.scope);
    begin
       if match (common.t_LEFT_BRACKET) then
-         if expression (index_node, common.b_INDEX) and then match (common.t_RIGHT_BRACKET) then
-            common.add (index_node, new_node);
-            common.add (parent_node, index_node);
+         if expression (var_node, common.b_INDEX) and then match (common.t_RIGHT_BRACKET) then
+            common.add (var_node, new_node);
+            common.add (parent_node, var_node);
             return True;
          end if;
       end if;
 
-      common.add (index_node, default_index_node);
+      common.add (var_node, default_index_node);
       new_node.Name := id_name;
-      common.add (index_node, new_node);
-      common.add (parent_node, index_node);
+      common.add (var_node, new_node);
+      common.add (parent_node, var_node);
       return True;
    end name_stripped;
+
+
+
 
    -- This was written pretty losely, I think that I will need to add a string value feild as well as a number value field.
    -- That will include a little more work in terms of floats
@@ -558,7 +587,8 @@ package body parser is
          end if;
 
          if name_stripped(new_node,matched_id) then
-            new_node.Name := matched_id;
+            --new_node.Name := matched_id;
+            new_node.Name := common.tub("IN FACTOR");
             common.add (parent_node, new_node);
             return True;
          end if;
@@ -839,9 +869,9 @@ package body parser is
       temp_bool : Boolean;
    begin
       if parameter (new_node) then
-         temp_bool := match (common.t_SEMI_COLON);
+         temp_bool := match (common.t_COMMA);
          temp_bool := parameter_list (new_node);
-         temp_bool := match (common.t_SEMI_COLON);
+         --temp_bool := match (common.t_COMMA);
          common.add (parent_node, new_node);
          return True;
       end if;
@@ -871,6 +901,9 @@ package body parser is
       id_node : common.Node_Ptr := new common.Node'(common.tub ("id_name"), common.b_VARIABLE_NAME, 0, null, null,null, 0,parent_node.scope);
       id_string : Ada.Strings.Unbounded.Unbounded_String;
    begin
+      if is_Parameter = True then
+         new_node.Branch_Type := common.b_PARAMETER;
+      end if;
 
       if match (common.t_VARIABLE) then
          id_string := add_var_to_sym_table(new_node, is_Parameter, common.id_INVALID);
@@ -1092,6 +1125,7 @@ package body parser is
          gen_dot_files (parent_Element);
          --viewMatchStack;
       end loop;
+
 
       symbol_table.test_vector;
       symbol_table.print_hash_entries;

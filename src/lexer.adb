@@ -66,6 +66,7 @@ package body lexer is
       insert_reserved_entry(common.tub(">"), common.t_GREATER_THAN, LastEntry);
       insert_reserved_entry(common.tub(">="), common.t_GREATER_THAN_OR_EQUAL, LastEntry);
       insert_reserved_entry(common.tub(":"), common.t_COLON, LastEntry);
+      insert_reserved_entry(common.tub(","), common.t_COMMA, LastEntry);
       insert_reserved_entry(common.tub(";"), common.t_SEMI_COLON, LastEntry);
       insert_reserved_entry(common.tub("("), common.t_LEFT_PAREN, LastEntry);
       insert_reserved_entry(common.tub(")"), common.t_RIGHT_PAREN, LastEntry);
