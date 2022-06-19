@@ -2,7 +2,6 @@ program ExampleProg is
  variable a : Integer;
  variable b : Integer;
  variable c : Integer;
- variable str_tmp : Integer;
 
  variable scout : Integer;
 
@@ -28,6 +27,5 @@ begin
 
     tmp := putInteger(tmp);
 
-    str_tmp := putString("Hello There Nathan!");
 
 end program.

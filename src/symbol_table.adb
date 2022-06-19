@@ -88,7 +88,7 @@ package body symbol_table is
             if currentElement.value.id_type=common.id_INTEGER then
                Ada.Text_IO.Put_Line(" Type-> Integer");
             elsif currentElement.value.id_type=common.id_STRING then
-               Ada.Text_IO.Put_Line(" Type-> String");
+               Ada.Text_IO.Put_Line(" Type-> String : "&common.ub2s(currentElement.value.string_value));
             elsif currentElement.value.id_type=common.id_FLOAT then
                Ada.Text_IO.Put_Line(" Type-> Float");
             elsif currentElement.value.id_type=common.id_BOOLEAN then

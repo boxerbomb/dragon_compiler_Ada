@@ -2,6 +2,7 @@ with common;
 with Ada.Text_IO;
 with Ada.Strings.Unbounded;
 with Ada.Containers.Vectors;
+with id_value_pkg;
 
 
 package code_gen is
@@ -33,6 +34,7 @@ package code_gen is
    type argument_data is
       record
          argument_value : Ada.Strings.Unbounded.Unbounded_String;
+         argument_type : Ada.Strings.Unbounded.Unbounded_String;
       end record;
 
    package Argument_Vectors_Package is new
@@ -60,6 +62,21 @@ package code_gen is
    procedure open_program_file;
    procedure close_program_file;
 
-   current_temp_var_id : Integer := 0;
+
+
+
+
+   package Var_Counter is
+      function Get_Next return Integer;
+      function Get_Current return Integer;
+   private
+      count : Integer := 0;
+   end Var_Counter;
+
+
+
+
+
+
    current_label_id    : Integer := 0;
 end code_gen;

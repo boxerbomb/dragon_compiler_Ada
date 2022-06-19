@@ -47,6 +47,12 @@ package body parser is
       return next_token.scope;
    end get_next_token_scope;
 
+   procedure add_string_to_sym_table(in_value : Ada.Strings.Unbounded.Unbounded_String) is
+      new_id_value : id_value_pkg.id_value := id_value_pkg.empty_value;
+   begin
+      id_value_pkg.modify_value(new_id_value,in_value);
+      symbol_table.insert_entry(common.tub("String ID #"), common.current_scope, new_id_value,symbol_table.LastEntry);
+   end add_string_to_sym_table;
 
    -- Originally I thought that this would call the regular fucntion ID, but the ID token has already been "consumed"
    function add_ID_to_sym_table(parent_node : common.Node_Ptr; in_id_type : common.id_types := common.id_INVALID) return Ada.Strings.Unbounded.Unbounded_String is
@@ -520,14 +526,14 @@ package body parser is
    end number;
 
    function string (parent_node : common.Node_Ptr) return Boolean is
-      new_node : common.Node_Ptr :=
-        new common.Node'(common.tub (""), common.b_NONE, 0, null, null, null, 0,parent_node.scope);
+      new_node : common.Node_Ptr := new common.Node'(common.tub (""), common.b_NONE, 0, null, null, null, 0,parent_node.scope);
       popped_token : common.token;
    begin
       if match (common.t_STRING) then
          --new_node.Name := matchStack.pop();
          matchStack.pop (popped_token);
-         new_node.Name := popped_token.value;
+         --new_node.Name := popped_token.value;
+         new_node.Name := common.tub("This is the string name");
          common.add (parent_node, new_node);
          return True;
       end if;
@@ -548,6 +554,12 @@ package body parser is
       end if;
 
       if match (common.t_STRING_VALUE) then
+         matchStack.pop(popped_token);
+         matched_id := popped_token.value;
+
+         add_string_to_sym_table(matched_id);
+
+         new_node.Name := common.tub("String value matched here: " & common.ub2s(matched_id));
          common.add (parent_node, new_node);
          return True;
       end if;

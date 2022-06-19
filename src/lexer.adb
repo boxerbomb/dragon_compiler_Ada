@@ -282,12 +282,12 @@ package body lexer is
                   textMode := False;
                   return_token := common.empty_token;
                   return_token.t_type := common.t_STRING_VALUE;
+                  return_token.value := word;
                   return return_token;
                 end if;
             end if;
 
          end if;
-
       end loop;
 
    end get_next_token;

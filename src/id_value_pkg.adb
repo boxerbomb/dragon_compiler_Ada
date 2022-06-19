@@ -56,6 +56,7 @@ package body id_value_pkg is
 
    procedure modify_value(selected_value : IN OUT id_value; in_value : Ada.Strings.Unbounded.Unbounded_String) is
    begin
+      selected_value.id_type := common.id_STRING;
       selected_value.string_value := in_value;
    end modify_value;
 
