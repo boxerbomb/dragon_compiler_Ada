@@ -1,0 +1,61 @@
+;Integer Variable
+%"fmt_ptr" = getelementptr [3 x i8], [3 x i8]* @"fmt_int", i32 0, i32 0
+%"v4_val" = load i32, i32* %"v4"
+%"print" = call i32 (i8*, ...) @"printf"(i8* %"fmt_ptr", i32 %"v4_val")
+
+;New Line
+; NL_format can be deifned once but the prints can not be
+%"NL_format" = getelementptr [2 x i8], [2 x i8]* @"fmt_newline", i32 0, i32 0
+%"print.1" = call i32 (i8*, ...) @"printf"(i8* %"NL_format")
+%"print.2" = call i32 (i8*, ...) @"printf"(i8* %"NL_format")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+define i32 @"PUTFLOAT"(double %"in_arg") 
+{
+entry:
+  %"in" = alloca double
+  store double %"in_arg", double* %"in"
+  %"fmt_ptr" = getelementptr [4 x i8], [4 x i8]* @"fmt_double", i32 0, i32 0
+  %"in_val" = load double, double* %"in"
+  %"print" = call i32 (i8*, ...) @"printf"(i8* %"fmt_ptr", double %"in_val")
+  %"fmt_ptr.1" = getelementptr [2 x i8], [2 x i8]* @"fmt_newline", i32 0, i32 0
+  %"print.1" = call i32 (i8*, ...) @"printf"(i8* %"fmt_ptr.1")
+  ret i32 0
+}
+
+%"PUTFLOAT_call" = call i32 @"PUTFLOAT"(double 0x4016000000000000)
+%"x" = alloca i32
+store i32 %"PUTFLOAT_call", i32* %"x"
+
+
+
+
+
+define i32 @"PUTINTEGER"(i32 %"in_arg") 
+{
+entry:
+  %"in" = alloca i32
+  store i32 %"in_arg", i32* %"in"
+  %"fmt_ptr" = getelementptr [3 x i8], [3 x i8]* @"fmt_int", i32 0, i32 0
+  %"in_val" = load i32, i32* %"in"
+  %"print" = call i32 (i8*, ...) @"printf"(i8* %"fmt_ptr", i32 %"in_val")
+  %"fmt_ptr.1" = getelementptr [2 x i8], [2 x i8]* @"fmt_newline", i32 0, i32 0
+  %"print.1" = call i32 (i8*, ...) @"printf"(i8* %"fmt_ptr.1")
+  ret i32 0
+}
+
+
+%"PUTINTEGER_call" = call i32 @"PUTINTEGER"(i32 5)
+store i32 %"PUTINTEGER_call", i32* %"x"

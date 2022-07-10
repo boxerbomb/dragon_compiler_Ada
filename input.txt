@@ -1,41 +1,28 @@
-PROGRAM grant IS
-    global variable JAKE : integer;
-    global variable ryan : integer[3];
-    global variable zach : integer;
-    variable tmp : integer;
+program Nathan is
+variable tmp : Integer;
+variable str_tmp : Integer;
+variable input1 : Integer;
+variable input2 : Integer;
 
-    procedure if_proc : integer()
-        variable i : integer;
-        procedure dummy: float()
-        variable i: float;
-        variable tst : bool;
-        begin
-            i := 4.5;
-            i := 4*5+20+(10-8);
-            i := 1+2+3+4+5+6;
-            i := (1+2)+(3+4)+(4+5)+6;
-            tst := putString("passed");
-            return (0);
-        end procedure;
-        begin
-            if(true) then
-                jake := jake + 1;
-            else
-                zach := zach + RYAN[2];
-            end if;
-            return (0);
-    end procedure;
+procedure countDown : integer(variable val :integer)
+variable tmp1 : integer;
+begin
+    tmp1 := putInteger(val);
+    if (val>0) then
+       val := val - 1;
+       tmp1 := countDown(val); 
+    end if;
+    return val;
+end procedure;
 
-    procedure for_proc : integer()
-                variable i : integer;
-        begin
-            for(in := 0; in < zach)
-bobob := 10;
-            end for;
-            return 1;
-        end procedure;
+begin
 
-    begin
-        tmp := if_proc();
-        tmp := for_proc();
+input1 := getInteger();
+input2 := getInteger();
+
+
+str_tmp := putString("Hello There Nathan!");
+
+tmp := countDown(input1+input2);
+
 end program.

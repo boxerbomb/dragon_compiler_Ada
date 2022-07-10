@@ -32,4 +32,15 @@ package body common is
       return return_vector;
    end get_children_of_node;
 
+   function int_to_String (X : in Integer) return String is
+      Img : constant String := Integer'Image (X);
+   begin
+      if X < 0 then
+         return Img;
+      else
+         return Img (2 .. Img'Length);
+      end if;
+   end int_to_String;
+
+
 end common;
