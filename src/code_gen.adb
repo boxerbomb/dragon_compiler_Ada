@@ -129,28 +129,38 @@ package body code_gen is
       Ada.Text_IO.Put_Line(F,"}");
       Ada.Text_IO.Put_Line(F,"");
 
+      Ada.Text_IO.Put_Line(F,"define i32 @""PUTSTRING""(i8*)");
+      Ada.Text_IO.Put_Line(F,"{");
+      Ada.Text_IO.Put_Line(F,"%2 = alloca i32, align 4");
+      Ada.Text_IO.Put_Line(F,"%3 = alloca i8*, align 8");
+      Ada.Text_IO.Put_Line(F,"store i8* %0, i8** %3, align 8");
+      Ada.Text_IO.Put_Line(F,"%""in_val"" = load i8*, i8** %3, align 8");
+      Ada.Text_IO.Put_Line(F,"%""fmt_ptr"" = getelementptr [3 x i8], [3 x i8]* @""fmt_string"", i32 0, i32 0");
+      Ada.Text_IO.Put_Line(F,"%""print"" = call i32 (i8*, ...) @""printf""(i8* %""fmt_ptr"", i8* %""in_val"")");
+      Ada.Text_IO.Put_Line(F,"%""fmt_ptr.1"" = getelementptr [2 x i8], [2 x i8]* @""fmt_newline"", i32 0, i32 0");
+      Ada.Text_IO.Put_Line(F,"%""print.1"" = call i32 (i8*, ...) @""printf""(i8* %""fmt_ptr.1"")");
+      Ada.Text_IO.Put_Line(F,"ret i32 0");
+      Ada.Text_IO.Put_Line(F,"}");
+      Ada.Text_IO.Put_Line(F,"");
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+      -- CONSTANTS, right now starting with strings but I might have to add more later
+        for current_hash_table of symbol_table.scope_hash_vector loop
+         for hash_entry in current_hash_table.Iterate loop
+            currentKey := symbol_table.hash_table.Key(hash_entry);
+            currentElement := symbol_table.hash_table.Element(hash_entry);
+            if currentElement.value.id_type=common.id_STRING then
+               Ada.Text_IO.Put_Line(F, "@"""&common.ub2s(currentElement.keyword)&""" = constant [" &common.ub2s(currentElement.value.llvm_type) & "] c"""&common.ub2s(currentElement.value.string_value)&"\00""");
+            end if;
+         end loop;
+         hash_table_index := hash_table_index + 1;
+      end loop;
 
       Ada.Text_IO.Put_Line(F,"");
 
 
-      --Start Generate Code for each function node
+      -- This also needs to be updated for different types of arguments and return types
       for parent_Element of parser.root_nodes loop
 
          if common.ub2s(parser.found_program_name) = common.ub2s(parent_Element.Name) then
@@ -182,7 +192,7 @@ package body code_gen is
 
 
 
-
+         hash_table_index := 0;
          for current_hash_table of symbol_table.scope_hash_vector loop
             for hash_entry in current_hash_table.Iterate loop
                currentKey := symbol_table.hash_table.Key(hash_entry);
@@ -307,6 +317,15 @@ package body code_gen is
 
             -- Here we are creating a record of the defined type "argument record"
             -- Right now, i32 is being used, although this should chnage based on the argument type
+            -- TODO
+            -- Change parse_value_from_tree to return id_value_pkg structure
+            -- This will contain all value as well as the type that can be used here to record the right type in the asmembly
+            -- Stings from the symbol table can be added as contants along with the boilerplate code
+            -- and I will have to look into how to make mutable strings as well as accept strings as input.
+
+            -- I am actually dealing with arguments on a deeper level.
+            -- In the parser Argument and Argument List need to be modified to to a vector each arugment type that required to the symbol table argument_type_vector
+            -- These types can then be read by the code generator when calling a fucntion to allow strings and other data types to be passed to fucntions in LLVM assembly
 
             argument_record.argument_value := common.tub("%t" & common.int_to_String(value_id));
             argument_record.argument_type := common.tub("i32");
@@ -538,6 +557,8 @@ package body code_gen is
 
       procedure_return_value_id : Integer := 999;
 
+      returned_table_ptr : symbol_table.Table_Entry_ptr;
+      string_size : Integer;
 
       var_name_tree : common.Node_Ptr;
       index_tree : common.Node_Ptr;
@@ -558,7 +579,21 @@ package body code_gen is
 
       if tree_length = 1 then
          temp_id := Var_Counter.Get_Next;
-         Ada.Text_IO.Put_Line(F,"%t"&common.int_to_String(temp_id) & " = " & "add i32 0 , "&common.ub2s(in_node.Name));
+         --basically here we will search for a smbol table entry with the keyword and "in_node.scope" althouhg maybe all strings are global.
+         -- Then mostly fill out the size and type and assign to a regular t-variable
+         if Ada.Strings.Unbounded.Length(in_node.Name) > 5 and then common.ub2s(in_node.Name)(1..6)="STRING" then
+            returned_table_ptr := symbol_table.lookupHash(in_node.Name,in_node.scope);
+
+            Ada.Text_IO.Put_Line(common.ub2s(returned_table_ptr.value.string_value));
+
+            string_size := Ada.Strings.Unbounded.Length(returned_table_ptr.value.string_value)+1;
+
+              Ada.Text_IO.Put_Line(F,"%"""&common.ub2s(in_node.Name)&"_ptr"" = getelementptr [" & common.ub2s(returned_table_ptr.value.llvm_type) & "], [" & common.ub2s(returned_table_ptr.value.llvm_type) & "]* @"""&common.ub2s(in_node.Name)&""", i32 0, i32 0");
+              Ada.Text_IO.Put_Line(F,"%t"&common.int_to_String(temp_id) & "= call i8* @""malloc""(i32 "&common.int_to_String(string_size)&")");
+              Ada.Text_IO.Put_Line(F,"call void @""memcpy""(i8* %t"&common.int_to_String(temp_id)& ", i8* "& "%"""&common.ub2s(in_node.Name)&"_ptr""" &", i32 "&common.int_to_String(string_size)&")");
+         else
+            Ada.Text_IO.Put_Line(F,"%t"&common.int_to_String(temp_id) & " = " & "add i32 0 , "&common.ub2s(in_node.Name));
+         end if;
          return temp_id;
       end if;
 

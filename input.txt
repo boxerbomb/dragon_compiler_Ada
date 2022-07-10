@@ -1,33 +1,28 @@
-program ExampleProg is
- variable a : Integer;
- variable b : Integer;
- variable c : Integer;
- variable str_tmp : Integer;
+program Nathan is
+variable tmp : Integer;
+variable str_tmp : Integer;
+variable input1 : Integer;
+variable input2 : Integer;
 
- variable scout : Integer;
-
- variable tmp : Integer;
- 
- procedure add : Integer(variable num : integer, variable second : integer, variable third : integer)
-     variable add_var : Integer;
- begin
-     return num + second + third;
- end procedure;
-
-procedure sub : Integer(variable num : integer)
+procedure countDown : integer(variable val :integer)
+variable tmp1 : integer;
 begin
-    return num - 1;
+    tmp1 := putInteger(val);
+    if (val>0) then
+       val := val - 1;
+       tmp1 := countDown(val); 
+    end if;
+    return val;
 end procedure;
 
 begin
-    a := getInteger();
-    b := getInteger();
-    c := getInteger();
 
-    tmp := add(a,b,c);
+input1 := getInteger();
+input2 := getInteger();
 
-    tmp := putInteger(tmp);
 
-    str_tmp := putString("Hello There Nathan!");
+str_tmp := putString("Hello There Nathan!");
+
+tmp := countDown(input1+input2);
 
 end program.

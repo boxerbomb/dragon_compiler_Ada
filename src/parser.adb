@@ -51,7 +51,7 @@ package body parser is
       new_id_value : id_value_pkg.id_value := id_value_pkg.empty_value;
    begin
       id_value_pkg.modify_value(new_id_value,in_value);
-      symbol_table.insert_entry(common.tub("String ID #"), common.current_scope, new_id_value,symbol_table.LastEntry);
+      symbol_table.insert_entry(common.tub("STRING"&common.int_to_String(string_num)), common.current_scope, new_id_value,symbol_table.LastEntry);
    end add_string_to_sym_table;
 
    -- Originally I thought that this would call the regular fucntion ID, but the ID token has already been "consumed"
@@ -559,7 +559,10 @@ package body parser is
 
          add_string_to_sym_table(matched_id);
 
-         new_node.Name := common.tub("String value matched here: " & common.ub2s(matched_id));
+         new_node.Name := common.tub("STRING"&common.int_to_String(string_num));
+
+         string_num := string_num + 1;
+
          common.add (parent_node, new_node);
          return True;
       end if;

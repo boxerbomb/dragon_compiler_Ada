@@ -1,0 +1,1097 @@
+V "GNAT Lib v10"
+A -fdump-tree-all-graph
+A -mtune=generic
+A -march=x86-64
+P SS ZX
+
+RN
+RV NO_ALLOCATORS
+RV NO_DIRECT_BOOLEAN_OPERATORS
+RV NO_DISPATCHING_CALLS
+RV NO_EXCEPTION_HANDLERS
+RV NO_EXCEPTION_PROPAGATION
+RV NO_EXCEPTIONS
+RV NO_IO
+RV NO_IMPLICIT_CONDITIONALS
+RV NO_LOCAL_ALLOCATORS
+RV NO_NESTED_FINALIZATION
+RV NO_RECURSION
+RV NO_SECONDARY_STACK
+RV NO_STANDARD_STORAGE_POOLS
+RV NO_DEFAULT_INITIALIZATION
+RV NO_DYNAMIC_SIZED_OBJECTS
+RV NO_ELABORATION_CODE
+RV SPARK_05
+
+U parser%b		parser.adb		035118fa NE OO PK IL
+W ada%s			ada.ads			ada.ali
+Z ada.exceptions%s	a-except.adb		a-except.ali
+W ada.strings%s		a-string.ads		a-string.ali
+W ada.strings.unbounded%s  a-strunb.adb		a-strunb.ali
+Z ada.tags%s		a-tags.adb		a-tags.ali
+W ada.text_io%s		a-textio.adb		a-textio.ali
+W common%s		common.adb		common.ali
+Z gstack%s		gstack.adb		gstack.ali  ED
+W id_value_pkg%s	id_value_pkg.adb	id_value_pkg.ali
+Z interfaces%s		interfac.ads		interfac.ali
+W lexer%s		lexer.adb		lexer.ali
+W symbol_table%s	symbol_table.adb	symbol_table.ali
+Z system%s		system.ads		system.ali
+Z system.concat_2%s	s-conca2.adb		s-conca2.ali
+Z system.concat_3%s	s-conca3.adb		s-conca3.ali
+Z system.concat_4%s	s-conca4.adb		s-conca4.ali
+Z system.concat_5%s	s-conca5.adb		s-conca5.ali
+Z system.concat_7%s	s-conca7.adb		s-conca7.ali
+Z system.img_enum_new%s	s-imenne.adb		s-imenne.ali
+Z system.img_int%s	s-imgint.adb		s-imgint.ali
+Z system.pool_global%s	s-pooglo.adb		s-pooglo.ali
+Z system.secondary_stack%s  s-secsta.adb	s-secsta.ali
+Z system.soft_links%s	s-soflin.adb		s-soflin.ali
+Z system.standard_library%s  s-stalib.adb	s-stalib.ali
+Z system.storage_elements%s  s-stoele.adb	s-stoele.ali
+Z system.storage_pools%s  s-stopoo.adb		s-stopoo.ali
+Z system.storage_pools.subpools%s  s-stposu.adb	s-stposu.ali
+
+U parser%s		parser.ads		3a68d071 EE OO PF PK IL
+W ada%s			ada.ads			ada.ali
+W ada.containers%s	a-contai.ads		a-contai.ali
+W ada.containers.vectors%s
+Z ada.exceptions%s	a-except.adb		a-except.ali
+W ada.strings%s		a-string.ads		a-string.ali
+W ada.strings.unbounded%s  a-strunb.adb		a-strunb.ali
+Z ada.tags%s		a-tags.adb		a-tags.ali
+Z ada.text_io%s		a-textio.adb		a-textio.ali
+W common%s		common.adb		common.ali
+W gstack%s		gstack.adb		gstack.ali
+Z system%s		system.ads		system.ali
+Z system.secondary_stack%s  s-secsta.adb	s-secsta.ali
+Z system.soft_links%s	s-soflin.adb		s-soflin.ali
+Z system.standard_library%s  s-stalib.adb	s-stalib.ali
+Z system.storage_pools.subpools%s  s-stposu.adb	s-stposu.ali
+
+D ada.ads		20200723063517 76789da1 ada%s
+D a-charac.ads		20200723063517 2d3ec45b ada.characters%s
+D a-chlat1.ads		20200723063517 66457d31 ada.characters.latin_1%s
+D a-contai.ads		20200723063517 61e5e089 ada.containers%s
+D a-cohata.ads		20200723063517 80a8c839 ada.containers.hash_tables%s
+D a-cohama.ads		20200723063517 8205bf40 ada.containers.hashed_maps%s
+D a-conhel.ads		20200723063517 20298884 ada.containers.helpers%s
+D a-convec.ads		20200723063517 7e2b0fdf ada.containers.vectors%s
+D a-except.ads		20200723063517 a7106115 ada.exceptions%s
+D a-finali.ads		20200723063517 bf4f806b ada.finalization%s
+D a-ioexce.ads		20200723063517 e4a01f64 ada.io_exceptions%s
+D a-iteint.ads		20200723063517 7c7305e9 ada.iterator_interfaces%s
+D a-stream.ads		20200723063517 119b8fb3 ada.streams%s
+D a-string.ads		20200723063517 90ac6797 ada.strings%s
+D a-strhas.ads		20200723063517 c71c2a52 ada.strings.hash%s
+D a-strmap.ads		20200723063517 e8bb714a ada.strings.maps%s
+D a-strunb.ads		20200723063517 1656705b ada.strings.unbounded%s
+D a-tags.ads		20200723063517 491b781d ada.tags%s
+D a-textio.ads		20200723063517 aef4d56d ada.text_io%s
+D a-unccon.ads		20200723063517 0e9b276f ada.unchecked_conversion%s
+D common.ads		20220411193530 a4d93b36 common%s
+D gstack.ads		20220105235434 314b7e75 gstack%s
+D gstack.adb		20220225194304 f06a60bf gstack%b
+D id_value_pkg.ads	20220225204012 3f0dc593 id_value_pkg%s
+D interfac.ads		20200723063517 5ab55268 interfaces%s
+D i-cstrea.ads		20200723063517 e53d8b8e interfaces.c_streams%s
+D lexer.ads		20220405234603 aafdc922 lexer%s
+D parser.ads		20220409021959 a6620a3f parser%s
+D parser.adb		20220411205407 cfa4c6c8 parser%b
+D symbol_table.ads	20220411203705 e31c46bc symbol_table%s
+D system.ads		20200723063517 4635ec04 system%s
+D s-atocou.ads		20200723063517 b45c2d8d system.atomic_counters%s
+D s-conca2.ads		20200723063517 02a0d7d0 system.concat_2%s
+D s-conca3.ads		20200723063517 0b705ca5 system.concat_3%s
+D s-conca4.ads		20200723063517 7e642b20 system.concat_4%s
+D s-conca5.ads		20200723063517 875e432e system.concat_5%s
+D s-conca7.ads		20200723063517 fcc75b1f system.concat_7%s
+D s-crtl.ads		20200723063517 0ebbdb71 system.crtl%s
+D s-exctab.ads		20200723063517 54135002 system.exception_table%s
+D s-ficobl.ads		20200723063517 078245e4 system.file_control_block%s
+D s-finmas.ads		20200723063517 7811a767 system.finalization_masters%s
+D s-finroo.ads		20200723063517 4ff27390 system.finalization_root%s
+D s-imenne.ads		20200723063517 614c06c0 system.img_enum_new%s
+D s-imgint.ads		20200723063517 02dbe0c2 system.img_int%s
+D s-memory.ads		20200723063517 597d6634 system.memory%s
+D s-parame.ads		20200723063517 48ec542b system.parameters%s
+D s-pooglo.ads		20200723063517 ede33ef8 system.pool_global%s
+D s-secsta.ads		20200723063517 20bbe636 system.secondary_stack%s
+D s-soflin.ads		20200723063517 a7318a92 system.soft_links%s
+D s-stache.ads		20200723063517 a37c21ec system.stack_checking%s
+D s-stalib.ads		20200723063517 09bd3940 system.standard_library%s
+D s-stalib.adb		20200723063517 f2fe2716 system.standard_library%b
+D s-stoele.ads		20200723063517 2dc34a04 system.storage_elements%s
+D s-stoele.adb		20200723063517 ed88f8fb system.storage_elements%b
+D s-stopoo.ads		20200723063517 b16154c2 system.storage_pools%s
+D s-stposu.ads		20200723063517 97a6219c system.storage_pools.subpools%s
+D s-stratt.ads		20200723063517 aedef97e system.stream_attributes%s
+D s-traent.ads		20200723063517 005bf670 system.traceback_entries%s
+D s-unstyp.ads		20200723063517 34867c83 system.unsigned_types%s
+D s-wchcon.ads		20200723063517 1b7d22d2 system.wch_con%s
+G a e
+G c s s s [s parser 7 1 none]
+G c Z s s [push parser__matchstack 5 15 25_4]
+G c Z s s [pop parser__matchstack 6 15 25_4]
+G c Z s s [stack_is_empty parser__matchstack 7 14 25_4]
+G c Z s s [stack_top parser__matchstack 8 14 25_4]
+G c Z s s [stacksize parser__matchstack 9 14 25_4]
+G c Z s s [reset_stack parser__matchstack 10 15 25_4]
+G c Z s s [TlistBIP parser__matchstack 6 3 25_4]
+G c Z s s [TlistBDI parser__matchstack 6 3 25_4]
+G c Z s s [TlistBDA parser__matchstack 6 3 25_4]
+G c Z s s [TlistBDF parser__matchstack 6 3 25_4]
+G c Z s s [ob_stackDI parser__matchstack 7 8 25_4]
+G c Z s s [ob_stackDA parser__matchstack 7 8 25_4]
+G c Z s s [ob_stackDF parser__matchstack 7 8 25_4]
+G c Z s s [ob_stackIP parser__matchstack 7 8 25_4]
+G c Z s b [parser_main parser 28 14 none]
+G c Z s b [print_preorder parser 29 14 none]
+G c Z s b [get_token parser 32 13 none]
+G c Z s b [match parser 33 13 none]
+G c Z s b [program parser 36 13 none]
+G c Z s b [program_header parser 37 13 none]
+G c Z s b [program_body parser 38 13 none]
+G c Z s b [id_no_pop_no_child parser 39 13 none]
+G c Z s b [id parser 40 13 none]
+G c Z s b [statement_list parser 41 13 none]
+G c Z s b [statement parser 42 13 none]
+G c Z s b [return_statement parser 43 13 none]
+G c Z s b [loop_statement parser 44 13 none]
+G c Z s b [if_statement parser 45 13 none]
+G c Z s b [assignment_statement parser 46 13 none]
+G c Z s b [destination parser 47 13 none]
+G c Z s b [expression_prime parser 48 13 none]
+G c Z s b [expression parser 49 13 none]
+G c Z s b [argument_list parser 50 13 none]
+G c Z s b [procedure_call_stripped parser 51 13 none]
+G c Z s b [name_stripped parser 52 13 none]
+G c Z s b [number parser 53 13 none]
+G c Z s b [string parser 54 13 none]
+G c Z s b [factor parser 55 13 none]
+G c Z s b [relation_prime parser 56 13 none]
+G c Z s b [relation parser 57 13 none]
+G c Z s b [term_prime parser 58 13 none]
+G c Z s b [term parser 59 13 none]
+G c Z s b [arith_op_prime parser 60 13 none]
+G c Z s b [arith_op parser 61 13 none]
+G c Z s b [declaration parser 62 13 none]
+G c Z s b [declaration_list parser 63 13 none]
+G c Z s b [procedure_declaration parser 64 13 none]
+G c Z s b [procedure_body parser 65 13 none]
+G c Z s b [procedure_header parser 66 13 none]
+G c Z s b [parameter parser 67 13 none]
+G c Z s b [parameter_list parser 68 13 none]
+G c Z s b [type_mark parser 69 13 none]
+G c Z s b [variable_declaration parser 70 13 none]
+G c Z s b [bound parser 71 13 none]
+G c Z s b [solve_tree parser 73 13 none]
+G c Z s b [int_to_string_trimmed parser 74 13 none]
+G c Z s b [gen_dot_files parser 75 14 none]
+G c Z s b [get_next_token_scope parser 77 13 none]
+G c Z s b [add_id_to_sym_table parser 78 13 none]
+G c Z s b [viewmatchstack parser 81 14 none]
+G c Z b b [add_id_to_sym_table_temp parser 76 13 none]
+G c Z b b [add_var_to_sym_table parser 100 13 none]
+G r i none [s parser 7 1 none] [gstack standard 4 9 none]
+G r s token [s parser 7 1 none] [tokenIP common 32 9 none]
+G r l token [s parser 7 1 none] [tokenDI common 32 9 none]
+G r k token [s parser 7 1 none] [tokenDF common 32 9 none]
+G r k token [push parser__matchstack 5 15 25_4] [tokenDF common 32 9 none]
+G r j token [push parser__matchstack 5 15 25_4] [tokenDA common 32 9 none]
+G r k token [pop parser__matchstack 6 15 25_4] [tokenDF common 32 9 none]
+G r j token [pop parser__matchstack 6 15 25_4] [tokenDA common 32 9 none]
+G r j token [stack_top parser__matchstack 8 14 25_4] [tokenDA common 32 9 none]
+G r s token [TlistBIP parser__matchstack 6 3 25_4] [tokenIP common 32 9 none]
+G r l token [TlistBDI parser__matchstack 6 3 25_4] [tokenDI common 32 9 none]
+G r k token [TlistBDI parser__matchstack 6 3 25_4] [tokenDF common 32 9 none]
+G r j token [TlistBDA parser__matchstack 6 3 25_4] [tokenDA common 32 9 none]
+G r k token [TlistBDF parser__matchstack 6 3 25_4] [tokenDF common 32 9 none]
+G r j token [ob_stackDA parser__matchstack 7 8 25_4] [tokenDA common 32 9 none]
+G r k token [ob_stackDF parser__matchstack 7 8 25_4] [tokenDF common 32 9 none]
+G r s token [ob_stackIP parser__matchstack 7 8 25_4] [tokenIP common 32 9 none]
+G r l token [ob_stackIP parser__matchstack 7 8 25_4] [tokenDI common 32 9 none]
+G r k token [ob_stackIP parser__matchstack 7 8 25_4] [tokenDF common 32 9 none]
+G r c none [parser_main parser 28 14 none] [get_next_token lexer 9 13 none]
+G r k token [parser_main parser 28 14 none] [tokenDF common 32 9 none]
+G r j token [parser_main parser 28 14 none] [tokenDA common 32 9 none]
+G r s token [parser_main parser 28 14 none] [tokenIP common 32 9 none]
+G r l token [parser_main parser 28 14 none] [tokenDI common 32 9 none]
+G r s id_value [parser_main parser 28 14 none] [id_valueIP id_value_pkg 7 9 none]
+G r l id_value [parser_main parser 28 14 none] [id_valueDI id_value_pkg 7 9 none]
+G r k id_value [parser_main parser 28 14 none] [id_valueDF id_value_pkg 7 9 none]
+G r c none [parser_main parser 28 14 none] [init id_value_pkg 20 13 none]
+G r j id_value [parser_main parser 28 14 none] [id_valueDA id_value_pkg 7 9 none]
+G r c none [parser_main parser 28 14 none] [insert_entry symbol_table 47 14 none]
+G r c none [parser_main parser 28 14 none] [add common 71 14 none]
+G r c none [parser_main parser 28 14 none] [lookuphash symbol_table 54 13 none]
+G r c none [parser_main parser 28 14 none] [get_children_of_node common 65 13 none]
+G r c none [parser_main parser 28 14 none] [test_vector symbol_table 58 14 none]
+G r c none [parser_main parser 28 14 none] [print_hash_entries symbol_table 50 14 none]
+G r c none [get_token parser 32 13 none] [get_next_token lexer 9 13 none]
+G r k token [match parser 33 13 none] [tokenDF common 32 9 none]
+G r j token [match parser 33 13 none] [tokenDA common 32 9 none]
+G r c none [match parser 33 13 none] [get_next_token lexer 9 13 none]
+G r k token [program parser 36 13 none] [tokenDF common 32 9 none]
+G r j token [program parser 36 13 none] [tokenDA common 32 9 none]
+G r c none [program parser 36 13 none] [get_next_token lexer 9 13 none]
+G r s token [program parser 36 13 none] [tokenIP common 32 9 none]
+G r l token [program parser 36 13 none] [tokenDI common 32 9 none]
+G r s id_value [program parser 36 13 none] [id_valueIP id_value_pkg 7 9 none]
+G r l id_value [program parser 36 13 none] [id_valueDI id_value_pkg 7 9 none]
+G r k id_value [program parser 36 13 none] [id_valueDF id_value_pkg 7 9 none]
+G r c none [program parser 36 13 none] [init id_value_pkg 20 13 none]
+G r j id_value [program parser 36 13 none] [id_valueDA id_value_pkg 7 9 none]
+G r c none [program parser 36 13 none] [insert_entry symbol_table 47 14 none]
+G r c none [program parser 36 13 none] [add common 71 14 none]
+G r c none [program parser 36 13 none] [lookuphash symbol_table 54 13 none]
+G r k token [program_header parser 37 13 none] [tokenDF common 32 9 none]
+G r j token [program_header parser 37 13 none] [tokenDA common 32 9 none]
+G r c none [program_header parser 37 13 none] [get_next_token lexer 9 13 none]
+G r s token [program_header parser 37 13 none] [tokenIP common 32 9 none]
+G r l token [program_header parser 37 13 none] [tokenDI common 32 9 none]
+G r s id_value [program_header parser 37 13 none] [id_valueIP id_value_pkg 7 9 none]
+G r l id_value [program_header parser 37 13 none] [id_valueDI id_value_pkg 7 9 none]
+G r k id_value [program_header parser 37 13 none] [id_valueDF id_value_pkg 7 9 none]
+G r c none [program_header parser 37 13 none] [init id_value_pkg 20 13 none]
+G r j id_value [program_header parser 37 13 none] [id_valueDA id_value_pkg 7 9 none]
+G r c none [program_header parser 37 13 none] [insert_entry symbol_table 47 14 none]
+G r c none [program_header parser 37 13 none] [add common 71 14 none]
+G r k token [program_body parser 38 13 none] [tokenDF common 32 9 none]
+G r j token [program_body parser 38 13 none] [tokenDA common 32 9 none]
+G r c none [program_body parser 38 13 none] [get_next_token lexer 9 13 none]
+G r s token [program_body parser 38 13 none] [tokenIP common 32 9 none]
+G r l token [program_body parser 38 13 none] [tokenDI common 32 9 none]
+G r s id_value [program_body parser 38 13 none] [id_valueIP id_value_pkg 7 9 none]
+G r l id_value [program_body parser 38 13 none] [id_valueDI id_value_pkg 7 9 none]
+G r k id_value [program_body parser 38 13 none] [id_valueDF id_value_pkg 7 9 none]
+G r c none [program_body parser 38 13 none] [add common 71 14 none]
+G r c none [program_body parser 38 13 none] [init id_value_pkg 20 13 none]
+G r j id_value [program_body parser 38 13 none] [id_valueDA id_value_pkg 7 9 none]
+G r c none [program_body parser 38 13 none] [insert_entry symbol_table 47 14 none]
+G r c none [program_body parser 38 13 none] [lookuphash symbol_table 54 13 none]
+G r k token [id_no_pop_no_child parser 39 13 none] [tokenDF common 32 9 none]
+G r j token [id_no_pop_no_child parser 39 13 none] [tokenDA common 32 9 none]
+G r c none [id_no_pop_no_child parser 39 13 none] [get_next_token lexer 9 13 none]
+G r s token [id parser 40 13 none] [tokenIP common 32 9 none]
+G r l token [id parser 40 13 none] [tokenDI common 32 9 none]
+G r k token [id parser 40 13 none] [tokenDF common 32 9 none]
+G r j token [id parser 40 13 none] [tokenDA common 32 9 none]
+G r c none [id parser 40 13 none] [get_next_token lexer 9 13 none]
+G r c none [id parser 40 13 none] [lookuphash symbol_table 54 13 none]
+G r c none [id parser 40 13 none] [add common 71 14 none]
+G r k token [statement_list parser 41 13 none] [tokenDF common 32 9 none]
+G r j token [statement_list parser 41 13 none] [tokenDA common 32 9 none]
+G r c none [statement_list parser 41 13 none] [get_next_token lexer 9 13 none]
+G r c none [statement_list parser 41 13 none] [add common 71 14 none]
+G r s token [statement_list parser 41 13 none] [tokenIP common 32 9 none]
+G r l token [statement_list parser 41 13 none] [tokenDI common 32 9 none]
+G r c none [statement_list parser 41 13 none] [lookuphash symbol_table 54 13 none]
+G r k token [statement parser 42 13 none] [tokenDF common 32 9 none]
+G r j token [statement parser 42 13 none] [tokenDA common 32 9 none]
+G r c none [statement parser 42 13 none] [get_next_token lexer 9 13 none]
+G r c none [statement parser 42 13 none] [add common 71 14 none]
+G r s token [statement parser 42 13 none] [tokenIP common 32 9 none]
+G r l token [statement parser 42 13 none] [tokenDI common 32 9 none]
+G r c none [statement parser 42 13 none] [lookuphash symbol_table 54 13 none]
+G r k token [return_statement parser 43 13 none] [tokenDF common 32 9 none]
+G r j token [return_statement parser 43 13 none] [tokenDA common 32 9 none]
+G r c none [return_statement parser 43 13 none] [get_next_token lexer 9 13 none]
+G r c none [return_statement parser 43 13 none] [add common 71 14 none]
+G r s token [return_statement parser 43 13 none] [tokenIP common 32 9 none]
+G r l token [return_statement parser 43 13 none] [tokenDI common 32 9 none]
+G r k token [loop_statement parser 44 13 none] [tokenDF common 32 9 none]
+G r j token [loop_statement parser 44 13 none] [tokenDA common 32 9 none]
+G r c none [loop_statement parser 44 13 none] [get_next_token lexer 9 13 none]
+G r c none [loop_statement parser 44 13 none] [add common 71 14 none]
+G r s token [loop_statement parser 44 13 none] [tokenIP common 32 9 none]
+G r l token [loop_statement parser 44 13 none] [tokenDI common 32 9 none]
+G r c none [loop_statement parser 44 13 none] [lookuphash symbol_table 54 13 none]
+G r k token [if_statement parser 45 13 none] [tokenDF common 32 9 none]
+G r j token [if_statement parser 45 13 none] [tokenDA common 32 9 none]
+G r c none [if_statement parser 45 13 none] [get_next_token lexer 9 13 none]
+G r c none [if_statement parser 45 13 none] [add common 71 14 none]
+G r s token [if_statement parser 45 13 none] [tokenIP common 32 9 none]
+G r l token [if_statement parser 45 13 none] [tokenDI common 32 9 none]
+G r c none [if_statement parser 45 13 none] [lookuphash symbol_table 54 13 none]
+G r k token [assignment_statement parser 46 13 none] [tokenDF common 32 9 none]
+G r j token [assignment_statement parser 46 13 none] [tokenDA common 32 9 none]
+G r c none [assignment_statement parser 46 13 none] [get_next_token lexer 9 13 none]
+G r c none [assignment_statement parser 46 13 none] [add common 71 14 none]
+G r s token [assignment_statement parser 46 13 none] [tokenIP common 32 9 none]
+G r l token [assignment_statement parser 46 13 none] [tokenDI common 32 9 none]
+G r c none [assignment_statement parser 46 13 none] [lookuphash symbol_table 54 13 none]
+G r s token [destination parser 47 13 none] [tokenIP common 32 9 none]
+G r l token [destination parser 47 13 none] [tokenDI common 32 9 none]
+G r k token [destination parser 47 13 none] [tokenDF common 32 9 none]
+G r j token [destination parser 47 13 none] [tokenDA common 32 9 none]
+G r c none [destination parser 47 13 none] [get_next_token lexer 9 13 none]
+G r c none [destination parser 47 13 none] [lookuphash symbol_table 54 13 none]
+G r c none [destination parser 47 13 none] [add common 71 14 none]
+G r k token [expression_prime parser 48 13 none] [tokenDF common 32 9 none]
+G r j token [expression_prime parser 48 13 none] [tokenDA common 32 9 none]
+G r c none [expression_prime parser 48 13 none] [get_next_token lexer 9 13 none]
+G r s token [expression_prime parser 48 13 none] [tokenIP common 32 9 none]
+G r l token [expression_prime parser 48 13 none] [tokenDI common 32 9 none]
+G r c none [expression_prime parser 48 13 none] [add common 71 14 none]
+G r k token [expression parser 49 13 none] [tokenDF common 32 9 none]
+G r j token [expression parser 49 13 none] [tokenDA common 32 9 none]
+G r c none [expression parser 49 13 none] [get_next_token lexer 9 13 none]
+G r c none [expression parser 49 13 none] [add common 71 14 none]
+G r s token [expression parser 49 13 none] [tokenIP common 32 9 none]
+G r l token [expression parser 49 13 none] [tokenDI common 32 9 none]
+G r k token [argument_list parser 50 13 none] [tokenDF common 32 9 none]
+G r j token [argument_list parser 50 13 none] [tokenDA common 32 9 none]
+G r c none [argument_list parser 50 13 none] [get_next_token lexer 9 13 none]
+G r c none [argument_list parser 50 13 none] [add common 71 14 none]
+G r s token [argument_list parser 50 13 none] [tokenIP common 32 9 none]
+G r l token [argument_list parser 50 13 none] [tokenDI common 32 9 none]
+G r k token [procedure_call_stripped parser 51 13 none] [tokenDF common 32 9 none]
+G r j token [procedure_call_stripped parser 51 13 none] [tokenDA common 32 9 none]
+G r c none [procedure_call_stripped parser 51 13 none] [get_next_token lexer 9 13 none]
+G r c none [procedure_call_stripped parser 51 13 none] [add common 71 14 none]
+G r s token [procedure_call_stripped parser 51 13 none] [tokenIP common 32 9 none]
+G r l token [procedure_call_stripped parser 51 13 none] [tokenDI common 32 9 none]
+G r k token [name_stripped parser 52 13 none] [tokenDF common 32 9 none]
+G r j token [name_stripped parser 52 13 none] [tokenDA common 32 9 none]
+G r c none [name_stripped parser 52 13 none] [get_next_token lexer 9 13 none]
+G r c none [name_stripped parser 52 13 none] [add common 71 14 none]
+G r s token [name_stripped parser 52 13 none] [tokenIP common 32 9 none]
+G r l token [name_stripped parser 52 13 none] [tokenDI common 32 9 none]
+G r s token [number parser 53 13 none] [tokenIP common 32 9 none]
+G r l token [number parser 53 13 none] [tokenDI common 32 9 none]
+G r k token [number parser 53 13 none] [tokenDF common 32 9 none]
+G r j token [number parser 53 13 none] [tokenDA common 32 9 none]
+G r c none [number parser 53 13 none] [get_next_token lexer 9 13 none]
+G r c none [number parser 53 13 none] [add common 71 14 none]
+G r s token [string parser 54 13 none] [tokenIP common 32 9 none]
+G r l token [string parser 54 13 none] [tokenDI common 32 9 none]
+G r k token [string parser 54 13 none] [tokenDF common 32 9 none]
+G r j token [string parser 54 13 none] [tokenDA common 32 9 none]
+G r c none [string parser 54 13 none] [get_next_token lexer 9 13 none]
+G r c none [string parser 54 13 none] [add common 71 14 none]
+G r s token [factor parser 55 13 none] [tokenIP common 32 9 none]
+G r l token [factor parser 55 13 none] [tokenDI common 32 9 none]
+G r k token [factor parser 55 13 none] [tokenDF common 32 9 none]
+G r j token [factor parser 55 13 none] [tokenDA common 32 9 none]
+G r c none [factor parser 55 13 none] [get_next_token lexer 9 13 none]
+G r c none [factor parser 55 13 none] [add common 71 14 none]
+G r s token [relation_prime parser 56 13 none] [tokenIP common 32 9 none]
+G r l token [relation_prime parser 56 13 none] [tokenDI common 32 9 none]
+G r k token [relation_prime parser 56 13 none] [tokenDF common 32 9 none]
+G r j token [relation_prime parser 56 13 none] [tokenDA common 32 9 none]
+G r c none [relation_prime parser 56 13 none] [get_next_token lexer 9 13 none]
+G r c none [relation_prime parser 56 13 none] [add common 71 14 none]
+G r s token [relation parser 57 13 none] [tokenIP common 32 9 none]
+G r l token [relation parser 57 13 none] [tokenDI common 32 9 none]
+G r k token [relation parser 57 13 none] [tokenDF common 32 9 none]
+G r j token [relation parser 57 13 none] [tokenDA common 32 9 none]
+G r c none [relation parser 57 13 none] [get_next_token lexer 9 13 none]
+G r c none [relation parser 57 13 none] [add common 71 14 none]
+G r s token [term_prime parser 58 13 none] [tokenIP common 32 9 none]
+G r l token [term_prime parser 58 13 none] [tokenDI common 32 9 none]
+G r k token [term_prime parser 58 13 none] [tokenDF common 32 9 none]
+G r j token [term_prime parser 58 13 none] [tokenDA common 32 9 none]
+G r c none [term_prime parser 58 13 none] [get_next_token lexer 9 13 none]
+G r c none [term_prime parser 58 13 none] [add common 71 14 none]
+G r s token [term parser 59 13 none] [tokenIP common 32 9 none]
+G r l token [term parser 59 13 none] [tokenDI common 32 9 none]
+G r k token [term parser 59 13 none] [tokenDF common 32 9 none]
+G r j token [term parser 59 13 none] [tokenDA common 32 9 none]
+G r c none [term parser 59 13 none] [get_next_token lexer 9 13 none]
+G r c none [term parser 59 13 none] [add common 71 14 none]
+G r s token [arith_op_prime parser 60 13 none] [tokenIP common 32 9 none]
+G r l token [arith_op_prime parser 60 13 none] [tokenDI common 32 9 none]
+G r k token [arith_op_prime parser 60 13 none] [tokenDF common 32 9 none]
+G r j token [arith_op_prime parser 60 13 none] [tokenDA common 32 9 none]
+G r c none [arith_op_prime parser 60 13 none] [get_next_token lexer 9 13 none]
+G r c none [arith_op_prime parser 60 13 none] [add common 71 14 none]
+G r s token [arith_op parser 61 13 none] [tokenIP common 32 9 none]
+G r l token [arith_op parser 61 13 none] [tokenDI common 32 9 none]
+G r k token [arith_op parser 61 13 none] [tokenDF common 32 9 none]
+G r j token [arith_op parser 61 13 none] [tokenDA common 32 9 none]
+G r c none [arith_op parser 61 13 none] [get_next_token lexer 9 13 none]
+G r c none [arith_op parser 61 13 none] [add common 71 14 none]
+G r k token [declaration parser 62 13 none] [tokenDF common 32 9 none]
+G r j token [declaration parser 62 13 none] [tokenDA common 32 9 none]
+G r c none [declaration parser 62 13 none] [get_next_token lexer 9 13 none]
+G r s token [declaration parser 62 13 none] [tokenIP common 32 9 none]
+G r l token [declaration parser 62 13 none] [tokenDI common 32 9 none]
+G r s id_value [declaration parser 62 13 none] [id_valueIP id_value_pkg 7 9 none]
+G r l id_value [declaration parser 62 13 none] [id_valueDI id_value_pkg 7 9 none]
+G r k id_value [declaration parser 62 13 none] [id_valueDF id_value_pkg 7 9 none]
+G r c none [declaration parser 62 13 none] [add common 71 14 none]
+G r c none [declaration parser 62 13 none] [init id_value_pkg 20 13 none]
+G r j id_value [declaration parser 62 13 none] [id_valueDA id_value_pkg 7 9 none]
+G r c none [declaration parser 62 13 none] [insert_entry symbol_table 47 14 none]
+G r c none [declaration parser 62 13 none] [lookuphash symbol_table 54 13 none]
+G r k token [declaration_list parser 63 13 none] [tokenDF common 32 9 none]
+G r j token [declaration_list parser 63 13 none] [tokenDA common 32 9 none]
+G r c none [declaration_list parser 63 13 none] [get_next_token lexer 9 13 none]
+G r s token [declaration_list parser 63 13 none] [tokenIP common 32 9 none]
+G r l token [declaration_list parser 63 13 none] [tokenDI common 32 9 none]
+G r s id_value [declaration_list parser 63 13 none] [id_valueIP id_value_pkg 7 9 none]
+G r l id_value [declaration_list parser 63 13 none] [id_valueDI id_value_pkg 7 9 none]
+G r k id_value [declaration_list parser 63 13 none] [id_valueDF id_value_pkg 7 9 none]
+G r c none [declaration_list parser 63 13 none] [add common 71 14 none]
+G r c none [declaration_list parser 63 13 none] [init id_value_pkg 20 13 none]
+G r j id_value [declaration_list parser 63 13 none] [id_valueDA id_value_pkg 7 9 none]
+G r c none [declaration_list parser 63 13 none] [insert_entry symbol_table 47 14 none]
+G r c none [declaration_list parser 63 13 none] [lookuphash symbol_table 54 13 none]
+G r s token [procedure_declaration parser 64 13 none] [tokenIP common 32 9 none]
+G r l token [procedure_declaration parser 64 13 none] [tokenDI common 32 9 none]
+G r k token [procedure_declaration parser 64 13 none] [tokenDF common 32 9 none]
+G r j token [procedure_declaration parser 64 13 none] [tokenDA common 32 9 none]
+G r c none [procedure_declaration parser 64 13 none] [get_next_token lexer 9 13 none]
+G r s id_value [procedure_declaration parser 64 13 none] [id_valueIP id_value_pkg 7 9 none]
+G r l id_value [procedure_declaration parser 64 13 none] [id_valueDI id_value_pkg 7 9 none]
+G r k id_value [procedure_declaration parser 64 13 none] [id_valueDF id_value_pkg 7 9 none]
+G r c none [procedure_declaration parser 64 13 none] [init id_value_pkg 20 13 none]
+G r j id_value [procedure_declaration parser 64 13 none] [id_valueDA id_value_pkg 7 9 none]
+G r c none [procedure_declaration parser 64 13 none] [insert_entry symbol_table 47 14 none]
+G r c none [procedure_declaration parser 64 13 none] [add common 71 14 none]
+G r c none [procedure_declaration parser 64 13 none] [lookuphash symbol_table 54 13 none]
+G r k token [procedure_body parser 65 13 none] [tokenDF common 32 9 none]
+G r j token [procedure_body parser 65 13 none] [tokenDA common 32 9 none]
+G r c none [procedure_body parser 65 13 none] [get_next_token lexer 9 13 none]
+G r s token [procedure_body parser 65 13 none] [tokenIP common 32 9 none]
+G r l token [procedure_body parser 65 13 none] [tokenDI common 32 9 none]
+G r s id_value [procedure_body parser 65 13 none] [id_valueIP id_value_pkg 7 9 none]
+G r l id_value [procedure_body parser 65 13 none] [id_valueDI id_value_pkg 7 9 none]
+G r k id_value [procedure_body parser 65 13 none] [id_valueDF id_value_pkg 7 9 none]
+G r c none [procedure_body parser 65 13 none] [add common 71 14 none]
+G r c none [procedure_body parser 65 13 none] [init id_value_pkg 20 13 none]
+G r j id_value [procedure_body parser 65 13 none] [id_valueDA id_value_pkg 7 9 none]
+G r c none [procedure_body parser 65 13 none] [insert_entry symbol_table 47 14 none]
+G r c none [procedure_body parser 65 13 none] [lookuphash symbol_table 54 13 none]
+G r s token [procedure_header parser 66 13 none] [tokenIP common 32 9 none]
+G r l token [procedure_header parser 66 13 none] [tokenDI common 32 9 none]
+G r k token [procedure_header parser 66 13 none] [tokenDF common 32 9 none]
+G r j token [procedure_header parser 66 13 none] [tokenDA common 32 9 none]
+G r c none [procedure_header parser 66 13 none] [get_next_token lexer 9 13 none]
+G r s id_value [procedure_header parser 66 13 none] [id_valueIP id_value_pkg 7 9 none]
+G r l id_value [procedure_header parser 66 13 none] [id_valueDI id_value_pkg 7 9 none]
+G r k id_value [procedure_header parser 66 13 none] [id_valueDF id_value_pkg 7 9 none]
+G r c none [procedure_header parser 66 13 none] [init id_value_pkg 20 13 none]
+G r j id_value [procedure_header parser 66 13 none] [id_valueDA id_value_pkg 7 9 none]
+G r c none [procedure_header parser 66 13 none] [insert_entry symbol_table 47 14 none]
+G r c none [procedure_header parser 66 13 none] [add common 71 14 none]
+G r k token [parameter parser 67 13 none] [tokenDF common 32 9 none]
+G r j token [parameter parser 67 13 none] [tokenDA common 32 9 none]
+G r c none [parameter parser 67 13 none] [get_next_token lexer 9 13 none]
+G r s token [parameter parser 67 13 none] [tokenIP common 32 9 none]
+G r l token [parameter parser 67 13 none] [tokenDI common 32 9 none]
+G r s id_value [parameter parser 67 13 none] [id_valueIP id_value_pkg 7 9 none]
+G r l id_value [parameter parser 67 13 none] [id_valueDI id_value_pkg 7 9 none]
+G r k id_value [parameter parser 67 13 none] [id_valueDF id_value_pkg 7 9 none]
+G r c none [parameter parser 67 13 none] [add common 71 14 none]
+G r c none [parameter parser 67 13 none] [init id_value_pkg 20 13 none]
+G r j id_value [parameter parser 67 13 none] [id_valueDA id_value_pkg 7 9 none]
+G r c none [parameter parser 67 13 none] [insert_entry symbol_table 47 14 none]
+G r k token [parameter_list parser 68 13 none] [tokenDF common 32 9 none]
+G r j token [parameter_list parser 68 13 none] [tokenDA common 32 9 none]
+G r c none [parameter_list parser 68 13 none] [get_next_token lexer 9 13 none]
+G r s token [parameter_list parser 68 13 none] [tokenIP common 32 9 none]
+G r l token [parameter_list parser 68 13 none] [tokenDI common 32 9 none]
+G r s id_value [parameter_list parser 68 13 none] [id_valueIP id_value_pkg 7 9 none]
+G r l id_value [parameter_list parser 68 13 none] [id_valueDI id_value_pkg 7 9 none]
+G r k id_value [parameter_list parser 68 13 none] [id_valueDF id_value_pkg 7 9 none]
+G r c none [parameter_list parser 68 13 none] [add common 71 14 none]
+G r c none [parameter_list parser 68 13 none] [init id_value_pkg 20 13 none]
+G r j id_value [parameter_list parser 68 13 none] [id_valueDA id_value_pkg 7 9 none]
+G r c none [parameter_list parser 68 13 none] [insert_entry symbol_table 47 14 none]
+G r s token [type_mark parser 69 13 none] [tokenIP common 32 9 none]
+G r l token [type_mark parser 69 13 none] [tokenDI common 32 9 none]
+G r k token [type_mark parser 69 13 none] [tokenDF common 32 9 none]
+G r j token [type_mark parser 69 13 none] [tokenDA common 32 9 none]
+G r c none [type_mark parser 69 13 none] [get_next_token lexer 9 13 none]
+G r c none [type_mark parser 69 13 none] [add common 71 14 none]
+G r k token [variable_declaration parser 70 13 none] [tokenDF common 32 9 none]
+G r j token [variable_declaration parser 70 13 none] [tokenDA common 32 9 none]
+G r c none [variable_declaration parser 70 13 none] [get_next_token lexer 9 13 none]
+G r s token [variable_declaration parser 70 13 none] [tokenIP common 32 9 none]
+G r l token [variable_declaration parser 70 13 none] [tokenDI common 32 9 none]
+G r s id_value [variable_declaration parser 70 13 none] [id_valueIP id_value_pkg 7 9 none]
+G r l id_value [variable_declaration parser 70 13 none] [id_valueDI id_value_pkg 7 9 none]
+G r k id_value [variable_declaration parser 70 13 none] [id_valueDF id_value_pkg 7 9 none]
+G r c none [variable_declaration parser 70 13 none] [add common 71 14 none]
+G r c none [variable_declaration parser 70 13 none] [init id_value_pkg 20 13 none]
+G r j id_value [variable_declaration parser 70 13 none] [id_valueDA id_value_pkg 7 9 none]
+G r c none [variable_declaration parser 70 13 none] [insert_entry symbol_table 47 14 none]
+G r s token [bound parser 71 13 none] [tokenIP common 32 9 none]
+G r l token [bound parser 71 13 none] [tokenDI common 32 9 none]
+G r k token [bound parser 71 13 none] [tokenDF common 32 9 none]
+G r j token [bound parser 71 13 none] [tokenDA common 32 9 none]
+G r c none [bound parser 71 13 none] [get_next_token lexer 9 13 none]
+G r c none [bound parser 71 13 none] [add common 71 14 none]
+G r c none [solve_tree parser 73 13 none] [get_children_of_node common 65 13 none]
+G r c none [gen_dot_files parser 75 14 none] [get_children_of_node common 65 13 none]
+G r s token [add_id_to_sym_table parser 78 13 none] [tokenIP common 32 9 none]
+G r l token [add_id_to_sym_table parser 78 13 none] [tokenDI common 32 9 none]
+G r k token [add_id_to_sym_table parser 78 13 none] [tokenDF common 32 9 none]
+G r s id_value [add_id_to_sym_table parser 78 13 none] [id_valueIP id_value_pkg 7 9 none]
+G r l id_value [add_id_to_sym_table parser 78 13 none] [id_valueDI id_value_pkg 7 9 none]
+G r k id_value [add_id_to_sym_table parser 78 13 none] [id_valueDF id_value_pkg 7 9 none]
+G r j token [add_id_to_sym_table parser 78 13 none] [tokenDA common 32 9 none]
+G r c none [add_id_to_sym_table parser 78 13 none] [get_next_token lexer 9 13 none]
+G r c none [add_id_to_sym_table parser 78 13 none] [init id_value_pkg 20 13 none]
+G r j id_value [add_id_to_sym_table parser 78 13 none] [id_valueDA id_value_pkg 7 9 none]
+G r c none [add_id_to_sym_table parser 78 13 none] [insert_entry symbol_table 47 14 none]
+G r s token [viewmatchstack parser 81 14 none] [tokenIP common 32 9 none]
+G r l token [viewmatchstack parser 81 14 none] [tokenDI common 32 9 none]
+G r k token [viewmatchstack parser 81 14 none] [tokenDF common 32 9 none]
+G r j token [viewmatchstack parser 81 14 none] [tokenDA common 32 9 none]
+G r s token [add_id_to_sym_table_temp parser 76 13 none] [tokenIP common 32 9 none]
+G r l token [add_id_to_sym_table_temp parser 76 13 none] [tokenDI common 32 9 none]
+G r k token [add_id_to_sym_table_temp parser 76 13 none] [tokenDF common 32 9 none]
+G r s id_value [add_id_to_sym_table_temp parser 76 13 none] [id_valueIP id_value_pkg 7 9 none]
+G r l id_value [add_id_to_sym_table_temp parser 76 13 none] [id_valueDI id_value_pkg 7 9 none]
+G r k id_value [add_id_to_sym_table_temp parser 76 13 none] [id_valueDF id_value_pkg 7 9 none]
+G r j token [add_id_to_sym_table_temp parser 76 13 none] [tokenDA common 32 9 none]
+G r c none [add_id_to_sym_table_temp parser 76 13 none] [get_next_token lexer 9 13 none]
+G r c none [add_id_to_sym_table_temp parser 76 13 none] [init id_value_pkg 20 13 none]
+G r j id_value [add_id_to_sym_table_temp parser 76 13 none] [id_valueDA id_value_pkg 7 9 none]
+G r c none [add_id_to_sym_table_temp parser 76 13 none] [insert_entry symbol_table 47 14 none]
+G r s token [add_var_to_sym_table parser 100 13 none] [tokenIP common 32 9 none]
+G r l token [add_var_to_sym_table parser 100 13 none] [tokenDI common 32 9 none]
+G r k token [add_var_to_sym_table parser 100 13 none] [tokenDF common 32 9 none]
+G r s id_value [add_var_to_sym_table parser 100 13 none] [id_valueIP id_value_pkg 7 9 none]
+G r l id_value [add_var_to_sym_table parser 100 13 none] [id_valueDI id_value_pkg 7 9 none]
+G r k id_value [add_var_to_sym_table parser 100 13 none] [id_valueDF id_value_pkg 7 9 none]
+G r j token [add_var_to_sym_table parser 100 13 none] [tokenDA common 32 9 none]
+G r c none [add_var_to_sym_table parser 100 13 none] [get_next_token lexer 9 13 none]
+G r c none [add_var_to_sym_table parser 100 13 none] [add common 71 14 none]
+G r c none [add_var_to_sym_table parser 100 13 none] [init id_value_pkg 20 13 none]
+G r j id_value [add_var_to_sym_table parser 100 13 none] [id_valueDA id_value_pkg 7 9 none]
+G r c none [add_var_to_sym_table parser 100 13 none] [insert_entry symbol_table 47 14 none]
+X 1 ada.ads
+16K9*Ada 20e8 28|2r6 3r6 4r6 23r25 37r66 51r78 52r68 66r68 74r59 78r122 29|4r6
+. 5r6 33r10 33r32 39r10 52r122 58r23 69r10 76r127 82r23 93r10 100r147 107r23
+. 140r10 147r67 149r22 162r10 193r22 226r13 231r13 250r10 250r31 253r7 253r28
+. 287r10 287r31 289r13 289r34 291r16 291r37 293r19 293r40 295r22 295r43 303r7
+. 303r28 339r10 339r31 342r7 342r28 354r16 363r10 396r7 400r10 423r78 468r72
+. 509r15 511r18 541r22 543r7 543r28 603r22 677r24 712r24 732r10 774r24 780r14
+. 780r56 806r7 806r28 820r68 824r24 826r24 854r14 902r19 918r16 924r10 950r7
+. 959r31 961r24 965r20 965r66 971r16 1011r23 1017r20 1019r16 1023r7 1024r13
+. 1028r7 1029r7 1032r7 1033r7 1040r7 1056r16 1067r16 1081r7 1082r7 1091r10
+. 1093r7 1110r10 1112r10
+X 4 a-contai.ads
+16K13*Containers 28e19 28|2w10 3r10 29|971r20 1019r20
+22I9*Count_Type<integer> 29|971r31 1019r31
+X 8 a-convec.ads
+73k24*Vectors 824e27 28|3w21
+88R9*Vector<10|43R9> 28|19r37[21|60] 29|970r41[21|60] 1012r43[21|60] 1015r43[21|60]
+165V13*Length{4|22I9} 29|980s30[21|60] 984s30[21|60] 992s30[21|60] 1000s30[21|60]
+. 1047s19[21|60]
+431U14*Append 29|785s21[21|60] 1038s13[21|60] 1076s22[21|60] 1103s18[21|60]
+466U14*Delete 29|1050s16[21|60]
+X 12 a-iteint.ads
+24h9 Forward_Iterator
+32h9 Reversible_Iterator<24R9[8|111]>
+X 14 a-string.ads
+16K13*Strings 35e16 28|4r10 23r29 37r70 51r82 52r72 66r72 74r63 78r126 29|4r10
+. 52r126 58r27 76r131 82r27 100r151 107r27 147r71 149r26 193r26 423r82 468r76
+. 509r19 511r22 541r26 603r26 677r28 712r28 774r28 780r18 780r60 820r72 824r28
+. 826r28 854r18 902r23 959r35 961r28 965r24 965r70 1017r24
+X 17 a-strunb.ads
+82K21*Unbounded 756e26 28|4w18 23r37 37r78 51r90 52r80 66r80 74r71 78r134
+. 29|4w18 52r134 58r35 76r139 82r35 100r159 107r35 147r79 149r34 193r34 423r90
+. 468r84 509r27 511r30 541r34 603r34 677r36 712r36 774r36 780r26 780r68 820r80
+. 824r36 826r36 854r26 902r31 959r43 961r36 965r32 965r78 1017r32
+87R9*Unbounded_String<10|43R9> 739e14 28|23r47 37r88 51r100 52r90 66r90 74r81
+. 78r144 29|52r144 58r45 76r149 82r45 100r169 107r45 147r89 149r44 193r44
+. 423r100 468r94 541r44 603r44 677r46 712r46 774r46 820r90 824r46 826r46
+. 902r41 959r53 961r46 1017r42
+90r4*Null_Unbounded_String{87R9} 29|780r78 854r36
+92V13*Length{natural} 29|965s88
+151V14*"&"{87R9} 29|509s38
+167V14*"&"{87R9} 29|511s41
+207V13*Slice{string} 29|965s42
+238V14*"="{boolean} 29|780s37
+250V14*"="{boolean} 29|780r37
+X 19 a-textio.ads
+57K13*Text_IO 727e16 29|5w10 33r14 33r36 39r14 69r14 93r14 140r14 162r14
+. 226r17 231r17 250r14 250r35 253r11 253r32 287r14 287r35 289r17 289r38 291r20
+. 291r41 293r23 293r44 295r26 295r47 303r11 303r32 339r14 339r35 342r11 342r32
+. 354r20 363r14 396r11 400r14 543r11 543r32 732r14 806r11 806r32 918r20 924r14
+. 950r11 1011r27 1023r11 1024r17 1028r11 1029r11 1032r11 1033r11 1040r11
+. 1056r20 1067r20 1081r11 1082r11 1091r14 1093r11 1110r14 1112r14
+64P9*File_Type 29|1011r35
+66n32*Out_File{66E9} 29|1024r25
+99U14*Create 29|1023s19
+129U14*Close 29|1082s19
+178V13*Standard_Output{64P9} 29|33s44 250s43 253s40 287s43 289s46 291s49
+. 293s52 295s55 303s40 339s43 342s40 543s40 806s40
+498U14*Put_Line 29|33s22 250s22 253s19 287s22 289s25 291s28 293s31 295s34
+. 303s19 339s22 342s19 543s19 806s19 1028s19 1029s19 1032s19 1033s19 1040s19
+. 1056s28 1067s28 1081s19
+508U14*Put_Line 29|39s22 69s22 93s22 140s22 162s22 226s25 231s25 354s28 363s22
+. 396s19 400s22 732s22 918s28 924s22 950s19 1091s22 1093s19 1110s22 1112s22
+X 21 common.ads
+5K9*common 75e11 28|1w6 8r13 19r17 21r17 25r41 29r39 32r30 33r28 36r35 37r42
+. 38r40 39r47 40r30 40r56 40r79 41r42 41r68 41r91 42r37 43r44 44r42 45r40
+. 46r48 47r39 48r44 49r38 49r64 49r87 50r41 51r51 52r41 53r34 54r34 55r34
+. 56r42 57r36 58r38 59r32 59r59 59r82 60r42 61r36 62r39 63r44 64r49 65r42
+. 66r44 67r37 68r42 69r37 69r63 69r86 70r49 71r33 71r59 71r82 73r31 73r55
+. 75r42 78r47 78r77 78r96 29|1w6 10r13 11r13 13r30 18r29 52r47 52r77 52r96
+. 56r23 61r16 70r17 76r52 76r82 76r101 80r23 85r16 90r36 90r47 94r17 100r48
+. 100r102 100r121 104r26 105r28 108r23 113r31 116r16 116r44 116r91 126r39
+. 127r30 128r42 129r30 130r42 131r30 132r44 133r30 141r17 147r43 148r18 148r40
+. 148r53 148r84 151r17 152r56 156r13 156r59 157r13 163r17 167r41 168r18 168r41
+. 168r54 168r83 172r27 174r27 176r27 179r27 181r17 181r47 182r25 184r10 191r36
+. 192r18 192r41 192r54 192r76 196r11 197r10 205r47 208r17 214r30 214r56 214r79
+. 216r18 216r41 216r54 217r22 220r17 223r77 225r13 226r70 228r13 231r70 239r42
+. 239r68 239r91 241r18 241r40 241r53 246r30 248r30 249r10 257r38 258r18 258r41
+. 258r54 258r80 263r10 269r45 270r18 270r41 270r54 270r87 271r26 271r49 271r62
+. 271r97 273r17 273r64 274r10 275r10 282r43 283r18 284r13 284r26 284r57 286r17
+. 286r47 288r60 292r26 294r63 294r92 296r22 307r41 308r18 308r41 308r54 308r83
+. 311r17 311r46 311r98 313r20 313r58 314r42 317r26 318r58 321r26 321r56 322r19
+. 332r49 334r18 334r41 334r54 334r91 336r49 336r97 338r10 346r40 347r18 347r41
+. 347r54 347r82 348r28 348r51 348r64 348r82 350r23 351r20 352r38 352r70 353r16
+. 361r10 362r10 373r45 374r18 374r41 374r54 374r81 376r17 377r27 378r10 380r20
+. 381r27 382r10 388r38 388r64 388r87 389r18 389r41 389r54 392r17 399r10 407r42
+. 408r18 408r41 408r54 408r84 411r32 413r30 416r10 423r51 424r18 424r41 424r54
+. 424r88 425r26 425r49 425r62 425r99 426r19 426r42 426r55 426r80 429r24 429r35
+. 430r17 434r13 437r20 438r13 439r13 468r41 470r18 470r40 470r53 470r83 471r18
+. 471r41 471r54 471r84 472r28 472r50 472r63 472r81 474r17 475r35 475r67 476r13
+. 477r13 482r7 484r7 485r7 495r35 496r18 496r41 496r54 496r76 497r22 499r17
+. 504r20 504r50 512r13 515r10 522r35 523r18 524r13 524r26 524r43 525r22 527r17
+. 531r10 537r35 538r18 538r41 538r54 538r77 539r22 544r17 544r85 546r10 550r17
+. 551r10 555r17 556r27 560r17 561r27 567r27 570r10 579r17 585r13 591r30 592r13
+. 600r43 601r18 601r41 601r54 601r85 602r22 605r17 606r24 607r24 608r24 609r24
+. 625r13 634r37 635r18 635r41 635r54 635r79 640r42 641r43 644r10 674r39 675r18
+. 675r41 675r54 675r81 676r24 679r17 679r50 685r40 686r13 693r33 693r60 693r83
+. 694r18 694r41 694r54 697r10 700r42 701r43 709r43 710r18 710r41 710r54 710r85
+. 711r24 714r17 714r49 719r40 720r13 727r37 728r18 728r41 728r54 728r79 731r10
+. 735r42 736r43 744r40 745r18 745r41 745r54 745r82 750r27 752r10 758r45 759r18
+. 759r41 759r54 759r87 763r30 765r10 771r49 772r18 772r41 772r54 772r71 773r23
+. 773r46 773r59 773r94 784r10 786r10 786r34 793r43 794r18 794r41 794r54 794r85
+. 798r27 800r27 803r27 807r27 809r17 809r47 810r10 820r44 822r18 822r41 822r54
+. 822r87 823r24 828r17 830r54 831r13 834r23 834r69 834r107 836r26 837r19
+. 837r43 840r37 841r40 843r19 846r22 846r45 847r22 847r42 857r38 858r18 858r41
+. 858r54 858r80 861r10 867r43 868r18 868r41 868r54 868r85 872r30 875r10 881r37
+. 881r63 881r86 882r18 882r41 882r54 883r19 883r42 883r55 883r88 884r22 886r17
+. 886r45 886r71 886r96 891r10 892r10 898r49 900r18 900r41 900r54 900r91 901r17
+. 901r40 901r53 901r77 905r34 908r17 909r68 910r13 912r13 915r20 916r33 916r65
+. 917r16 923r10 932r21 933r21 933r44 935r18 936r13 936r26 939r10 945r40 950r28
+. 963r25 965r9 968r32 968r56 969r21 970r21 972r16 974r19 980r10 984r10 986r33
+. 992r10 1000r10 1010r43 1012r23 1014r23 1015r23 1020r16 1025r25 1042r21
+. 1043r25 1051r27 1056r50 1056r111 1060r46 1061r33 1063r33 1064r33 1070r19
+. 1073r19 1075r36 1087r20 1091r32 1097r21 1103r29 1103r42 1103r71
+7E9*token_types 7e593 28|33r35 29|10r20 18r36
+7n36*t_PROGRAM{7E9} 29|151r24 181r54
+7n47*t_PROCEDURE{7E9} 29|809r54 828r24
+7n60*t_IS_STATEMENT{7E9} 29|156r66
+7n76*t_VARIABLE{7E9} 29|908r24
+7n88*t_BEGIN{7E9} 29|176r34 800r34
+7n97*t_END{7E9} 29|181r24 294r70 321r33 809r24
+7n104*t_DOT{7E9} 29|182r32 504r27
+7n127*t_INTEGER{7E9} 29|126r46 886r24
+7n138*t_BOOL{7E9} 29|128r49 886r78
+7n146*t_FLOAT{7E9} 29|132r51 886r52
+7n155*t_STRING{7E9} 29|130r49 527r24 886r103
+7n165*t_STRING_VALUE{7E9} 29|550r24
+7n189*t_IF{7E9} 29|311r24 321r63
+7n195*t_RETURN{7E9} 29|273r24
+7n205*t_THEN{7E9} 29|313r65
+7n213*t_ELSE{7E9} 29|317r33
+7n221*t_FOR{7E9} 29|286r24 294r99
+7n255*t_MULT_OP{7E9} 29|679r24
+7n266*t_DIVIDE_OP{7E9} 29|679r57
+7n279*t_AND{7E9} 29|376r24
+7n286*t_ADD_OP{7E9} 29|714r24
+7n296*t_SUBTRACT_OP{7E9} 29|567r34 714r56
+7n311*t_GLOBAL{7E9} 29|750r34
+7n321*t_OR{7E9} 29|380r27
+7n327*t_NOT{7E9} 29|392r24
+7n334*t_ASSIGN{7E9} 29|336r56
+7n354*t_DOUBLE_EQUALS{7E9} 29|607r31
+7n384*t_LESS_THAN{7E9} 29|605r24
+7n397*t_LESS_THAN_OR_EQUAL{7E9} 29|606r31
+7n419*t_GREATER_THAN{7E9} 29|608r31
+7n435*t_GREATER_THAN_OR_EQUAL{7E9} 29|609r31
+7n460*t_ID{7E9} 29|61r23 85r23 116r23 208r24 220r24 579r24
+7n466*t_NUMBER{7E9} 29|499r24 504r57
+7n476*t_COLON{7E9} 29|116r51 834r30
+7n485*t_SEMI_COLON{7E9} 29|172r34 174r34 179r34 246r37 248r37 288r67 763r37
+. 798r34 803r34 807r34
+7n499*t_LEFT_PAREN{7E9} 29|286r54 311r53 430r24 544r24 834r114
+7n513*t_RIGHT_PAREN{7E9} 29|292r33 313r27 437r27 544r92 836r33
+7n528*t_LEFT_BRACKET{7E9} 29|351r27 474r24 915r27
+7n544*t_RIGHT_BRACKET{7E9} 29|352r77 475r74 916r72
+7n561*t_TRUE{7E9} 29|555r24
+7n569*t_FALSE{7E9} 29|560r24
+7n585*t_COMMA{7E9} 29|413r37 872r37
+8E9*branch_types 8e423 28|40r63 41r75 49r71 59r66 69r70 71r66 29|214r63 239r75
+. 388r71 693r67 881r70 933r28 972r23 1020r23
+8n26*b_NONE{8E9} 28|40r86 41r98 49r94 59r89 69r93 71r89 29|148r91 168r90
+. 192r83 214r86 239r98 258r87 284r64 374r88 388r94 408r91 424r95 426r87 496r83
+. 524r50 538r84 601r92 635r86 675r88 693r90 710r92 728r86 745r89 759r94 773r101
+. 858r87 868r92 881r93 883r95 933r51 986r40 1060r53 1103r78
+8n33*b_RETURN_TYPE{8E9} 29|271r104 425r106 834r76
+8n48*b_VARIABLE_NAME{8E9} 29|350r30 470r90 901r84
+8n65*b_VARIABLE_TYPE{8E9} 29|116r98
+8n82*b_VALUE{8E9} 29|273r71 336r104 685r47 719r47
+8n91*b_INDEX{8E9} 29|348r89 352r45 472r88 475r42
+8n100*b_RETURN_STATEMENT{8E9} 29|270r94
+8n120*b_PROCEDURE_DECLARATION{8E9} 29|772r78
+8n195*b_IF_CONDITION{8E9} 29|311r105
+8n211*b_ACCEPT_IF{8E9} 29|314r49
+8n224*b_DECLINE_IF{8E9} 29|318r65
+8n238*b_BOUND{8E9} 29|916r40
+8n247*b_LEFT{8E9} 29|640r49 700r49 735r49
+8n255*b_RIGHT{8E9} 29|641r50 701r50 736r50
+8n264*b_DESTINATION{8E9} 29|347r89
+8n279*b_VARIABLE_DECLARATION{8E9} 29|900r98
+8n303*b_PROCEDURE_HEADER{8E9} 29|822r94
+8n323*b_PROCEDURE_BODY{8E9} 29|794r92
+8n341*b_ASSIGNMENT_STATEMENT{8E9} 29|334r98
+8n365*b_ARGUMENT{8E9} 29|411r39
+8n377*b_IF_STATEMENT{8E9} 29|308r90
+8n393*b_VARIABLE_VALUE{8E9} 29|471r91
+8n411*b_PARAMETER{8E9} 29|905r41
+9E9*id_types 9e114 28|78r84 29|52r84 76r89 100r109 108r30
+9n22*id_INVALID{9E9} 28|78r103 29|52r103 76r108 100r128 909r75
+9n34*id_STRING{9E9} 29|131r37
+9n45*id_INTEGER{9E9} 29|127r37
+9n57*id_FLOAT{9E9} 29|133r37
+9n67*id_BOOLEAN{9E9} 29|129r37
+9n79*id_PROGRAM_NAME{9E9} 29|152r63
+9n96*id_PROCEDURE_NAME{9E9} 29|830r61
+28V13*tub=28:110{17|87R9} 29|70s24 90s43 94s24 141s24 148s60 163s24 168s61
+. 192s61 216s61 241s60 258s61 270s61 271s69 284s33 308s61 334s61 347s61 348s71
+. 374s61 377s34 381s34 389s61 408s61 424s61 425s69 426s62 429s31 470s60 471s61
+. 472s70 496s61 524s33 538s61 556s34 561s34 591s37 601s61 635s61 675s61 694s61
+. 710s61 728s61 745s61 759s61 772s61 773s66 794s61 822s61 858s61 868s61 882s61
+. 883s62 900s61 901s60 936s33 963s32 965s16 1061s40 1063s40 1064s40 1103s49
+29V13*ub2s=29:111{string} 29|90s54 156s20 196s18 225s20 226s77 231s77 429s42
+. 831s20 910s20 950s35 1025s32 1042s28 1043s32 1056s57 1056s118 1070s26 1073s26
+. 1075s43 1091s39
+32R9*token 37e17 28|21r24 25r48 32r37 29|13r37 56r30 80r30 104r33 105r35
+. 217r29 497r29 525r29 539r29 602r29 676r31 711r31 823r31 884r29 1087r27
+34e10*t_type{7E9} 29|31r21 33r85 39r89 126r32 128r35 130r35 132r35 162r43
+35r10*value{17|87R9} 29|65r41 89r41 124r44 223r70 226r95 227r43 231r95 502r40
+. 511r63 530r40 581r37 612r35 681r43 716r41 833r44 889r41 1091r56
+36i10*scope{integer} 29|47r25
+44R9*Node 57e17 29|148r47 168r48 192r48 216r48 241r47 258r48 270r48 271r56
+. 284r20 308r48 334r48 347r48 348r58 374r48 389r48 408r48 424r48 425r56 426r49
+. 470r47 471r48 472r57 496r48 524r20 538r48 601r48 635r48 675r48 694r48 710r48
+. 728r48 745r48 759r48 772r48 773r53 794r48 822r48 858r48 868r48 882r48 883r49
+. 900r48 901r47 936r20 1103r36
+45P9*Node_Ptr(44R9) 28|8r20 29r46 36r42 37r49 38r47 39r54 40r37 41r49 42r44
+. 43r51 44r49 45r47 46r55 47r46 48r51 49r45 50r48 51r58 52r48 53r41 54r41
+. 55r41 56r49 57r43 58r45 59r39 60r49 61r43 62r46 63r51 64r56 65r49 66r51
+. 67r44 68r49 69r44 70r56 71r40 73r38 73r62 75r49 78r54 29|11r20 52r54 76r59
+. 100r55 147r50 148r25 167r48 168r25 191r43 192r25 205r54 214r37 216r25 239r49
+. 241r25 257r45 258r25 269r52 270r25 271r33 282r50 283r25 307r48 308r25 332r56
+. 334r25 346r47 347r25 348r35 373r52 374r25 388r45 389r25 407r49 408r25 423r58
+. 424r25 425r33 426r26 468r48 470r25 471r25 472r35 495r42 496r25 522r42 523r25
+. 537r42 538r25 600r50 601r25 634r44 635r25 674r46 675r25 693r40 694r25 709r50
+. 710r25 727r44 728r25 744r47 745r25 758r52 759r25 771r56 772r25 773r30 793r50
+. 794r25 820r51 822r25 857r45 858r25 867r50 868r25 881r44 882r25 883r26 898r56
+. 900r25 901r24 932r28 935r25 945r47 968r39 968r63 969r28 1010r50 1014r30
+. 1097r28
+49r10*Name{17|87R9} 29|198m19 227m22 377m19 381m19 429m16 483m16 502m19 508m22
+. 510r27 530m19 556m19 561m19 591m22 624m25 683m25 718m25 783m19 842m31 889m20
+. 911m21 950r49 1025r50 1043r50 1056r137
+50e10*Branch_Type{8E9} 29|640m27 641m28 685m25 700m27 701m28 719m25 735m27
+. 736m28 905m19 950r73 986r18 987m25 987r45 1060r32 1064r58
+52p10*Left{45P9} 29|639r22 640r22 699r22 700r22 734r22 735r22 952r31 996m15
+53p10*Right{45P9} 29|639r53 641r22 699r53 701r22 734r53 736r22 954r31 997m15
+54p10*Center{45P9} 29|953r31 1003m15
+55i10*internal_tree_num{integer} 29|1037m19 1057m29 1071r57 1074r58
+56i10*scope{integer} 29|148r133 168r133 192r126 216r116 241r126 258r130 270r148
+. 271r153 284r106 308r141 334r156 347r139 348r133 374r131 389r124 408r133
+. 424r137 425r155 426r129 470r141 471r144 472r132 496r126 524r93 538r127
+. 601r134 635r129 675r131 694r119 710r134 728r129 745r132 759r136 772r137
+. 773r143 794r144 822r148 840m28 841m31 858r130 868r134 882r123 883r138 900r156
+. 901r135 936r91
+60K12*Node_Vectors[8|73] 28|19r24 29|970r28 980r17 984r17 992r17 1000r17
+. 1012r30 1015r30
+65V13*get_children_of_node{8|88R9[60]} 29|974s26 1051s34
+67i4*current_scope{integer} 29|223r84 786m17 786r41 837m26 840r44 841r47
+. 846r29 847r49
+68i4*scope_max{integer} 29|113r38 837r50 846r52 847m29
+71U14*add 29|157s20 184s17 197s17 228s20 249s17 263s17 274s17 275s17 296s29
+. 322s26 338s17 353s23 361s17 362s17 378s17 382s17 399s17 416s17 434s20 438s20
+. 439s20 476s20 477s20 482s14 484s14 485s14 512s20 515s17 531s17 546s17 551s17
+. 570s17 585s20 592s20 625s20 644s17 686s20 697s17 720s20 731s17 752s17 765s17
+. 784s17 810s17 843s26 861s17 875s17 891s17 892s17 912s20 917s23 923s17 939s17
+X 22 gstack.ads
+4k9*gstack 11e11 28|5w6 25r30
+5U15*push 29|32s21[28|25] 63s21[28|25] 87s21[28|25] 888s21[28|25]
+6U15*pop 29|62s21[28|25] 86s21[28|25] 118s21[28|25] 120s21[28|25] 122s21[28|25]
+. 221s21[28|25] 501s21[28|25] 505s24[28|25] 529s21[28|25] 580s21[28|25] 611s21[28|25]
+. 680s21[28|25] 715s21[28|25] 832s24[28|25] 887s21[28|25] 1090s21[28|25]
+7V14*stack_is_empty{boolean} 29|1089s24[28|25]
+X 24 id_value_pkg.ads
+5K9*id_value_pkg 27e17 29|6w6 57r22 64r26 81r22 88r26 106r22 135r26
+7R9*id_value 14e17 29|57r35 81r35 106r35
+20V13*init{7R9} 29|64s39 88s39 135s39
+X 27 lexer.ads
+6K9*lexer 45e10 29|2w6 15r14
+9V13*get_next_token{21|32R9} 29|15s20
+X 28 parser.ads
+7K9*parser 83l5 83e11 29|8b14 1141l5 1141t11
+19r4*root_nodes{8|88R9[21|60]} 29|785m10 785r10 1103m7 1103r7 1107r22 1123m29
+. 1123r29
+21r4*next_token{21|32R9} 29|31r10 32r27 33r74 35m10 35r10 39r78 47r14 162r32
+. 1099m7 1099r7
+23r4*found_program_name{17|87R9} 29|155m10
+25K12*matchStack[22|4] 29|32r10 62r10 63r10 86r10 87r10 118r10 120r10 122r10
+. 221r10 501r10 505r13 529r10 580r10 611r10 680r10 715r10 832r13 887r10 888r10
+. 1089r13 1090r10
+28U14*parser_main 29|1096b14 1139l8 1139t19
+29U14*print_preorder 29>29 29|945b14 952s7 953s7 954s7 956l8 956t22
+29p29 in_node{21|45P9} 29|945b30 947r10 950r41 950r65 952r23 953r23 954r23
+32V13*get_token{21|32R9} 29|13b13 16l8 16t17 35s24 1099s21
+33V13*match{boolean} 33>19 29|18b13 43l8 43t13 61s10 85s10 116s10 116s38
+. 151s10 156s52 172s20 174s20 176s20 179s20 181s10 181s40 182s18 208s10 220s10
+. 246s23 248s23 273s10 286s10 286s40 288s53 292s19 294s56 294s85 311s10 311s39
+. 313s13 313s51 317s19 321s19 321s49 336s42 351s13 352s63 376s10 380s13 392s10
+. 413s23 430s10 437s13 474s10 475s60 499s10 504s13 504s43 527s10 544s10 544s78
+. 550s10 555s10 560s10 567s20 579s10 605s10 606s17 607s17 608s17 609s17 679s10
+. 679s43 714s10 714s42 750s20 763s23 798s20 800s20 803s20 807s20 809s10 809s40
+. 828s10 834s16 834s100 836s19 872s23 886s10 886s38 886s64 886s89 908s10
+. 915s13 916s58
+33e19 inType{21|7E9} 29|18b20 31r30 39r46
+36V13*program{boolean} 36>21 29|191b13 203l8 203t15 1109s10
+36p21 parent_node{21|45P9} 29|191b22 192r114 197r22
+37V13*program_header{17|87R9} 37>28 29|147b13 165l8 165t22 195s23
+37p28 parent_node{21|45P9} 29|147b29 148r121 157r25
+38V13*program_body{boolean} 38>26 29|167b13 189l8 189t20 196s52
+38p26 parent_node{21|45P9} 29|167b27 168r121 184r22
+39V13*id_no_pop_no_child{boolean} 39>33 29|205b13 212l8 212t26
+39p33 parent_node{21|45P9} 29|205b33
+40V13*id{boolean} 40>16 40>47 29|214b13 237l8 237t10 350s10
+40p16 parent_node{21|45P9} 29|214b16 216r104 228r25
+40e47 inType{21|8E9} 29|214b47 216r73
+41V13*statement_list{boolean} 41>28 41>59 29|178s20 239b13 247s23 255l8 255t22
+. 294s22 314s16 318s32 802s20
+41p28 parent_node{21|45P9} 29|239b28 241r114 249r22
+41e59 inType{21|8E9} 29|239b59 241r84
+42V13*statement{boolean} 42>23 29|245s10 257b13 267l8 267t17
+42p23 parent_node{21|45P9} 29|257b24 258r118 263r22
+43V13*return_statement{boolean} 43>30 29|261s38 269b13 280l8 280t24 805s20
+43p30 parent_node{21|45P9} 29|269b31 270r136 271r141 275r22
+44V13*loop_statement{boolean} 44>28 29|261s9 282b13 305l8 305t22
+44p28 parent_node{21|45P9} 29|282b29 284r94 296r34
+45V13*if_statement{boolean} 45>26 29|260s45 307b13 330l8 330t20
+45p26 parent_node{21|45P9} 29|307b27 308r129 322r31
+46V13*assignment_statement{boolean} 46>34 29|260s10 288s13 332b13 344l8 344t28
+46p34 parent_node{21|45P9} 29|332b35 334r144 338r22
+47V13*destination{boolean} 47>25 29|336s10 346b13 367l8 367t19
+47p25 parent_node{21|45P9} 29|346b26 347r127 348r121 353r28 362r22
+48V13*expression_prime{boolean} 48>30 29|373b13 386l8 386t24 398s39
+48p30 parent_node{21|45P9} 29|373b31 374r119 378r22 382r22
+49V13*expression{boolean} 49>24 49>55 29|273s43 290s16 311s76 336s75 352s16
+. 376s40 380s42 388b13 405l8 405t18 411s10 475s13 544s47
+49p24 parent_node{21|45P9} 29|388b24 389r112 399r22
+49e55 inType{21|8E9} 29|388b55 389r81
+50V13*argument_list{boolean} 50>27 29|407b13 414s23 421l8 421t21 431s23
+50p27 parent_node{21|45P9} 29|407b28 408r121 416r22
+51V13*procedure_call_stripped{boolean} 51>37 51>68 29|423b13 444l8 444t31
+. 584s13
+51p37 parent_node{21|45P9} 29|423b37 424r125 425r143 426r117 439r25
+51r68 id_name{17|87R9} 29|423b68 429r47
+52V13*name_stripped{boolean} 52>27 52>58 29|468b13 487l8 487t21 589s13
+52p27 parent_node{21|45P9} 29|468b27 470r129 471r132 472r120 477r25 485r19
+52r58 id_name{17|87R9} 29|468b58 483r24
+53V13*number{boolean} 53>20 29|495b13 520l8 520t14 569s10 938s10
+53p20 parent_node{21|45P9} 29|495b21 496r114 512r25 515r22
+54V13*string{boolean} 54>20 29|522b13 535l8 535t14
+54p20 parent_node{21|45P9} 29|522b21 524r81 531r22
+55V13*factor{boolean} 55>20 29|537b13 598l8 598t14 682s13 696s10
+55p20 parent_node{21|45P9} 29|537b21 538r115 546r22 551r22 570r22 585r25
+. 592r25
+56V13*relation_prime{boolean} 56>28 29|600b13 623s37 632l8 632t22 637s35
+56p28 parent_node{21|45P9} 29|600b29 601r122 624r13 625r25
+57V13*relation{boolean} 57>22 29|634b13 648l8 648t16 717s13 730s10
+57p22 parent_node{21|45P9} 29|634b23 635r117 644r22
+58V13*term_prime{boolean} 58>24 29|674b13 682s40 691l8 691t18 696s37
+58p24 parent_node{21|45P9} 29|674b25 675r119 683r13 685r13 686r25
+59V13*term{boolean} 59>18 59>49 29|623s13 637s10 693b13 707l8 707t12
+59p18 parent_node{21|45P9} 29|693b19 694r107 697r22
+59e49 in_type{21|8E9} 29|693b50 694r75
+60V13*arith_op_prime{boolean} 60>28 29|709b13 717s42 725l8 725t22 730s39
+60p28 parent_node{21|45P9} 29|709b29 710r122 718r13 719r13 720r25
+61V13*arith_op{boolean} 61>22 29|398s10 727b13 742l8 742t16
+61p22 parent_node{21|45P9} 29|727b23 728r117 731r22
+62V13*declaration{boolean} 62>25 29|744b13 756l8 756t19 762s10
+62p25 parent_node{21|45P9} 29|744b26 745r120 752r22
+63V13*declaration_list{boolean} 63>30 29|171s20 758b13 764s23 769l8 769t24
+. 797s20
+63p30 parent_node{21|45P9} 29|758b31 759r124 765r22
+64V13*procedure_declaration{boolean} 64>35 29|751s45 771b13 791l8 791t29
+64p35 parent_node{21|45P9} 29|771b35 772r125 773r131 784r22
+65V13*procedure_body{boolean} 65>28 29|780s111 793b13 816l8 816t22
+65p28 parent_node{21|45P9} 29|793b29 794r132 810r22
+66V13*procedure_header{17|87R9} 66>30 29|778s25 820b13 855l8 855t24
+66p30 parent_node{21|45P9} 29|820b30 822r136 841r19 842r19 843r31
+67V13*parameter{boolean} 67>23 29|857b13 865l8 865t17 871s10
+67p23 parent_node{21|45P9} 29|857b24 858r118 861r22
+68V13*parameter_list{boolean} 68>28 29|835s29 867b13 873s23 879l8 879t22
+68p28 parent_node{21|45P9} 29|867b29 868r122 875r22
+69V13*type_mark{boolean} 69>23 69>54 29|116s69 834s48 881b13 896l8 896t17
+69p23 parent_node{21|45P9} 29|881b23 882r111 883r126 892r22
+69e54 inType{21|8E9} 29|881b54 882r80
+70V13*variable_declaration{boolean} 70>35 70>66 29|751s10 860s10 898b13 929l8
+. 929t28
+70p35 parent_node{21|45P9} 29|898b35 900r144 901r123 917r28 923r22
+70b66 is_Parameter{boolean} 29|898b66 904r10 909r54
+71V13*bound{boolean} 71>19 71>50 29|916s16 931b13 943l8 943t13
+71p19 parent_node{21|45P9} 29|932b7 936r79 939r22
+71e50 inType{21|8E9} 29|933b7 936r48
+73V13*solve_tree{21|45P9} 73>24 29|968b13 985s25 993s26 994s26 1001s26 1008l8
+. 1008t18 1124s28
+73p24 root{21|45P9} 29|968b25 974r48 976r10 977r17 981r17 986r13 987r40 996r10
+. 997r10 1003r10 1006r14
+74V13*int_to_string_trimmed{17|87R9} 74>35 29|958b13 966l8 966t29 1042s34
+. 1056s63 1071s22 1074s22
+74i35 inInt{integer} 29|959b7 963r52
+75U14*gen_dot_files 75>28 29|1010b14 1084l8 1084t21 1125s10
+75p28 parent_node{21|45P9} 29|1010b29 1025r38 1037r7 1038r21 1043r38
+77V13*get_next_token_scope{integer} 29|45b13 48l8 48t28 60s28 84s28 110s28
+78V13*add_ID_to_sym_table{17|87R9} 78>33 78>64 29|52b13 72l8 72t27 152s26
+. 830s25
+78p33 parent_node{21|45P9} 29|52b33
+78e64 in_id_type{21|9E9} 29|52b64 64r44
+81U14*viewMatchStack 29|1086b14 1094l8 1094t22
+X 29 parser.adb
+55i7 possible_id_scope{integer} 60m7 66r51
+56r7 matched_token{21|32R9} 62m25 63r26 65r27
+57r7 new_id_value{24|7R9} 64m10 64r10 66r70
+58r7 return_string{17|87R9} 65m10 66r36 67r17
+76V13 add_ID_to_sym_table_temp{17|87R9} 76b13 76>38 76>69 96l8 96t32
+76p38 parent_node{21|45P9}
+76e69 in_id_type{21|9E9} 88r44
+79i7 possible_id_scope{integer} 84m7 90r84
+80r7 matched_token{21|32R9} 86m25 87r26 89r27
+81r7 new_id_value{24|7R9} 88m10 88r10 90r103
+82r7 return_string{17|87R9} 89m10 90r59 91r17
+100V13 add_var_to_sym_table{17|87R9} 100b13 100>34 100>65 100>89 143l8 143t28
+. 909s23
+100p34 parent_node{21|45P9} 116r79
+100b65 is_Parameter{boolean} 112r10 137r108
+100e89 in_id_type{21|9E9}
+103i7 possible_id_scope{integer} 110m7 113m10 137r51
+104r7 matched_id_token{21|32R9} 120m25 122m25 124r27
+105r7 matched_type_token{21|32R9} 118m25 126r13 128r16 130r16 132r16
+106r7 new_id_value{24|7R9} 135m10 135r10 137r70
+107r7 return_string{17|87R9} 124m10 137r36 138r17
+108e7 given_id_type{21|9E9} 127m13 129m13 131m13 133m13 135r44
+148p7 new_node{21|45P9} 152r46 157r38
+149r7 program_name{17|87R9} 152m10 155r32 156r25 158r20 160r17
+168p7 new_node{21|45P9} 171r38 178r36 184r35
+169b7 temp_bool{boolean} 171m7 172m7 174m7 176m7 178m7 179m7
+192p7 new_node{21|45P9} 195r38 196r66 197r35 198r10
+193r7 program_name{17|87R9} 195m7 196r23 198r27
+216p7 new_node{21|45P9} 227r13 228r38
+217r7 popped_token{21|32R9} 221m26 223r57 226r82 227r30 231r82
+218p7 lookup_return_entry{30|14P9} 223m10 225r25
+241p7 new_node{21|45P9} 245r21 247r39 249r35
+242b7 temp_bool{boolean} 246m10 247m10 248m10
+258p7 new_node{21|45P9} 260r32 260r59 261r25 261r56 263r35
+270p7 new_node{21|45P9} 273r55 274r21 275r35
+271p7 return_type_node{21|45P9} 274r30
+283p7 new_node{21|45P9} 288r34 290r28 294r37 296r47
+308p7 new_node{21|45P9} 311r88 314r32 318r48 322r44
+309b7 temp_bool{boolean} 318m19
+334p7 new_node{21|45P9} 336r23 336r87 338r35
+347p7 new_node{21|45P9} 350r13 352r28 353r41 361r22 362r35
+348p7 default_index_node{21|45P9} 361r32
+374p7 new_node{21|45P9} 376r52 377r10 378r35 380r54 381r10 382r35
+389p7 new_node{21|45P9} 398r20 398r57 399r35
+408p7 new_node{21|45P9} 411r22 414r38 416r35
+409b7 temp_bool{boolean} 413m10 414m10
+424p7 new_node{21|45P9} 429r7 431r38 434r24 438r24 439r38
+425p7 return_type_node{21|45P9} 438r34
+426p7 no_params{21|45P9} 434r33
+427b7 temp_bool{boolean} 431m10 433r13
+470p7 new_node{21|45P9} 476r35 483r7 484r29
+471p7 var_node{21|45P9} 475r25 476r25 477r38 482r19 484r19 485r32
+472p7 default_index_node{21|45P9} 482r29
+496p7 new_node{21|45P9} 502r10 508r13 510r18 512r38 515r35
+497r7 popped_token{21|32R9} 501m26 502r27 505m29 511r50
+523p7 new_node{21|45P9} 530r10 531r35
+525r7 popped_token{21|32R9} 529m26 530r27
+538p7 new_node{21|45P9} 544r59 546r35 551r35 556r10 561r10 569r18 570r35
+. 584r38 585r38 589r27 591r13 592r38
+539r7 popped_token{21|32R9} 580m26 581r24
+540b7 temp_bool{boolean} 567m7
+541r7 matched_id{17|87R9} 581m10 584r48 589r36
+601p7 new_node{21|45P9} 623r18 623r52 625r38
+602r7 popped_token{21|32R9} 611m26 612r22
+603r7 operator{17|87R9} 612m10 624r33
+635p7 new_node{21|45P9} 637r16 637r51 639r13 639r44 640r13 641r13 644r35
+675p7 new_node{21|45P9} 682r21 682r52 686r38
+676r7 popped_token{21|32R9} 680m25 681r30
+677r7 operation_name{17|87R9} 681m10 683r33
+694p7 new_node{21|45P9} 696r18 696r49 697r35 699r13 699r44 700r13 701r13
+710p7 new_node{21|45P9} 717r23 717r58 720r38
+711r7 popped_token{21|32R9} 715m26 716r28
+712r7 operation_name{17|87R9} 716m10 718r33
+728p7 new_node{21|45P9} 730r20 730r55 731r35 734r13 734r44 735r13 736r13
+745p7 new_node{21|45P9} 751r32 751r68 752r35
+746b7 temp_bool{boolean} 750m7
+759p7 new_node{21|45P9} 762r23 764r41 765r35
+760b7 temp_bool{boolean} 763m10 764m10
+772p7 new_node{21|45P9} 783r10 784r35
+773p7 new_root_node{21|45P9} 778r43 780r127 785r29
+774r7 procedure_name{17|87R9} 778m7 780r40 783r27
+794p7 new_node{21|45P9} 797r38 802r36 805r38 810r35
+795b7 temp_bool{boolean} 797m7 798m7 800m7 802m7 803m7 805m7 807m7
+822p7 new_node{21|45P9} 830r45 834r59 835r45 840r19 843r44
+823r7 popped_token{21|32R9} 832m29 833r31
+824r7 procedure_name{17|87R9} 833m13 842r39 849r26
+825b7 temp_bool{boolean} 835m16
+826r7 returned_id{17|87R9} 830m10 831r25
+858p7 new_node{21|45P9} 860r32 861r35
+868p7 new_node{21|45P9} 871r21 873r39 875r35
+869b7 temp_bool{boolean} 872m10 873m10
+882p7 new_node{21|45P9} 891r22 892r35
+883p7 type_node{21|45P9} 889r10 891r32
+884r7 popped_token{21|32R9} 887m25 888r26 889r28
+900p7 new_node{21|45P9} 905r10 909r44 912r24 916r23 917r41 923r35
+901p7 id_node{21|45P9} 911r13 912r33
+902r7 id_string{17|87R9} 909m10 910r25 911r29
+935p7 new_node{21|45P9} 938r18 939r35
+961r7 working_string{17|87R9} 963m7 965r48 965r96
+969p7 return_node{21|45P9} 985m10 987r13 989r17
+970r7 children{8|88R9[21|60]} 974m7 980r38 984r38 985r37 992r38 993m10 993r10
+. 993r38 994m10 994r10 994r38 996r24 997r24 1000r38 1001m10 1001r10 1001r38
+. 1003r25
+1011p7 F{19|64P9} 1024m10 1024r10 1028r29 1030r10 1032r29 1033r29 1041r10
+. 1056r37 1068r19 1081r29 1082m26 1082r26
+1012r7 queue{8|88R9[21|60]} 1038m7 1038r7 1047r13 1049r25 1050m10 1050r10
+. 1076m16 1076r16
+1013i7 ncount{integer} 1037r40 1042r57 1045m7 1045r17 1056r86 1057r50 1058m16
+. 1058r50
+1014p7 active_node{21|45P9} 1049m10 1051r56 1071r45
+1015r7 children_list{8|88R9[21|60]} 1051m10 1053r30
+1017r7 label_text{17|87R9} 1061m19 1063m19 1064m19 1075r49
+1053p14 childElement{21|45P9} 1054r16 1056r124 1057r16 1060r19 1064r45 1074r45
+. 1076r30
+1087r7 temp_token{21|32R9} 1090m26 1091r45
+1097p7 active_node{21|45P9} 1107m7 1109r19
+1123p11 parent_Element{21|45P9} 1124r10 1124r40 1125r25
+X 30 symbol_table.ads
+10K9*symbol_table 29|3w6 66r10 66r84 90r10 90r117 137r10 137r84 218r29 223r33
+. 1130r7 1131r7 30|61e17
+14P9*Table_Entry_ptr(13R9) 29|218r42
+17r10*keyword{17|87R9} 29|225r45
+33V14*"="{boolean} 8|64i19
+44p4*LastEntry{14P9} 29|66m97 66r97 90m130 90r130 137m97 137r97
+47U14*insert_entry 29|66s23 90s23 137s23
+50U14*print_hash_entries 29|1131s20
+54V13*lookupHash{14P9} 29|223s46
+58U14*test_vector 29|1130s20
+X 31 system.ads
+67M9*Address
+X 45 s-memory.ads
+53V13*Alloc{31|67M9} 103i<c,__gnat_malloc>22
+68U14*Free 104i<c,__gnat_free>22
+76V13*Realloc{31|67M9} 105i<c,__gnat_realloc>22
+X 52 s-stalib.adb
+93U14 Break_Start 94i<c,__gnat_break_start>22
+

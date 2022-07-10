@@ -20,6 +20,9 @@ package parser is
 
    next_token : common.token;
 
+   --This number gets assigned in the AST and is used to retrieve from the symbol table as well.
+   string_num : Integer := 0;
+
    found_program_name : Ada.Strings.Unbounded.Unbounded_String;
 
    package matchStack is new gstack(400,common.token);

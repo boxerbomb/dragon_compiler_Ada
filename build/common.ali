@@ -1,0 +1,355 @@
+V "GNAT Lib v10"
+P SS ZX
+
+RN
+RV NO_EXCEPTION_HANDLERS
+RV NO_EXCEPTION_PROPAGATION
+RV NO_EXCEPTIONS
+RV NO_LOCAL_ALLOCATORS
+RV NO_NESTED_FINALIZATION
+RV NO_SECONDARY_STACK
+RV NO_STANDARD_STORAGE_POOLS
+RV NO_DEFAULT_INITIALIZATION
+RV NO_ELABORATION_CODE
+RV SPARK_05
+
+U common%b		common.adb		b1e97bd2 NE OO PK IL
+Z ada.exceptions%s	a-except.adb		a-except.ali
+Z ada.tags%s		a-tags.adb		a-tags.ali
+Z system.secondary_stack%s  s-secsta.adb	s-secsta.ali
+Z system.soft_links%s	s-soflin.adb		s-soflin.ali
+Z system.standard_library%s  s-stalib.adb	s-stalib.ali
+Z system.storage_pools.subpools%s  s-stposu.adb	s-stposu.ali
+
+U common%s		common.ads		a1df3ee0 EE OO PF PK IL
+W ada%s			ada.ads			ada.ali
+W ada.containers%s	a-contai.ads		a-contai.ali
+Z ada.containers.generic_array_sort%s
+Z ada.containers.helpers%s  a-conhel.adb	a-conhel.ali
+W ada.containers.vectors%s
+Z ada.exceptions%s	a-except.adb		a-except.ali
+Z ada.finalization%s	a-finali.ads		a-finali.ali
+Z ada.iterator_interfaces%s
+Z ada.streams%s		a-stream.adb		a-stream.ali
+W ada.strings%s		a-string.ads		a-string.ali
+W ada.strings.unbounded%s  a-strunb.adb		a-strunb.ali
+Z ada.tags%s		a-tags.adb		a-tags.ali
+Z ada.unchecked_deallocation%s
+Z interfaces%s		interfac.ads		interfac.ali
+Z system%s		system.ads		system.ali
+Z system.finalization_masters%s  s-finmas.adb	s-finmas.ali
+Z system.pool_global%s	s-pooglo.adb		s-pooglo.ali
+Z system.secondary_stack%s  s-secsta.adb	s-secsta.ali
+Z system.soft_links%s	s-soflin.adb		s-soflin.ali
+Z system.standard_library%s  s-stalib.adb	s-stalib.ali
+Z system.storage_elements%s  s-stoele.adb	s-stoele.ali
+Z system.storage_pools%s  s-stopoo.adb		s-stopoo.ali
+Z system.storage_pools.subpools%s  s-stposu.adb	s-stposu.ali
+Z system.stream_attributes%s  s-stratt.adb	s-stratt.ali
+
+D ada.ads		20200723063517 76789da1 ada%s
+D a-charac.ads		20200723063517 2d3ec45b ada.characters%s
+D a-chlat1.ads		20200723063517 66457d31 ada.characters.latin_1%s
+D a-contai.ads		20200723063517 61e5e089 ada.containers%s
+D a-cgarso.ads		20200723063517 9129bfa8 ada.containers.generic_array_sort%s
+D a-conhel.ads		20200723063517 20298884 ada.containers.helpers%s
+D a-conhel.adb		20200723063517 e8b6ff51 ada.containers.helpers%b
+D a-convec.ads		20200723063517 7e2b0fdf ada.containers.vectors%s
+D a-convec.adb		20200723063517 08afd670 ada.containers.vectors%b
+D a-except.ads		20200723063517 a7106115 ada.exceptions%s
+D a-finali.ads		20200723063517 bf4f806b ada.finalization%s
+D a-iteint.ads		20200723063517 7c7305e9 ada.iterator_interfaces%s
+D a-stream.ads		20200723063517 119b8fb3 ada.streams%s
+D a-string.ads		20200723063517 90ac6797 ada.strings%s
+D a-strmap.ads		20200723063517 e8bb714a ada.strings.maps%s
+D a-strunb.ads		20200723063517 1656705b ada.strings.unbounded%s
+D a-tags.ads		20200723063517 491b781d ada.tags%s
+D a-unccon.ads		20200723063517 0e9b276f ada.unchecked_conversion%s
+D a-uncdea.ads		20200723063517 eff36322 ada.unchecked_deallocation%s
+D common.ads		20220217023121 c9a24164 common%s
+D common.adb		20220207071856 784b3ab6 common%b
+D interfac.ads		20200723063517 5ab55268 interfaces%s
+D system.ads		20200723063517 4635ec04 system%s
+D s-atocou.ads		20200723063517 b45c2d8d system.atomic_counters%s
+D s-atocou.adb		20200723063517 b65612c0 system.atomic_counters%b
+D s-exctab.ads		20200723063517 54135002 system.exception_table%s
+D s-finmas.ads		20200723063517 7811a767 system.finalization_masters%s
+D s-finroo.ads		20200723063517 4ff27390 system.finalization_root%s
+D s-memory.ads		20200723063517 597d6634 system.memory%s
+D s-parame.ads		20200723063517 48ec542b system.parameters%s
+D s-pooglo.ads		20200723063517 ede33ef8 system.pool_global%s
+D s-secsta.ads		20200723063517 20bbe636 system.secondary_stack%s
+D s-soflin.ads		20200723063517 a7318a92 system.soft_links%s
+D s-stache.ads		20200723063517 a37c21ec system.stack_checking%s
+D s-stalib.ads		20200723063517 09bd3940 system.standard_library%s
+D s-stalib.adb		20200723063517 f2fe2716 system.standard_library%b
+D s-stoele.ads		20200723063517 2dc34a04 system.storage_elements%s
+D s-stoele.adb		20200723063517 ed88f8fb system.storage_elements%b
+D s-stopoo.ads		20200723063517 b16154c2 system.storage_pools%s
+D s-stposu.ads		20200723063517 97a6219c system.storage_pools.subpools%s
+D s-stratt.ads		20200723063517 aedef97e system.stream_attributes%s
+D s-traent.ads		20200723063517 005bf670 system.traceback_entries%s
+D s-unstyp.ads		20200723063517 34867c83 system.unsigned_types%s
+G a e
+G c Z s s [tokenDI common 30 9 none]
+G c Z s s [tokenDA common 30 9 none]
+G c Z s s [tokenDF common 30 9 none]
+G c Z s s [tokenIP common 30 9 none]
+G c Z s s [has_element common__node_vectors 107 13 56_4]
+G c Z s s [Oeq common__node_vectors 117 24 56_4]
+G c Z s s [to_vector common__node_vectors 126 13 56_4]
+G c Z s s [to_vector common__node_vectors 129 13 56_4]
+G c Z s s [Oconcat common__node_vectors 135 13 56_4]
+G c Z s s [Oconcat common__node_vectors 139 13 56_4]
+G c Z s s [Oconcat common__node_vectors 143 13 56_4]
+G c Z s s [Oconcat common__node_vectors 147 13 56_4]
+G c Z s s [capacity common__node_vectors 151 13 56_4]
+G c Z s s [reserve_capacity common__node_vectors 154 14 56_4]
+G c Z s s [length common__node_vectors 165 13 56_4]
+G c Z s s [set_length common__node_vectors 168 14 56_4]
+G c Z s s [is_empty common__node_vectors 177 13 56_4]
+G c Z s s [clear common__node_vectors 180 14 56_4]
+G c Z s s [to_cursor common__node_vectors 184 13 56_4]
+G c Z s s [to_index common__node_vectors 191 13 56_4]
+G c Z s s [element common__node_vectors 196 13 56_4]
+G c Z s s [element common__node_vectors 203 13 56_4]
+G c Z s s [replace_element common__node_vectors 207 14 56_4]
+G c Z s s [replace_element common__node_vectors 218 14 56_4]
+G c Z s s [query_element common__node_vectors 229 14 56_4]
+G c Z s s [query_element common__node_vectors 240 14 56_4]
+G c Z s s [update_element common__node_vectors 249 14 56_4]
+G c Z s s [update_element common__node_vectors 266 14 56_4]
+G c Z s s [constant_reference common__node_vectors 293 13 56_4]
+G c Z s s [reference common__node_vectors 298 13 56_4]
+G c Z s s [constant_reference common__node_vectors 303 13 56_4]
+G c Z s s [reference common__node_vectors 308 13 56_4]
+G c Z s s [assign common__node_vectors 313 14 56_4]
+G c Z s s [copy common__node_vectors 315 13 56_4]
+G c Z s s [move common__node_vectors 317 14 56_4]
+G c Z s s [insert common__node_vectors 323 14 56_4]
+G c Z s s [insert common__node_vectors 341 14 56_4]
+G c Z s s [insert common__node_vectors 352 14 56_4]
+G c Z s s [insert common__node_vectors 363 14 56_4]
+G c Z s s [insert common__node_vectors 370 14 56_4]
+G c Z s s [insert common__node_vectors 377 14 56_4]
+G c Z s s [insert common__node_vectors 386 14 56_4]
+G c Z s s [insert common__node_vectors 403 14 56_4]
+G c Z s s [prepend common__node_vectors 414 14 56_4]
+G c Z s s [prepend common__node_vectors 419 14 56_4]
+G c Z s s [append common__node_vectors 426 14 56_4]
+G c Z s s [append common__node_vectors 431 14 56_4]
+G c Z s s [insert_space common__node_vectors 438 14 56_4]
+G c Z s s [insert_space common__node_vectors 455 14 56_4]
+G c Z s s [delete common__node_vectors 466 14 56_4]
+G c Z s s [delete common__node_vectors 476 14 56_4]
+G c Z s s [delete_first common__node_vectors 485 14 56_4]
+G c Z s s [delete_last common__node_vectors 490 14 56_4]
+G c Z s s [reverse_elements common__node_vectors 498 14 56_4]
+G c Z s s [swap common__node_vectors 501 14 56_4]
+G c Z s s [swap common__node_vectors 506 14 56_4]
+G c Z s s [first_index common__node_vectors 512 13 56_4]
+G c Z s s [first common__node_vectors 515 13 56_4]
+G c Z s s [first_element common__node_vectors 519 13 56_4]
+G c Z s s [last_index common__node_vectors 522 13 56_4]
+G c Z s s [last common__node_vectors 526 13 56_4]
+G c Z s s [last_element common__node_vectors 530 13 56_4]
+G c Z s s [next common__node_vectors 533 13 56_4]
+G c Z s s [next common__node_vectors 539 14 56_4]
+G c Z s s [previous common__node_vectors 542 13 56_4]
+G c Z s s [previous common__node_vectors 548 14 56_4]
+G c Z s s [find_index common__node_vectors 551 13 56_4]
+G c Z s s [find common__node_vectors 561 13 56_4]
+G c Z s s [reverse_find_index common__node_vectors 575 13 56_4]
+G c Z s s [reverse_find common__node_vectors 587 13 56_4]
+G c Z s s [contains common__node_vectors 601 13 56_4]
+G c Z s s [iterate common__node_vectors 606 14 56_4]
+G c Z s s [reverse_iterate common__node_vectors 614 14 56_4]
+G c Z s s [iterate common__node_vectors 621 13 56_4]
+G c Z s s [iterate common__node_vectors 624 13 56_4]
+G c Z s s [adjust common__node_vectors__implementation 90 28 678_4_56_4]
+G c Z s s [finalize common__node_vectors__implementation 93 28 678_4_56_4]
+G c Z s s [zero_counts common__node_vectors__implementation 96 17 678_4_56_4]
+G c Z s s [busy common__node_vectors__implementation 100 17 678_4_56_4]
+G c Z s s [unbusy common__node_vectors__implementation 104 17 678_4_56_4]
+G c Z s s [lock common__node_vectors__implementation 108 17 678_4_56_4]
+G c Z s s [unlock common__node_vectors__implementation 112 17 678_4_56_4]
+G c Z s s [tc_check common__node_vectors__implementation 116 17 678_4_56_4]
+G c Z s s [te_check common__node_vectors__implementation 120 17 678_4_56_4]
+G c Z s s [initialize common__node_vectors__implementation 139 28 678_4_56_4]
+G c Z s s [finalize common__node_vectors__implementation 140 28 678_4_56_4]
+G c Z s s [initialize common__node_vectors__implementation 145 28 678_4_56_4]
+G c Z s s [finalize common__node_vectors__implementation 146 28 678_4_56_4]
+G c Z s s [reference_control_typeDA common__node_vectors__implementation 84 12 678_4_56_4]
+G c Z s s [reference_control_typeDF common__node_vectors__implementation 84 12 678_4_56_4]
+G c Z s s [reference_control_typeIP common__node_vectors__implementation 84 12 678_4_56_4]
+G c Z s s [with_busyDF common__node_vectors__implementation 136 12 678_4_56_4]
+G c Z s s [with_busyIP common__node_vectors__implementation 136 12 678_4_56_4]
+G c Z s s [with_lockDF common__node_vectors__implementation 142 12 678_4_56_4]
+G c Z s s [with_lockIP common__node_vectors__implementation 142 12 678_4_56_4]
+G c Z s s [adjust common__node_vectors 699 25 56_4]
+G c Z s s [finalize common__node_vectors 700 25 56_4]
+G c Z s s [write common__node_vectors 702 14 56_4]
+G c Z s s [read common__node_vectors 708 14 56_4]
+G c Z s s [read common__node_vectors 722 14 56_4]
+G c Z s s [write common__node_vectors 728 14 56_4]
+G c Z s s [write common__node_vectors 747 14 56_4]
+G c Z s s [read common__node_vectors 753 14 56_4]
+G c Z s s [write common__node_vectors 769 14 56_4]
+G c Z s s [read common__node_vectors 775 14 56_4]
+G c Z s s [pseudo_reference common__node_vectors 786 13 56_4]
+G c Z s s [get_element_access common__node_vectors 795 13 56_4]
+G c Z s s [cursorIP common__node_vectors 717 9 56_4]
+G c Z s s [vectorDA common__node_vectors 693 9 56_4]
+G c Z s s [vectorDF common__node_vectors 693 9 56_4]
+G c Z s s [vectorIP common__node_vectors 693 9 56_4]
+G c Z s s [constant_reference_typeDI common__node_vectors 737 9 56_4]
+G c Z s s [constant_reference_typeDA common__node_vectors 737 9 56_4]
+G c Z s s [constant_reference_typeDF common__node_vectors 737 9 56_4]
+G c Z s s [constant_reference_typeIP common__node_vectors 737 9 56_4]
+G c Z s s [reference_typeDI common__node_vectors 759 9 56_4]
+G c Z s s [reference_typeDA common__node_vectors 759 9 56_4]
+G c Z s s [reference_typeDF common__node_vectors 759 9 56_4]
+G c Z s s [reference_typeIP common__node_vectors 759 9 56_4]
+G c Z s s [finalize common__node_vectors 811 25 56_4]
+G c Z s s [first common__node_vectors 813 24 56_4]
+G c Z s s [last common__node_vectors 814 24 56_4]
+G c Z s s [next common__node_vectors 816 24 56_4]
+G c Z s s [previous common__node_vectors 820 24 56_4]
+G c Z s s [elements_arrayIP common__node_vectors 681 9 56_4]
+G c Z s s [elements_typeIP common__node_vectors 684 9 56_4]
+G c Z s s [iteratorDF common__node_vectors 803 9 56_4]
+G c Z s s [iteratorIP common__node_vectors 803 9 56_4]
+G c Z s s [free common__node_vectors 41 14 56_4]
+G c Z s s [append_slow_path common__node_vectors 44 14 56_4]
+G c Z s b [get_children_of_node common 61 13 none]
+G c Z s b [add common 64 14 none]
+G c Z s s [nodeDI common 44 9 none]
+G c Z s s [nodeDA common 44 9 none]
+G c Z s s [nodeDF common 44 9 none]
+G c Z s s [nodeIP common 44 9 none]
+X 1 ada.ads
+16K9*Ada 20e8 20|1r6 2r6 26r41 26r88 27r27 27r89 33r18 46r16 57r6
+X 4 a-contai.ads
+16K13*Containers 28e19 20|2r10 57r10
+X 8 a-convec.ads
+61I9 Index_Type 20|58r9
+62+9 Element_Type 20|59r9
+73k24*Vectors 824e27 20|2w21 57r21
+88R9*Vector<11|43R9> 20|61r73[56] 21|19r73[20|56] 20r43[20|56]
+431U14*Append 21|23s24[20|56] 26s24[20|56] 29s24[20|56]
+X 12 a-iteint.ads
+24h9 Forward_Iterator
+32h9 Reversible_Iterator<24R9[8|111]>
+X 14 a-string.ads
+16K13*Strings 35e16 20|1r10 26r45 26r92 27r31 27r93 33r22 46r20
+X 16 a-strunb.ads
+82K21*Unbounded 756e26 20|1w18 26r53 26r100 27r39 27r101 33r30 46r28
+87R9*Unbounded_String<11|43R9> 739e14 20|26r63 27r49 33r40 46r38
+103V13*To_Unbounded_String{87R9} 20|26r110
+116V13*To_String{string} 20|27r111
+X 20 common.ads
+5K9*common 47r24 59r25 66l5 66e11 21|1b14 20r23 35l5 35t11
+7E7*token_types 7e582 32r19
+7n23*t_INVALID{7E7} 37r28
+7n34*t_PROGRAM{7E7}
+7n45*t_PROCEDURE{7E7}
+7n58*t_IS_STATEMENT{7E7}
+7n74*t_VARIABLE{7E7}
+7n86*t_BEGIN{7E7}
+7n95*t_END{7E7}
+7n102*t_DOT{7E7}
+7n109*t_LINE_COMMENT{7E7}
+7n125*t_INTEGER{7E7}
+7n136*t_BOOL{7E7}
+7n144*t_FLOAT{7E7}
+7n153*t_STRING{7E7}
+7n163*t_STRING_VALUE{7E7}
+7n179*t_CHAR{7E7}
+7n187*t_IF{7E7}
+7n193*t_RETURN{7E7}
+7n203*t_THEN{7E7}
+7n211*t_ELSE{7E7}
+7n219*t_FOR{7E7}
+7n226*t_WHILE{7E7}
+7n235*t_SWITCH{7E7}
+7n245*t_CASE{7E7}
+7n253*t_MULT_OP{7E7}
+7n264*t_DIVIDE_OP{7E7}
+7n277*t_AND{7E7}
+7n284*t_ADD_OP{7E7}
+7n294*t_SUBTRACT_OP{7E7}
+7n309*t_GLOBAL{7E7}
+7n319*t_OR{7E7}
+7n325*t_NOT{7E7}
+7n332*t_ASSIGN{7E7}
+7n342*t_EQUALS{7E7}
+7n352*t_DOUBLE_EQUALS{7E7}
+7n369*t_NOT_EQUAL{7E7}
+7n382*t_LESS_THAN{7E7}
+7n395*t_LESS_THAN_OR_EQUAL{7E7}
+7n417*t_GREATER_THAN{7E7}
+7n433*t_GREATER_THAN_OR_EQUAL{7E7}
+7n458*t_ID{7E7}
+7n464*t_NUMBER{7E7}
+7n474*t_COLON{7E7}
+7n483*t_SEMI_COLON{7E7}
+7n497*t_LEFT_PAREN{7E7}
+7n511*t_RIGHT_PAREN{7E7}
+7n526*t_LEFT_BRACKET{7E7}
+7n542*t_RIGHT_BRACKET{7E7}
+7n559*t_TRUE{7E7}
+7n567*t_FALSE{7E7}
+7n576*t_EOF{7E7}
+8E7*branch_types 8e240 47r31
+8n24*b_NONE{8E7}
+8n31*b_RETURN_TYPE{8E7}
+8n46*b_VARIABLE_NAME{8E7}
+8n63*b_VARIABLE_TYPE{8E7}
+8n80*b_VALUE{8E7}
+8n89*b_INDEX{8E7}
+8n98*b_RETURN_VALUE{8E7}
+8n114*b_PROCEDURE_DECLARATION{8E7}
+8n139*b_LOOP_ASSIGNMENT{8E7}
+8n158*b_LOOP_CONDITION{8E7}
+8n176*b_LOOP_BODY{8E7}
+8n189*b_IF_CONDITION{8E7}
+8n205*b_ACCEPT_IF{8E7}
+8n218*b_DECLINE_IF{8E7}
+8n232*b_BOUND{8E7}
+26V13*tub=26:110{16|87R9} 37s38
+26a17 Source{string}
+27V13*ub2s=27:111{string}
+27r18 Source{16|87R9}
+30R9*token 34e17 37r18
+32e10*t_type{7E7}
+33r10*value{16|87R9}
+37r4*empty_token{30R9}
+41R9*Node 42r28 44c9 53e17
+42P9*Node_Ptr(41R9) 49r16 50r17 51r18 59r32 61r43 64r31 64r51 21|4r30 4r50
+. 19r43
+46r10*Name{16|87R9}
+47e10*Branch_Type{8E7}
+48i10*Num_Entries{integer} 21|6r21 8m21 8r47 9r24 11m21 11r47 12r24 14m21
+. 14r47
+49p10*Left{42P9} 21|7m21 22r17 23r38
+50p10*Right{42P9} 21|10m21 25r17 26r38
+51p10*Center{42P9} 21|13m21 28r18 29r38
+52i10*internal_tree_num{integer}
+56K12*Node_Vectors[8|73] 61r60 21|19r60 20r30
+61V13*get_children_of_node{8|88R9[56]} 61>34 21|19b13 33l8 33t28
+61p34 inNode{42P9} 21|19b34 22r10 23r31 25r10 26r31 28r11 29r31
+64U14*add 64>18 64>41 21|4b13 16l8 16t11
+64p18 parentNode{42P9} 21|4b17 6r10 7r10 8r10 8r36 9r13 10r10 11r10 11r36
+. 12r13 13r10 14r10 14r36
+64p41 newNode{42P9} 21|4b40 7r29 10r30 13r31
+X 21 common.adb
+20r7 return_vector{8|88R9[20|56]} 23m10 23r10 26m10 26r10 29m10 29r10 32r14
+X 23 system.ads
+67M9*Address
+X 29 s-memory.ads
+53V13*Alloc{23|67M9} 103i<c,__gnat_malloc>22
+68U14*Free 104i<c,__gnat_free>22
+76V13*Realloc{23|67M9} 105i<c,__gnat_realloc>22
+X 36 s-stalib.adb
+93U14 Break_Start 94i<c,__gnat_break_start>22
+

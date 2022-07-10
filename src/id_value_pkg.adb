@@ -36,28 +36,33 @@ package body id_value_pkg is
       return_entry.boolean_value := False;
       return_entry.integer_value := 0;
       return_entry.float_value := 0.0;
+      return_entry.llvm_type := common.tub("USE MODIFY_VALUE TO SET TYPE");
       return return_entry;
    end init;
 
    procedure modify_value(selected_value : IN OUT id_value; in_value : Integer) is
    begin
       selected_value.integer_value := in_value;
+      selected_value.llvm_type := common.tub("i32");
    end modify_value;
 
    procedure modify_value(selected_value : IN OUT id_value; in_value : Float) is
    begin
       selected_value.float_value := in_value;
+      selected_value.llvm_type := common.tub("ZZZZZZZZZZZZZZ FLOAT");
    end modify_value;
 
    procedure modify_value(selected_value : IN OUT id_value; in_value : Boolean) is
    begin
       selected_value.boolean_value := in_value;
+      selected_value.llvm_type := common.tub("ZZZZZZZZZZZZZZZ BOOL");
    end modify_value;
 
    procedure modify_value(selected_value : IN OUT id_value; in_value : Ada.Strings.Unbounded.Unbounded_String) is
    begin
       selected_value.id_type := common.id_STRING;
       selected_value.string_value := in_value;
+      selected_value.llvm_type := common.tub(common.int_to_String((Ada.Strings.Unbounded.Length(in_value)+1))&" x i8");
    end modify_value;
 
 end id_value_pkg;

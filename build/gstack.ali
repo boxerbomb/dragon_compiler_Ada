@@ -1,0 +1,89 @@
+V "GNAT Lib v10"
+P SS ZX
+
+RN
+RV NO_IO
+RV SPARK_05
+
+U gstack%b		gstack.adb		a6778ac3 NE OO PK GE IL
+W ada%s			ada.ads			ada.ali
+W ada.text_io%s		a-textio.adb		a-textio.ali
+W common%s		common.adb		common.ali
+
+U gstack%s		gstack.ads		314b7e75 BN EE NE OO PK GE IL
+
+D ada.ads		20200723063517 76789da1 ada%s
+D a-charac.ads		20200723063517 2d3ec45b ada.characters%s
+D a-chlat1.ads		20200723063517 66457d31 ada.characters.latin_1%s
+D a-contai.ads		20200723063517 61e5e089 ada.containers%s
+D a-conhel.ads		20200723063517 20298884 ada.containers.helpers%s
+D a-convec.ads		20200723063517 7e2b0fdf ada.containers.vectors%s
+D a-except.ads		20200723063517 a7106115 ada.exceptions%s
+D a-finali.ads		20200723063517 bf4f806b ada.finalization%s
+D a-ioexce.ads		20200723063517 e4a01f64 ada.io_exceptions%s
+D a-iteint.ads		20200723063517 7c7305e9 ada.iterator_interfaces%s
+D a-stream.ads		20200723063517 119b8fb3 ada.streams%s
+D a-string.ads		20200723063517 90ac6797 ada.strings%s
+D a-strmap.ads		20200723063517 e8bb714a ada.strings.maps%s
+D a-strunb.ads		20200723063517 1656705b ada.strings.unbounded%s
+D a-tags.ads		20200723063517 491b781d ada.tags%s
+D a-textio.ads		20200723063517 aef4d56d ada.text_io%s
+D a-unccon.ads		20200723063517 0e9b276f ada.unchecked_conversion%s
+D common.ads		20220217023121 c9a24164 common%s
+D gstack.ads		20220105235434 314b7e75 gstack%s
+D gstack.adb		20220106010854 f06a60bf gstack%b
+D interfac.ads		20200723063517 5ab55268 interfaces%s
+D i-cstrea.ads		20200723063517 e53d8b8e interfaces.c_streams%s
+D system.ads		20200723063517 4635ec04 system%s
+D s-atocou.ads		20200723063517 b45c2d8d system.atomic_counters%s
+D s-crtl.ads		20200723063517 0ebbdb71 system.crtl%s
+D s-exctab.ads		20200723063517 54135002 system.exception_table%s
+D s-ficobl.ads		20200723063517 078245e4 system.file_control_block%s
+D s-finmas.ads		20200723063517 7811a767 system.finalization_masters%s
+D s-finroo.ads		20200723063517 4ff27390 system.finalization_root%s
+D s-parame.ads		20200723063517 48ec542b system.parameters%s
+D s-pooglo.ads		20200723063517 ede33ef8 system.pool_global%s
+D s-secsta.ads		20200723063517 20bbe636 system.secondary_stack%s
+D s-soflin.ads		20200723063517 a7318a92 system.soft_links%s
+D s-stache.ads		20200723063517 a37c21ec system.stack_checking%s
+D s-stalib.ads		20200723063517 09bd3940 system.standard_library%s
+D s-stoele.ads		20200723063517 2dc34a04 system.storage_elements%s
+D s-stopoo.ads		20200723063517 b16154c2 system.storage_pools%s
+D s-stposu.ads		20200723063517 97a6219c system.storage_pools.subpools%s
+D s-stratt.ads		20200723063517 aedef97e system.stream_attributes%s
+D s-traent.ads		20200723063517 005bf670 system.traceback_entries%s
+D s-unstyp.ads		20200723063517 34867c83 system.unsigned_types%s
+D s-wchcon.ads		20200723063517 1b7d22d2 system.wch_con%s
+G a e
+G c Z s b [gstack standard 4 9 none]
+X 1 ada.ads
+16K9*Ada 20e8 20|1r6 3r5
+X 10 a-iteint.ads
+24h9 Forward_Iterator
+32h9 Reversible_Iterator<24R9[6|111]>
+X 16 a-textio.ads
+57K13*Text_IO 727e16 20|1w10 3r9
+508U14*Put_Line 20|17s11 27s11 42s10
+X 18 common.ads
+5K9*common 66e11 20|2w6
+X 19 gstack.ads
+2i5 stack_size{integer} 20|6r25 16r19
+3+10 object 5r27 6r27 8r31 20|6r40 14r25 24r25 39r29
+4k9*gstack 2z5 3z10 11l5 11e11 20|5b14 59l5 59t11
+5U15*push 5>20 20|14b13 22l7 22t11
+5*20 x{3+10} 20|14b18 20r30
+6U15*pop 6<19 20|24b13 32l7 32t10
+6*19 x{3+10} 20|24b17 29m11
+7V14*stack_is_empty{boolean} 20|34b12 37l7 37t21
+8V14*stack_top{3+10} 20|39b12 48l7 48t16
+9V14*stackSize{integer} 20|50b12 53l7 53t16
+10U15*reset_stack 20|55b13 58l7 58t18
+X 20 gstack.adb
+6A8 list(19|3+10)<integer> 9r18
+7R8 ob_stack 11e17 12r8
+9a11 item{6A8} 20m14 29r19 46r21
+10i11 top{natural} 16r13 19m14 19r24 20r22 26r13 29r27 30m14 30r24 36r17
+. 41r13 46r29 52r16 57m10
+12r3 st{7R8} 16r10 19m11 19r21 20m11 20r19 26r10 29r16 29r24 30m11 30r21
+. 36r14 41r10 46r18 46r26 52r13 57m7
+

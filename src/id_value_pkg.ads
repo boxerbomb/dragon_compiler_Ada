@@ -1,8 +1,15 @@
 with common;
 with Ada.Text_IO;
 with Ada.Strings.Unbounded;
+with Ada.Containers.Vectors;
 
 package id_value_pkg is
+
+   package argument_type_Vectors is new
+     Ada.Containers.Vectors
+       (Index_Type   => Natural,
+        Element_Type => Ada.Strings.Unbounded.Unbounded_String,
+        "=" => Ada.Strings.Unbounded."=");
 
    type id_value is
       record
@@ -11,9 +18,12 @@ package id_value_pkg is
          integer_value : Integer;
          float_value : Float;
          boolean_value : Boolean;
+         llvm_type : Ada.Strings.Unbounded.Unbounded_String;
+         argument_type_vector : argument_type_Vectors.Vector;
       end record;
 
-   empty_value : id_value := (common.id_INVALID ,common.tub(""),0,0.0,False);
+   no_arguments : argument_type_Vectors.Vector;
+   empty_value : id_value := (common.id_INVALID ,common.tub(""),0,0.0,False,common.tub("INVALID LLVM TYPE"),no_arguments);
 
    procedure test(in_entry : id_value);
 
