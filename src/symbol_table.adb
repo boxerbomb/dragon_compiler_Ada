@@ -184,6 +184,51 @@ package body symbol_table is
    end lookup;
 
 
+   function get_type_from_var_id(var_id : Integer; in_scope : Integer) return Ada.Strings.Unbounded.Unbounded_String is
+      use type common.id_types;
+
+      currentEntry : Table_Entry_ptr := TableStart;
+      InvalidEntry : Table_Entry_ptr := new Table_Entry'(common.tub(""),-1,id_value_pkg.empty_value,NULL,-1,False);
+   begin
+
+      -- Break this
+      --return InvalidEntry;
+
+
+      while True loop
+         if currentEntry.variable_id = var_id and then in_scope=currentEntry.token_scope then
+            Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Found a Token with string: "& common.ub2s(currentEntry.keyword));
+            exit;
+         end if;
+
+         if currentEntry.next_entry = null then
+            currentEntry := InvalidEntry;
+            exit;
+         end if;
+         currentEntry := currentEntry.next_entry;
+      end loop;
+
+      -- This will check the global scope if the current scope fails
+      if currentEntry = InvalidEntry and in_scope /= 0 then
+         return get_type_from_var_id(var_id,0);
+      end if;
+
+      if currentEntry.value.id_type = common.id_STRING then
+         return common.tub("i8");
+      elsif currentEntry.value.id_type = common.id_INTEGER then
+         return common.tub("i32");
+      elsif currentEntry.value.id_type = common.id_FLOAT then
+         return common.tub("FLOAT TYPE VALUE");
+      elsif currentEntry.value.id_type = common.id_BOOLEAN then
+         return common.tub("BOOLEAN TYPE VALUE, OR MAYBE JUST USE i32 and 1 and 0");
+      else
+         return common.tub("Either Symbol not found, or ivalid type");
+      end if;
+   end get_type_from_var_id;
+
+
+
+
    procedure check_scope is
    begin
       Ada.Text_IO.Put_Line("Check Scope");

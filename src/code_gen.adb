@@ -150,7 +150,7 @@ package body code_gen is
          for hash_entry in current_hash_table.Iterate loop
             currentKey := symbol_table.hash_table.Key(hash_entry);
             currentElement := symbol_table.hash_table.Element(hash_entry);
-            if currentElement.value.id_type=common.id_STRING then
+            if currentElement.value.id_type=common.id_STRING_VALUE then
                Ada.Text_IO.Put_Line(F, "@"""&common.ub2s(currentElement.keyword)&""" = constant [" &common.ub2s(currentElement.value.llvm_type) & "] c"""&common.ub2s(currentElement.value.string_value)&"\00""");
             end if;
          end loop;
@@ -204,11 +204,15 @@ package body code_gen is
                   if currentElement.value.id_type=common.id_INTEGER then
                      Ada.Text_IO.Put_Line(F,"; Variable Name: " & common.ub2s(currentElement.keyword));
                      Ada.Text_IO.Put_Line(F, "%""v" & common.int_to_String(currentElement.variable_id) & """ = alloca i32");
+
                      if currentElement.is_param = True then
                         Ada.Text_IO.Put_Line(F,"store i32 %""" & common.ub2s(currentElement.keyword)&"_arg"", i32* %""v"& common.int_to_String(currentElement.variable_id) &"""");
                      end if;
+
                   elsif currentElement.value.id_type=common.id_STRING then
                      Ada.Text_IO.Put_Line(F,"; Variable Name: " & common.ub2s(currentElement.keyword));
+                     -- Allocate room for one character, this is temporarry as new memeory will need to be allocated when the string changes value
+                     Ada.Text_IO.Put_Line(F,"%""v" & common.int_to_String(currentElement.variable_id) & """ = call i8* @""malloc""(i32 1)");
                   elsif currentElement.value.id_type=common.id_FLOAT then
                      Ada.Text_IO.Put_Line(F,"; Variable Name: " & common.ub2s(currentElement.keyword));
                   elsif currentElement.value.id_type=common.id_BOOLEAN then
@@ -270,6 +274,10 @@ package body code_gen is
 
       value_id : Integer;
       proc_length : Natural;
+
+      returned_parsed_value : common.parsed_value;
+
+      returned_argument_type : Ada.Strings.Unbounded.Unbounded_String;
    begin
       -- Note Start with a clear, but not in this function
       --Parameter_Vectors_Package.Clear(parameter_list);
@@ -293,10 +301,11 @@ package body code_gen is
 
          if common.ub2s(Ada.Strings.Unbounded.Head(in_node.Name,1)) = "%" then
             argument_record.argument_value := in_node.Name;
+            argument_record.argument_type := common.tub("i32");
          else
-            value_id := parse_value_from_tree(in_node,True, size_of_tree(in_node));
-
-
+            returned_parsed_value := parse_value_from_tree(in_node,True, size_of_tree(in_node));
+            value_id := returned_parsed_value.t_value;
+            returned_argument_type := returned_parsed_value.type_value;
 
             --XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
             --XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -328,7 +337,7 @@ package body code_gen is
             -- These types can then be read by the code generator when calling a fucntion to allow strings and other data types to be passed to fucntions in LLVM assembly
 
             argument_record.argument_value := common.tub("%t" & common.int_to_String(value_id));
-            argument_record.argument_type := common.tub("i32");
+            argument_record.argument_type := returned_argument_type;
 
 
 
@@ -396,6 +405,9 @@ package body code_gen is
       return_id : Integer;
       return_value_tree : common.Node_Ptr;
 
+      returned_parsed_value : common.parsed_value;
+      assignment_value_type : Ada.Strings.Unbounded.Unbounded_String;
+
    begin
 
       if in_node = null then
@@ -444,13 +456,19 @@ package body code_gen is
          ass_value_tree := get_child_of_branch(in_node,common.b_VALUE);
 
          assignment_destination := parse_destination_from_tree(destination_node);
-         assignment_value_id    := parse_value_from_tree(ass_value_tree, True, size_of_tree(ass_value_tree));
+
+         returned_parsed_value := parse_value_from_tree(ass_value_tree, True, size_of_tree(ass_value_tree));
+         assignment_value_id := returned_parsed_value.t_value;
+         assignment_value_type := returned_parsed_value.type_value;
 
          --Ada.Text_IO.Put_Line("[CODE-ASS]: " & assignment_destination.offset'Image);
          --Ada.Text_IO.Put_Line(F,common.int_to_String(assignment_destination.location) & "[t" & common.int_to_String(assignment_destination.offset) & "] <- t" & common.int_to_String(assignment_value_id));
          --store i32 %"t.2", i32* %"a"
          --Ada.Text_IO.Put_Line(F, "store i32 %""v" & common.int_to_String(assignment_destination.location) & """, i32* %t" & common.int_to_String(assignment_value_id));
-         Ada.Text_IO.Put_Line(F, "store i32 %t" & common.int_to_String(assignment_value_id) & ", i32* %""v"&common.int_to_String(assignment_destination.location)&"""");
+
+         --Ada.Text_IO.Put_Line(F, "store "&common.ub2s(assignment_value_type)&" %t" & common.int_to_String(assignment_value_id) & ", i32* %""v"&common.int_to_String(assignment_destination.location)&"""");
+
+         Ada.Text_IO.Put_Line(F, "store "&common.ub2s(assignment_value_type)&" %t" & common.int_to_String(assignment_value_id) & ", "&common.ub2s(symbol_table.get_type_from_var_id(assignment_destination.location,in_node.scope))&"* %""v"&common.int_to_String(assignment_destination.location)&"""");
 
 
       elsif in_node.Branch_Type = common.b_IF_STATEMENT then
@@ -489,7 +507,8 @@ package body code_gen is
       elsif in_node.Branch_Type = common.b_RETURN_STATEMENT or common.ub2s(in_node.Name) = "return_statement" then
          return_value_tree := get_child_of_branch(in_node, common.b_VALUE);
 
-         return_id := parse_value_from_tree(return_value_tree,True,size_of_tree(return_value_tree));
+         returned_parsed_value := parse_value_from_tree(return_value_tree,True,size_of_tree(return_value_tree));
+         return_id := returned_parsed_value.t_value;
 
          Ada.Text_IO.Put_Line("ZZZZZZZZZZZZZZZZ: "&common.ub2s(return_value_tree.Name)&" "&common.int_to_String(return_id));
 
@@ -513,12 +532,15 @@ package body code_gen is
       temp_var_ID_offset : Integer := 998;
 
       returned_entry : symbol_table.Table_Entry_ptr;
+
+      returned_parsed_value : common.parsed_value;
    begin
       var_name_node := get_child_of_branch(in_node,common.b_VARIABLE_NAME);
       index_node_tree := get_child_of_branch(in_node, common.b_INDEX);
 
       -- The t# variable value that holds the index/offset value
-      temp_var_ID_offset := parse_value_from_tree(index_node_tree, True,size_of_tree(index_node_tree));
+      returned_parsed_value := parse_value_from_tree(index_node_tree, True,size_of_tree(index_node_tree));
+      temp_var_ID_offset := returned_parsed_value.t_value;
 
       Ada.Text_IO.Put_Line("##### Using Scope 1 instead of Dynamic ##########");
       returned_entry := symbol_table.lookupHash(var_name_node.Name,1);
@@ -545,13 +567,12 @@ package body code_gen is
    -- t2 equals fibb (t1)
    -- then somehow return t2, or at least know that the current_temp_var_id is to be used next
    -- plus minus divide multiply procedure-call variable/array_value
-   function parse_value_from_tree(in_node : common.Node_Ptr; primary_call : Boolean; tree_length : Integer := 99) return Integer is
+   function parse_value_from_tree(in_node : common.Node_Ptr; primary_call : Boolean; tree_length : Integer := 99) return common.parsed_value is
       use type common.Node_Ptr;
       use type symbol_table.Table_Entry_ptr;
       slice_test : Ada.Strings.Unbounded.Unbounded_String := common.tub("Nathan Henry");
       proc_length : Natural;
 
-      delete_this : Integer;
 
       argument_value_id : Integer := 456;
 
@@ -567,10 +588,16 @@ package body code_gen is
       argument_index : Integer := 0;
 
       temp_id : Integer;
+
+      returned_value : common.parsed_value;
+
+      temp_value : common.parsed_value;
    begin
 
       if in_node = null then
-         return -1;
+         returned_value.t_value := -1;
+         returned_value.type_value := common.tub("Invalid Value");
+         return returned_value;
       end if;
 
       temp_id := 999999;
@@ -588,13 +615,21 @@ package body code_gen is
 
             string_size := Ada.Strings.Unbounded.Length(returned_table_ptr.value.string_value)+1;
 
-              Ada.Text_IO.Put_Line(F,"%"""&common.ub2s(in_node.Name)&"_ptr"" = getelementptr [" & common.ub2s(returned_table_ptr.value.llvm_type) & "], [" & common.ub2s(returned_table_ptr.value.llvm_type) & "]* @"""&common.ub2s(in_node.Name)&""", i32 0, i32 0");
-              Ada.Text_IO.Put_Line(F,"%t"&common.int_to_String(temp_id) & "= call i8* @""malloc""(i32 "&common.int_to_String(string_size)&")");
-              Ada.Text_IO.Put_Line(F,"call void @""memcpy""(i8* %t"&common.int_to_String(temp_id)& ", i8* "& "%"""&common.ub2s(in_node.Name)&"_ptr""" &", i32 "&common.int_to_String(string_size)&")");
+
+            Ada.Text_IO.Put_Line(F,"%"""&common.ub2s(in_node.Name)&"_ptr"" = getelementptr [" & common.ub2s(returned_table_ptr.value.llvm_type) & "], [" & common.ub2s(returned_table_ptr.value.llvm_type) & "]* @"""&common.ub2s(in_node.Name)&""", i32 0, i32 0");
+            Ada.Text_IO.Put_Line(F,"%t"&common.int_to_String(temp_id) & "= call i8* @""malloc""(i32 "&common.int_to_String(string_size)&")");
+            Ada.Text_IO.Put_Line(F,"call void @""memcpy""(i8* %t"&common.int_to_String(temp_id)& ", i8* "& "%"""&common.ub2s(in_node.Name)&"_ptr""" &", i32 "&common.int_to_String(string_size)&")");
+
+            returned_value.t_value := temp_id;
+            returned_value.type_value := common.tub("i8*");
+            return returned_value;
          else
             Ada.Text_IO.Put_Line(F,"%t"&common.int_to_String(temp_id) & " = " & "add i32 0 , "&common.ub2s(in_node.Name));
+            returned_value.t_value := temp_id;
+            returned_value.type_value := common.tub("i32");
+            return returned_value;
          end if;
-         return temp_id;
+
       end if;
 
 
@@ -603,9 +638,9 @@ package body code_gen is
       --     current_temp_var_id := current_temp_var_id + 1;
       --  end if;
 
-      delete_this := parse_value_from_tree(in_node.Left,False);
-      delete_this := parse_value_from_tree(in_node.Center,False);
-      delete_this := parse_value_from_tree(in_node.Right,False);
+      temp_value := parse_value_from_tree(in_node.Left,False);
+      temp_value := parse_value_from_tree(in_node.Center,False);
+      temp_value := parse_value_from_tree(in_node.Right,False);
 
 
       -- Takes the length of the in_node name, this is used for slicing it later to determine if it is a procedure
@@ -659,15 +694,16 @@ package body code_gen is
                argument_string := Ada.Strings.Unbounded."&"(argument_string,',');
             end if;
 
-
-            -- Right now, i32 is used right now, but it will chnage depending on the variables
-            argument_string := Ada.Strings.Unbounded."&" (argument_string, "i32 "& common.ub2s(element.argument_value));
+            Ada.Text_IO.Put_Line("XXXXXXXXXXXXXXXXx Argument String: "&common.ub2s(element.argument_type));
+            argument_string := Ada.Strings.Unbounded."&" (argument_string, (common.ub2s(element.argument_type) &" " & common.ub2s(element.argument_value)));
             argument_index := argument_index + 1;
          end loop;
 
 
          procedure_return_value_id := Var_Counter.Get_Next;
 
+
+         -- This assumes that all fucntions return an I32, this can be tackled another time
          Ada.Text_IO.Put_Line(F, "%t" & common.int_to_String(procedure_return_value_id) & " = call i32 @""" & Ada.Strings.Unbounded.Slice(in_node.Name,1,proc_length-2) & """(" & common.ub2s(argument_string) & ")");
 
 
@@ -695,8 +731,15 @@ package body code_gen is
          --     --Ada.Text_IO.Put_Line(F,"This is in fact a procedure of name: " & common.ub2s(in_node.Name) & " with no arguments");
          --  end if;
 
-         return procedure_return_value_id;
 
+
+
+         -- This goes along with what is mentioned above, this code assumes that all fucntion calls are i32
+         returned_value.t_value := procedure_return_value_id;
+         returned_value.type_value := common.tub("i32");
+         return returned_value;
+
+         -- This looks to be loading a variable, this needs to be able covnetted to work with more than i32
       elsif common.ub2s(symbol_table.lookupHash(in_node.Name,in_node.scope).keyword) /= "" and primary_call=True then
 
          Ada.Text_IO.Put_Line("Found Variable: " & common.ub2s(symbol_table.lookupHash(in_node.Name,1).keyword));
@@ -708,12 +751,17 @@ package body code_gen is
          Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & "= load i32, i32* %v" & common.int_to_String(symbol_table.lookupHash(in_node.Name,in_node.scope).variable_id));
 
          --Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(current_temp_var_id) & " = %v" & common.int_to_String(symbol_table.lookupHash(in_node.Name,1).variable_id));
-         return temp_id;
+
+         returned_value.t_value := procedure_return_value_id;
+         returned_value.type_value := common.tub("i32");
+         return returned_value;
       end if;
 
 
-      Ada.Text_IO.Put_Line("Current Count: "& common.int_to_String(Var_Counter.Get_Current));
-      return temp_id;
+      --Ada.Text_IO.Put_Line("Current Count: "& common.int_to_String(Var_Counter.Get_Current));
+      returned_value.t_value := temp_id;
+      returned_value.type_value := common.tub("i32");
+      return returned_value;
 
    end parse_value_from_tree;
 
@@ -725,13 +773,18 @@ package body code_gen is
       left_var_id : Integer;
       right_var_id : Integer;
       temp_id : Integer;
+
+      returned_parsed_value : common.parsed_value;
    begin
       if common.ub2s(in_node.Name)="<" then
          left_tree := get_child_of_branch(in_node,common.b_LEFT);
          right_tree := get_child_of_branch(in_node, common.b_RIGHT);
 
-         left_var_id := parse_value_from_tree(left_tree,True,size_of_tree(left_tree));
-         right_var_id := parse_value_from_tree(right_tree,True,size_of_tree(right_tree));
+         returned_parsed_value := parse_value_from_tree(left_tree,True,size_of_tree(left_tree));
+         left_var_id := returned_parsed_value.t_value;
+
+         returned_parsed_value := parse_value_from_tree(right_tree,True,size_of_tree(right_tree));
+         right_var_id := returned_parsed_value.t_value;
 
          temp_id := Var_Counter.Get_Next;
          --Ada.Text_IO.Put_Line("%t" & current_temp_var_id & " = icmp eq i32 %\"" & left_var_id'Image & "\", %\" & right_var_id'Image & \"");
@@ -744,8 +797,11 @@ package body code_gen is
          left_tree := get_child_of_branch(in_node,common.b_LEFT);
          right_tree := get_child_of_branch(in_node, common.b_RIGHT);
 
-         left_var_id := parse_value_from_tree(left_tree,True,size_of_tree(left_tree));
-         right_var_id := parse_value_from_tree(right_tree,True,size_of_tree(right_tree));
+         returned_parsed_value := parse_value_from_tree(left_tree,True,size_of_tree(left_tree));
+         left_var_id := returned_parsed_value.t_value;
+
+         returned_parsed_value := parse_value_from_tree(right_tree,True,size_of_tree(right_tree));
+         right_var_id := returned_parsed_value.t_value;
 
          temp_id := Var_Counter.Get_Next;
          --Ada.Text_IO.Put_Line("%t" & current_temp_var_id & " = icmp eq i32 %\"" & left_var_id'Image & "\", %\" & right_var_id'Image & \"");
@@ -757,8 +813,10 @@ package body code_gen is
          left_tree := get_child_of_branch(in_node,common.b_LEFT);
          right_tree := get_child_of_branch(in_node, common.b_RIGHT);
 
-         left_var_id := parse_value_from_tree(left_tree,True,size_of_tree(left_tree));
-         right_var_id := parse_value_from_tree(right_tree,True,size_of_tree(right_tree));
+         returned_parsed_value := parse_value_from_tree(left_tree,True,size_of_tree(left_tree));
+         left_var_id := returned_parsed_value.t_value;
+         returned_parsed_value := parse_value_from_tree(right_tree,True,size_of_tree(right_tree));
+         right_var_id := returned_parsed_value.t_value;
 
          temp_id := Var_Counter.Get_Next;
          --Ada.Text_IO.Put_Line("%t" & current_temp_var_id & " = icmp eq i32 %\"" & left_var_id'Image & "\", %\" & right_var_id'Image & \"");
@@ -770,8 +828,10 @@ package body code_gen is
          left_tree := get_child_of_branch(in_node,common.b_LEFT);
          right_tree := get_child_of_branch(in_node, common.b_RIGHT);
 
-         left_var_id := parse_value_from_tree(left_tree,True,size_of_tree(left_tree));
-         right_var_id := parse_value_from_tree(right_tree,True,size_of_tree(right_tree));
+         returned_parsed_value := parse_value_from_tree(left_tree,True,size_of_tree(left_tree));
+         left_var_id := returned_parsed_value.t_value;
+         returned_parsed_value := parse_value_from_tree(right_tree,True,size_of_tree(right_tree));
+         right_var_id := returned_parsed_value.t_value;
 
          temp_id := Var_Counter.Get_Next;
          --Ada.Text_IO.Put_Line("%t" & current_temp_var_id & " = icmp eq i32 %\"" & left_var_id'Image & "\", %\" & right_var_id'Image & \"");
@@ -783,8 +843,10 @@ package body code_gen is
          left_tree := get_child_of_branch(in_node,common.b_LEFT);
          right_tree := get_child_of_branch(in_node, common.b_RIGHT);
 
-         left_var_id := parse_value_from_tree(left_tree,True,size_of_tree(left_tree));
-         right_var_id := parse_value_from_tree(right_tree,True,size_of_tree(right_tree));
+         returned_parsed_value := parse_value_from_tree(left_tree,True,size_of_tree(left_tree));
+         left_var_id := returned_parsed_value.t_value;
+         returned_parsed_value := parse_value_from_tree(right_tree,True,size_of_tree(right_tree));
+         right_var_id := returned_parsed_value.t_value;
 
          temp_id := Var_Counter.Get_Next;
          --Ada.Text_IO.Put_Line("%t" & current_temp_var_id & " = icmp eq i32 %\"" & left_var_id'Image & "\", %\" & right_var_id'Image & \"");
@@ -796,8 +858,10 @@ package body code_gen is
          left_tree := get_child_of_branch(in_node,common.b_LEFT);
          right_tree := get_child_of_branch(in_node, common.b_RIGHT);
 
-         left_var_id := parse_value_from_tree(left_tree,True,size_of_tree(left_tree));
-         right_var_id := parse_value_from_tree(right_tree,True,size_of_tree(right_tree));
+         returned_parsed_value := parse_value_from_tree(left_tree,True,size_of_tree(left_tree));
+         left_var_id := returned_parsed_value.t_value;
+         returned_parsed_value := parse_value_from_tree(right_tree,True,size_of_tree(right_tree));
+         right_var_id := returned_parsed_value.t_value;
 
          temp_id := Var_Counter.Get_Next;
          --Ada.Text_IO.Put_Line("%t" & current_temp_var_id & " = icmp eq i32 %\"" & left_var_id'Image & "\", %\" & right_var_id'Image & \"");

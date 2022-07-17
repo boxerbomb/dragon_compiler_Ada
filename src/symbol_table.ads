@@ -53,6 +53,8 @@ package symbol_table is
    function lookup(keyword : Ada.Strings.Unbounded.Unbounded_String; in_scope : Integer) return Table_Entry_ptr;
    function lookupHash(keyword : Ada.Strings.Unbounded.Unbounded_String; in_scope : Integer) return Table_Entry_ptr;
 
+   function get_type_from_var_id(var_id : Integer; in_scope : Integer) return Ada.Strings.Unbounded.Unbounded_String;
+
    procedure check_scope;
 
    procedure test_vector;
