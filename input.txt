@@ -3,6 +3,7 @@ variable tmp : Integer;
 variable str_tmp : Integer;
 variable input1 : Integer;
 variable input2 : Integer;
+variable test_string : String;
 
 procedure countDown : integer(variable val :integer)
 variable tmp1 : integer;
@@ -22,6 +23,8 @@ input2 := getInteger();
 
 
 str_tmp := putString("Hello There Nathan!");
+
+test_string := "2ns string";
 
 tmp := countDown(input1+input2);
 

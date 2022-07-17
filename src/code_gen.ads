@@ -49,7 +49,7 @@ package code_gen is
    procedure add_arguments_to_list(in_node : common.Node_Ptr; primary_call : Boolean := False);
 
 
-   function parse_value_from_tree(in_node : common.Node_Ptr; primary_call : Boolean; tree_length : Integer := 99) return Integer;
+   function parse_value_from_tree(in_node : common.Node_Ptr; primary_call : Boolean; tree_length : Integer := 99) return common.parsed_value;
    function parse_destination_from_tree(in_node : common.Node_Ptr) return destination_record;
 
    function parse_comparison_from_tree(in_node : common.Node_Ptr) return Integer;

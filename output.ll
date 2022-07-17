@@ -49,6 +49,7 @@ ret i32 0
 }
 
 @"STRING0" = constant [20 x i8] c"Hello There Nathan!\00"
+@"STRING1" = constant [11 x i8] c"2ns string\00"
 
 define i32 @"main"()
 {
@@ -56,7 +57,8 @@ define i32 @"main"()
 %"v6" = alloca i32
 ; Variable Name: INPUT2
 %"v7" = alloca i32
-; Variable Name: STRING0
+; Variable Name: TEST_STRING
+%"v8" = call i8* @"malloc"(i32 1)
 ; Variable Name: STR_TMP
 %"v5" = alloca i32
 ; Variable Name: TMP
@@ -71,14 +73,19 @@ store i32 %t4, i32* %"v7"
 %"STRING0_ptr" = getelementptr [20 x i8], [20 x i8]* @"STRING0", i32 0, i32 0
 %t6= call i8* @"malloc"(i32 20)
 call void @"memcpy"(i8* %t6, i8* %"STRING0_ptr", i32 20)
-%t7 = call i32 @"PUTSTRING"(i32 %t6)
+%t7 = call i32 @"PUTSTRING"(i8* %t6)
 store i32 %t7, i32* %"v5"
 %t8 = add i32 0 , 0
-%t9= load i32, i32* %v6
-%t10= load i32, i32* %v7
-%t11 = add i32 %t9 , %t10
-%t12 = call i32 @"COUNTDOWN"(i32 %t11)
-store i32 %t12, i32* %"v4"
+%"STRING1_ptr" = getelementptr [11 x i8], [11 x i8]* @"STRING1", i32 0, i32 0
+%t9= call i8* @"malloc"(i32 11)
+call void @"memcpy"(i8* %t9, i8* %"STRING1_ptr", i32 11)
+store i8* %t9, i8* %"v8"
+%t10 = add i32 0 , 0
+%t11= load i32, i32* %v6
+%t12= load i32, i32* %v7
+%t13 = add i32 %t11 , %t12
+%t14 = call i32 @"COUNTDOWN"(i32 %t13)
+store i32 %t14, i32* %"v4"
 ; This is a hard-coded return line for now
 ret i32 0
 }
@@ -86,33 +93,33 @@ ret i32 0
 define i32 @"COUNTDOWN"(i32 %"VAL_arg")
 {
 ; Variable Name: TMP1
-%"v10" = alloca i32
+%"v11" = alloca i32
 ; Variable Name: VAL
-%"v9" = alloca i32
-store i32 %"VAL_arg", i32* %"v9"
-%t13 = add i32 0 , 0
-%t14= load i32, i32* %v9
-%t15 = call i32 @"PUTINTEGER"(i32 %t14)
-store i32 %t15, i32* %"v10"
-%t16= load i32, i32* %v9
-%t17 = add i32 0 , 0
-%t18 = icmp sgt i32 %t16, %t17
-br i1 %t18, label %"label_1", label %"label_2"
-label_1:
+%"v10" = alloca i32
+store i32 %"VAL_arg", i32* %"v10"
+%t15 = add i32 0 , 0
+%t16= load i32, i32* %v10
+%t17 = call i32 @"PUTINTEGER"(i32 %t16)
+store i32 %t17, i32* %"v11"
+%t18= load i32, i32* %v10
 %t19 = add i32 0 , 0
-%t20= load i32, i32* %v9
-%t21 = sub i32 %t20 , 1
-store i32 %t21, i32* %"v9"
-%t22 = add i32 0 , 0
-%t23= load i32, i32* %v9
-%t24 = call i32 @"COUNTDOWN"(i32 %t23)
-store i32 %t24, i32* %"v10"
+%t20 = icmp sgt i32 %t18, %t19
+br i1 %t20, label %"label_1", label %"label_2"
+label_1:
+%t21 = add i32 0 , 0
+%t22= load i32, i32* %v10
+%t23 = sub i32 %t22 , 1
+store i32 %t23, i32* %"v10"
+%t24 = add i32 0 , 0
+%t25= load i32, i32* %v10
+%t26 = call i32 @"COUNTDOWN"(i32 %t25)
+store i32 %t26, i32* %"v11"
 br label %"label_3"
 label_2:
 br label %"label_3"
 label_3:
-%t25= load i32, i32* %v9
-ret i32 %t25
+%t27= load i32, i32* %v10
+ret i32 %t27
 ; This is a hard-coded return line for now
 ret i32 0
 }
