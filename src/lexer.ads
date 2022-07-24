@@ -4,6 +4,7 @@ with Ada.Strings.Unbounded;
 
 
 package lexer is
+
    procedure openSourceFile;
    procedure closeSourceFile;
    function get_next_token return common.token;
