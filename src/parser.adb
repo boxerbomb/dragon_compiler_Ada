@@ -103,7 +103,7 @@ package body parser is
 
 
 
-   function add_var_to_sym_table(parent_node : common.Node_Ptr; is_Parameter : Boolean; in_id_type : common.id_types := common.id_INVALID) return Ada.Strings.Unbounded.Unbounded_String is
+   function add_var_to_sym_table(parent_node : common.Node_Ptr; is_Parameter : Boolean; in_id_type : common.id_types := common.id_INVALID; array_size : Integer) return Ada.Strings.Unbounded.Unbounded_String is
       -- Take the next token scope, but it is not confirmed that this in fact a valid ID.
       -- If it is a valid ID, this will be used later
       possible_id_scope : Integer;
@@ -477,6 +477,10 @@ package body parser is
       var_node : common.Node_Ptr := new common.Node'(common.tub("Variable_Value"), common.b_VARIABLE_VALUE, 0, null, null, null, 0,parent_node.scope);
       default_index_node : common.Node_Ptr :=new common.Node'(common.tub ("0"), common.b_INDEX, 0, null, null, null, 0,parent_node.scope);
    begin
+
+      -- Assign ID name to node
+
+      new_node.Name := id_name;
       if match (common.t_LEFT_BRACKET) then
          if expression (var_node, common.b_INDEX) and then match (common.t_RIGHT_BRACKET) then
             common.add (var_node, new_node);
@@ -486,7 +490,6 @@ package body parser is
       end if;
 
       common.add (var_node, default_index_node);
-      new_node.Name := id_name;
       common.add (var_node, new_node);
       common.add (parent_node, var_node);
       return True;
@@ -505,6 +508,7 @@ package body parser is
       if match (common.t_NUMBER) then
 
          matchStack.pop (popped_token);
+         matchStack.push (popped_token);
          new_node.Name := popped_token.value;
 
          if match (common.t_DOT) and then match (common.t_NUMBER) then
@@ -915,13 +919,15 @@ package body parser is
       new_node : common.Node_Ptr := new common.Node'(common.tub ("variable_declaration"), common.b_VARIABLE_DECLARATION, 0, null, null,null, 0,parent_node.scope);
       id_node : common.Node_Ptr := new common.Node'(common.tub ("id_name"), common.b_VARIABLE_NAME, 0, null, null,null, 0,parent_node.scope);
       id_string : Ada.Strings.Unbounded.Unbounded_String;
+      popped_token : common.token;
    begin
       if is_Parameter = True then
          new_node.Branch_Type := common.b_PARAMETER;
       end if;
 
       if match (common.t_VARIABLE) then
-         id_string := add_var_to_sym_table(new_node, is_Parameter, common.id_INVALID);
+         -- Moving this line
+         id_string := add_var_to_sym_table(new_node, is_Parameter, common.id_INVALID,0);
          if common.ub2s(id_string) /= "" then
             id_node.Name := id_string;
             common.add(new_node,id_node);
@@ -929,8 +935,11 @@ package body parser is
          -- I believe that a bound will need to be constant. I will have to figure out have dynamic memory allocation works.
          if match (common.t_LEFT_BRACKET) then
             if bound (new_node, common.b_BOUND) and then match (common.t_RIGHT_BRACKET) then
-               common.add (parent_node, new_node);
-               Ada.Text_IO.Put_Line ("NODE DONE: variable_declaration");
+                  common.add (parent_node, new_node);
+                  matchStack.pop(popped_token);
+                  matchStack.pop(popped_token);
+                  symbol_table.lookup(id_string, new_node.scope).array_size := Integer'Value(common.ub2s(popped_token.value));
+                Ada.Text_IO.Put_Line ("Found Array of Size: " & common.ub2s(popped_token.value));
                return True;
             end if;
          end if;
@@ -942,6 +951,9 @@ package body parser is
       end if;
       return False;
    end variable_declaration;
+
+
+
 
    function bound
      (parent_node : common.Node_Ptr;

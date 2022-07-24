@@ -2,6 +2,7 @@ with common;
 with Ada.Text_IO;
 with Ada.Strings.Unbounded;
 with Ada.Containers.Vectors;
+with symbol_table;
 with id_value_pkg;
 
 
@@ -16,6 +17,7 @@ package code_gen is
       record
          location : Integer;
          offset : Integer;
+         entry_ptr : symbol_table.Table_Entry_ptr;
       end record;
 
    type parameter_data is

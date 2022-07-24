@@ -202,8 +202,55 @@ package body code_gen is
 
                if currentElement.token_scope = parent_Element.scope then
                   if currentElement.value.id_type=common.id_INTEGER then
+
+
                      Ada.Text_IO.Put_Line(F,"; Variable Name: " & common.ub2s(currentElement.keyword));
-                     Ada.Text_IO.Put_Line(F, "%""v" & common.int_to_String(currentElement.variable_id) & """ = alloca i32");
+
+
+                     if currentElement.array_size /= 0 then
+
+                        Ada.Text_IO.Put_Line(F, "%""v" & common.int_to_String(currentElement.variable_id) & "_raw"" = call i8* @""malloc""(i32 " & common.int_to_String(currentElement.array_size) & ")");
+                        Ada.Text_IO.Put_Line(F, "%""v" & common.int_to_String(currentElement.variable_id) & """ = bitcast i8* %""v" & common.int_to_String(currentElement.variable_id)&"_raw"" to i32*");
+                        -- Here we need to loop through and add an element.# for each element in the array
+                        for i in 0 .. currentElement.array_size loop
+                           Ada.Text_IO.Put_Line(F, "%""v" & common.int_to_String(currentElement.variable_id) & "." & common.int_to_String(i) & """ = getelementptr i32, i32* %""v" & common.int_to_String(currentElement.variable_id) & """, i32 " & common.int_to_String(i+1));
+                        end loop;
+                     else
+
+                     --Declare Array
+                     --%"ARRAY_raw" = call i8* @"malloc"(i32 3)
+                     --Define it as I32
+                     --%"ARRAY" = bitcast i8* %"ARRAY_raw" to i32*
+
+                     -- The 0th value in the array
+                     --%"element" = getelementptr i32, i32* %"ARRAY", i32 1
+
+                     --Store '45' in that
+                     --store i32 45, i32* %"element"
+
+                     --Do the same with the 1st vlaue in the array
+                     --%"element.1" = getelementptr i32, i32* %"ARRAY", i32 2
+                     --store i32 10, i32* %"element.1"
+
+                     --%"element.2" = getelementptr i32, i32* %"ARRAY", i32 3
+                     --%"element.3" = getelementptr i32, i32* %"ARRAY", i32 2
+                     --%"element.4" = getelementptr i32, i32* %"ARRAY", i32 1
+
+                     --Read an array value from the element to a variable
+                     --%"ARRAY_val" = load i32, i32* %"element.3"
+
+                     -- Read and array value from the element to a variable
+                     --%"ARRAY_val.1" = load i32, i32* %"element.4"
+
+                     -- Do the math I requested
+                     --%"t" = add i32 %"ARRAY_val", %"ARRAY_val.1"
+
+                     --Store value in the element
+                     --store i32 %"t", i32* %"element.2"
+
+                     --else
+                        Ada.Text_IO.Put_Line(F, "%""v" & common.int_to_String(currentElement.variable_id) & """ = alloca i32");
+                     end if;
 
                      if currentElement.is_param = True then
                         Ada.Text_IO.Put_Line(F,"store i32 %""" & common.ub2s(currentElement.keyword)&"_arg"", i32* %""v"& common.int_to_String(currentElement.variable_id) &"""");
@@ -298,8 +345,10 @@ package body code_gen is
       end if;
 
       if in_node.Branch_Type = common.b_ARGUMENT then
-
-         if common.ub2s(Ada.Strings.Unbounded.Head(in_node.Name,1)) = "%" then
+         if common.ub2s(Ada.Strings.Unbounded.Head(in_node.Name,3)) = "%""v" then
+            argument_record.argument_value := in_node.Name;
+            argument_record.argument_type := common.tub("i8*");
+         elsif common.ub2s(Ada.Strings.Unbounded.Head(in_node.Name,1)) = "%" then
             argument_record.argument_value := in_node.Name;
             argument_record.argument_type := common.tub("i32");
          else
@@ -336,8 +385,15 @@ package body code_gen is
             -- In the parser Argument and Argument List need to be modified to to a vector each arugment type that required to the symbol table argument_type_vector
             -- These types can then be read by the code generator when calling a fucntion to allow strings and other data types to be passed to fucntions in LLVM assembly
 
-            argument_record.argument_value := common.tub("%t" & common.int_to_String(value_id));
-            argument_record.argument_type := returned_argument_type;
+            if common.ub2s(returned_argument_type)="i8*" then
+               argument_record.argument_value := common.tub("%""v" & common.int_to_String(value_id) & """");
+               argument_record.argument_type := returned_argument_type;
+            else
+               argument_record.argument_value := common.tub("%t" & common.int_to_String(value_id));
+               argument_record.argument_type := returned_argument_type;
+            end if;
+
+
 
 
 
@@ -389,7 +445,7 @@ package body code_gen is
       destination_node : common.Node_Ptr;
       ass_value_tree : common.Node_Ptr;
 
-      assignment_destination : destination_record := (-1,-1);
+      assignment_destination : destination_record := (-1,-1,symbol_table.InvalidEntry);
       assignment_value_id    : Integer := -1;
 
       accept_if_tree : common.Node_Ptr;
@@ -425,6 +481,8 @@ package body code_gen is
          -- Get variable type node
          temp_node := get_child_of_branch(in_node,common.b_VARIABLE_TYPE);
          found_type := temp_node.Name;
+
+         temp_node :=get_child_of_branch(in_node,common.b_BOUND);
 
          Ada.Text_IO.Put_Line("Declared "& common.ub2s(found_name) & " of type: " & common.ub2s(found_type));
 
@@ -468,8 +526,15 @@ package body code_gen is
 
          --Ada.Text_IO.Put_Line(F, "store "&common.ub2s(assignment_value_type)&" %t" & common.int_to_String(assignment_value_id) & ", i32* %""v"&common.int_to_String(assignment_destination.location)&"""");
 
-         Ada.Text_IO.Put_Line(F, "store "&common.ub2s(assignment_value_type)&" %t" & common.int_to_String(assignment_value_id) & ", "&common.ub2s(symbol_table.get_type_from_var_id(assignment_destination.location,in_node.scope))&"* %""v"&common.int_to_String(assignment_destination.location)&"""");
 
+         -- If the assignment does = i8*, the variable in the symbol-table will be automatically updated by the function calls
+         if common.ub2s(assignment_value_type)="i8*" then
+            assignment_destination.entry_ptr.variable_id := assignment_value_id;
+            Ada.Text_IO.Put_Line(F,";Updated variable # for string in symbol table" & common.int_to_String(symbol_table.current_variable_id));
+            symbol_table.print_hash_entries;
+         else
+            Ada.Text_IO.Put_Line(F, "store "&common.ub2s(assignment_value_type)&" %t" & common.int_to_String(assignment_value_id) & ", "&common.ub2s(symbol_table.get_type_from_var_id(assignment_destination.location,in_node.scope))&"* %""v"&common.int_to_String(assignment_destination.location)&"""");
+         end if;
 
       elsif in_node.Branch_Type = common.b_IF_STATEMENT then
          if_condition_tree := get_child_of_branch(in_node,common.b_IF_CONDITION);
@@ -524,7 +589,7 @@ package body code_gen is
 
 
    function parse_destination_from_tree(in_node : common.Node_Ptr) return destination_record is
-      return_dest : destination_record := (-1,-1);
+      return_dest : destination_record := (-1,-1,symbol_table.InvalidEntry);
       var_name_node : common.Node_Ptr;
       index_node_tree : common.Node_Ptr;
 
@@ -542,8 +607,8 @@ package body code_gen is
       returned_parsed_value := parse_value_from_tree(index_node_tree, True,size_of_tree(index_node_tree));
       temp_var_ID_offset := returned_parsed_value.t_value;
 
-      Ada.Text_IO.Put_Line("##### Using Scope 1 instead of Dynamic ##########");
-      returned_entry := symbol_table.lookupHash(var_name_node.Name,1);
+      Ada.Text_IO.Put_Line("##### Make sure that using this scope works ##########");
+      returned_entry := symbol_table.lookupHash(var_name_node.Name,in_node.scope);
 
       if common.ub2s(returned_entry.keyword) /= "" then
          Ada.Text_IO.Put_Line("Found the variable: " & common.ub2s(var_name_node.Name) & " with ID:" & common.int_to_String(returned_entry.variable_id) & " in symbol table with offset t" & common.int_to_String(temp_var_ID_offset));
@@ -553,6 +618,7 @@ package body code_gen is
 
       return_dest.location := returned_entry.variable_id;
       return_dest.offset := temp_var_ID_offset;
+      return_dest.entry_ptr := returned_entry;
 
       return return_dest;
 
@@ -570,6 +636,7 @@ package body code_gen is
    function parse_value_from_tree(in_node : common.Node_Ptr; primary_call : Boolean; tree_length : Integer := 99) return common.parsed_value is
       use type common.Node_Ptr;
       use type symbol_table.Table_Entry_ptr;
+      use type common.id_types;
       slice_test : Ada.Strings.Unbounded.Unbounded_String := common.tub("Nathan Henry");
       proc_length : Natural;
 
@@ -615,15 +682,19 @@ package body code_gen is
 
             string_size := Ada.Strings.Unbounded.Length(returned_table_ptr.value.string_value)+1;
 
+            symbol_table.current_variable_id := symbol_table.current_variable_id + 1;
 
             Ada.Text_IO.Put_Line(F,"%"""&common.ub2s(in_node.Name)&"_ptr"" = getelementptr [" & common.ub2s(returned_table_ptr.value.llvm_type) & "], [" & common.ub2s(returned_table_ptr.value.llvm_type) & "]* @"""&common.ub2s(in_node.Name)&""", i32 0, i32 0");
-            Ada.Text_IO.Put_Line(F,"%t"&common.int_to_String(temp_id) & "= call i8* @""malloc""(i32 "&common.int_to_String(string_size)&")");
-            Ada.Text_IO.Put_Line(F,"call void @""memcpy""(i8* %t"&common.int_to_String(temp_id)& ", i8* "& "%"""&common.ub2s(in_node.Name)&"_ptr""" &", i32 "&common.int_to_String(string_size)&")");
+            Ada.Text_IO.Put_Line(F,"%""v"&common.int_to_String(symbol_table.current_variable_id) & """= call i8* @""malloc""(i32 "&common.int_to_String(string_size)&")");
+            Ada.Text_IO.Put_Line(F,"call void @""memcpy""(i8* %""v"&common.int_to_String(symbol_table.current_variable_id)& """, i8* "& "%"""&common.ub2s(in_node.Name)&"_ptr""" &", i32 "&common.int_to_String(string_size)&")");
 
-            returned_value.t_value := temp_id;
+            returned_table_ptr.variable_id := symbol_table.current_variable_id;
+
+            returned_value.t_value := symbol_table.current_variable_id;
             returned_value.type_value := common.tub("i8*");
             return returned_value;
          else
+            Ada.Text_IO.Put_Line(F,"; A note here: "&common.ub2s(in_node.Name));
             Ada.Text_IO.Put_Line(F,"%t"&common.int_to_String(temp_id) & " = " & "add i32 0 , "&common.ub2s(in_node.Name));
             returned_value.t_value := temp_id;
             returned_value.type_value := common.tub("i32");
@@ -668,13 +739,21 @@ package body code_gen is
          var_name_tree := get_child_of_branch(in_node,common.b_VARIABLE_NAME);
          index_tree := get_child_of_branch(in_node, common.b_INDEX);
 
-         Ada.Text_IO.Put_Line("Found Variable! :" & common.ub2s(var_name_tree.Name));
+         Ada.Text_IO.Put_Line(F,";Found Variable! :" & common.ub2s(var_name_tree.Name));
 
          if common.ub2s(symbol_table.lookupHash(var_name_tree.Name,in_node.scope).keyword) /= "" then
-            temp_id := Var_Counter.Get_Next;
-            --Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(current_temp_var_id) & " BOGUS BUGUS SDUSHDOUSHDSU " & common.ub2s(in_node.Left.Name) & " , " & common.ub2s(in_node.Right.Name));
-            Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & "= load i32, i32* %v" & common.int_to_String(symbol_table.lookupHash(var_name_tree.Name,in_node.scope).variable_id));
-            in_node.Name := common.tub("%t" & common.int_to_String(temp_id));
+
+            if symbol_table.lookupHash(var_name_tree.Name,in_node.scope).value.id_type=common.id_STRING then
+               in_node.Name := common.tub("%""v" & common.int_to_String(symbol_table.lookupHash(var_name_tree.Name,in_node.scope).variable_id)&"""");
+            else
+               temp_id := Var_Counter.Get_Next;
+               --Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(current_temp_var_id) & " BOGUS BUGUS SDUSHDOUSHDSU " & common.ub2s(in_node.Left.Name) & " , " & common.ub2s(in_node.Right.Name));
+               Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & "= load i32, i32* %v" & common.int_to_String(symbol_table.lookupHash(var_name_tree.Name,in_node.scope).variable_id));
+               in_node.Name := common.tub("%t" & common.int_to_String(temp_id));
+            end if;
+
+
+
          end if;
 
       -- Procedure Call
@@ -740,6 +819,7 @@ package body code_gen is
          return returned_value;
 
          -- This looks to be loading a variable, this needs to be able covnetted to work with more than i32
+         -- This function does not seem to be ever called for now
       elsif common.ub2s(symbol_table.lookupHash(in_node.Name,in_node.scope).keyword) /= "" and primary_call=True then
 
          Ada.Text_IO.Put_Line("Found Variable: " & common.ub2s(symbol_table.lookupHash(in_node.Name,1).keyword));
