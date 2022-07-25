@@ -68,6 +68,10 @@ package body code_gen is
 
       parameter_string : Ada.Strings.Unbounded.Unbounded_String;
       parameter_index : Integer := 0;
+
+      array_init : Ada.Strings.Unbounded.Unbounded_String;
+
+      temp_id : Integer;
    begin
 
 
@@ -145,14 +149,60 @@ package body code_gen is
 
 
 
-      -- CONSTANTS, right now starting with strings but I might have to add more later
+      -- CONSTANTS/GLBOAL Variables, right now starting with strings but I might have to add more later
         for current_hash_table of symbol_table.scope_hash_vector loop
          for hash_entry in current_hash_table.Iterate loop
             currentKey := symbol_table.hash_table.Key(hash_entry);
             currentElement := symbol_table.hash_table.Element(hash_entry);
+
+
             if currentElement.value.id_type=common.id_STRING_VALUE then
                Ada.Text_IO.Put_Line(F, "@"""&common.ub2s(currentElement.keyword)&""" = constant [" &common.ub2s(currentElement.value.llvm_type) & "] c"""&common.ub2s(currentElement.value.string_value)&"\00""");
+
+
+            -- I found two different implementations for arrays, one works for local and one works for globals
+            -- In order to make this easier, all arrays will be global in assembly, with restrictions of use being put in the compiler errors
+            elsif currentElement.array_size/=0 then
+               if currentElement.value.id_type=common.id_INTEGER then
+
+                  --Complete array looks like this:
+                  --@"ARRAY" = global <3 x i32> < i32 0, i32 0, i32 0 >
+
+                  -- Create the array initilizer, it looks like this:
+                  --< i32 0, i32 0, i32 0 >
+                  array_init := common.tub("<");
+                  for i in 0 .. currentElement.array_size-1 loop
+                     array_init := Ada.Strings.Unbounded."&"(array_init,common.tub("i32 0"));
+                     if i /= currentElement.array_size-1 then
+                        array_init := Ada.Strings.Unbounded."&"(array_init,common.tub(","));
+                     end if;
+                     end loop;
+                     array_init := Ada.Strings.Unbounded."&"(array_init,common.tub(">"));
+
+                     Ada.Text_IO.Put_Line(F,"; Variable Name: " & common.ub2s(currentElement.keyword));
+                     Ada.Text_IO.Put_Line(F,"@""v"&common.int_to_String(currentElement.variable_id) & """ = global <"&common.int_to_String(currentElement.array_size)&" x i32> "&common.ub2s(array_init));
+
+               elsif currentElement.value.id_type=common.id_FLOAT then
+                     Ada.Text_IO.Put_Line(F,"; Variable Name: " & common.ub2s(currentElement.keyword));
+                     Ada.Text_IO.Put_Line(F,"An array of floats, this is not implemented");
+               end if;
+
+            elsif currentElement.token_scope=0 then
+
+                  if currentElement.value.id_type=common.id_INTEGER then
+                     Ada.Text_IO.Put_Line(F,"; Variable Name: " & common.ub2s(currentElement.keyword));
+                     Ada.Text_IO.Put_Line(F,"@""v"&common.int_to_String(currentElement.variable_id) & """ = global i32 0");
+                  elsif currentElement.value.id_type=common.id_FLOAT then
+                     Ada.Text_IO.Put_Line(F,"; Variable Name: " & common.ub2s(currentElement.keyword));
+                     Ada.Text_IO.Put_Line(F,"@""v"&common.int_to_String(currentElement.variable_id) & """ = global [This line should not occur, booleans should turn to integers in the lexer] 0");
+                  elsif currentElement.value.id_type=common.id_BOOLEAN then
+                     Ada.Text_IO.Put_Line(F,"; Variable Name: " & common.ub2s(currentElement.keyword));
+                     Ada.Text_IO.Put_Line(F,"@""v"&common.int_to_String(currentElement.variable_id) & """ = global ZZZZZZZZZZZZZZ FLOATS!!! 0");
+               end if;
+
             end if;
+
+
          end loop;
          hash_table_index := hash_table_index + 1;
       end loop;
@@ -201,6 +251,7 @@ package body code_gen is
                --Ada.Text_IO.Put(Ada.Text_IO.Standard_Output,common.ub2s(currentElement.keyword)&" | scope -> "&currentElement.token_scope'Image & " Var ID:" & currentElement.variable_id'Image);
 
                if currentElement.token_scope = parent_Element.scope then
+                  if currentElement.token_scope /= 0 then
                   if currentElement.value.id_type=common.id_INTEGER then
 
 
@@ -252,8 +303,34 @@ package body code_gen is
                         Ada.Text_IO.Put_Line(F, "%""v" & common.int_to_String(currentElement.variable_id) & """ = alloca i32");
                      end if;
 
-                     if currentElement.is_param = True then
-                        Ada.Text_IO.Put_Line(F,"store i32 %""" & common.ub2s(currentElement.keyword)&"_arg"", i32* %""v"& common.int_to_String(currentElement.variable_id) &"""");
+                        if currentElement.is_param = True then
+
+                           if currentElement.array_size /= 0 then
+                              -- This is an array
+                              --; Edit Array
+                              --%"element" = load <3 x i32>, <3 x i32>* @"ARRAY"
+                              --; Load the # 45 into pos 0
+                              --%0 = insertelement <3 x i32> %"element", i32 45, i32 0
+                              --; Reassign entire array
+                              --store <3 x i32> %0, <3 x i32>* @"ARRAY"
+                              Ada.Text_IO.Put_Line(F,"ZZZZZZZ Error on purpose this needs to be double checked before run");
+                              Ada.Text_IO.Put_Line(F,"ZZZZZZZ this needs to be more generic with the currentElement.value.llvm_type");
+                              temp_id := Var_Counter.Get_Next;
+                              Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = load <" & common.int_to_String(currentElement.array_size) & " x i32>, <" & common.int_to_String(currentElement.array_size) & " x i32>* @""v" & common.int_to_String(currentElement.variable_id)&"""");
+                              temp_id := Var_Counter.Get_Next;
+                              Ada.Text_IO.Put_Line(F,"%t"&common.int_to_String(temp_id) & " = insertelement <"&common.int_to_String(currentElement.array_size) & " x i32> %t"&common.int_to_String(temp_id-1)&", " & common.ub2s(currentElement.value.llvm_type) & " %""" & common.ub2s(currentElement.keyword)&"_arg"", i32 index");
+                              Ada.Text_IO.Put_Line(F,"store <"&common.int_to_String(currentElement.array_size)& " x i32> %t"&common.int_to_String(temp_id)&",<"&common.int_to_String(currentElement.array_size)& " x i32>* @""v" & common.int_to_String(currentElement.variable_id)&"""");
+                              Ada.Text_IO.Put_Line(F,"; Done with assign to array");
+                              Ada.Text_IO.Put_Line(F,"");
+                              Ada.Text_IO.Put_Line(F,"");
+                           else
+                              -- Not an array, work normally here
+                              if currentElement.token_scope /= 0 then
+                                 Ada.Text_IO.Put_Line(F,"store i32 %""" & common.ub2s(currentElement.keyword)&"_arg"", i32* %""v"& common.int_to_String(currentElement.variable_id) &"""");
+                              else
+                                 Ada.Text_IO.Put_Line(F,"store i32 %""" & common.ub2s(currentElement.keyword)&"_arg"", i32* @""v"& common.int_to_String(currentElement.variable_id) &"""");
+                              end if;
+                          end if;
                      end if;
 
                   elsif currentElement.value.id_type=common.id_STRING then
@@ -265,7 +342,8 @@ package body code_gen is
                   elsif currentElement.value.id_type=common.id_BOOLEAN then
                      Ada.Text_IO.Put_Line(F,"; Variable Name: " & common.ub2s(currentElement.keyword));
                   end if;
-               end if;
+                  end if;
+                  end if;
             end loop;
             hash_table_index := hash_table_index + 1;
          end loop;
@@ -464,6 +542,8 @@ package body code_gen is
       returned_parsed_value : common.parsed_value;
       assignment_value_type : Ada.Strings.Unbounded.Unbounded_String;
 
+      temp_id : Integer;
+
    begin
 
       if in_node = null then
@@ -533,7 +613,22 @@ package body code_gen is
             Ada.Text_IO.Put_Line(F,";Updated variable # for string in symbol table" & common.int_to_String(symbol_table.current_variable_id));
             symbol_table.print_hash_entries;
          else
-            Ada.Text_IO.Put_Line(F, "store "&common.ub2s(assignment_value_type)&" %t" & common.int_to_String(assignment_value_id) & ", "&common.ub2s(symbol_table.get_type_from_var_id(assignment_destination.location,in_node.scope))&"* %""v"&common.int_to_String(assignment_destination.location)&"""");
+            if assignment_destination.entry_ptr.array_size /= 0 then
+               -- All arrays are treated as global in my assembly
+               Ada.Text_IO.Put_Line(F,"; Begin array");
+               Ada.Text_IO.Put_Line(F,"; make more generic  with currentElement.value.llvm_type");
+               temp_id := Var_Counter.Get_Next;
+               Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = load <" & common.int_to_String(assignment_destination.entry_ptr.array_size) & " x i32>, <" & common.int_to_String(assignment_destination.entry_ptr.array_size) & " x i32>* @""v" & common.int_to_String(assignment_destination.entry_ptr.variable_id)&"""");
+               temp_id := Var_Counter.Get_Next;
+               Ada.Text_IO.Put_Line(F,"%t"&common.int_to_String(temp_id) & " = insertelement <"&common.int_to_String(assignment_destination.entry_ptr.array_size) & " x i32> %t"&common.int_to_String(temp_id-1)&", " & common.ub2s(assignment_destination.entry_ptr.value.llvm_type) & " %t" & common.int_to_String(assignment_value_id)&", i32 %t"&common.int_to_String(assignment_destination.offset));
+               Ada.Text_IO.Put_Line(F,"store <"&common.int_to_String(assignment_destination.entry_ptr.array_size)& " x i32> %t"&common.int_to_String(temp_id)&",<"&common.int_to_String(assignment_destination.entry_ptr.array_size)& " x i32>* @""v" & common.int_to_String(assignment_destination.entry_ptr.variable_id)&"""");
+               Ada.Text_IO.Put_Line(F,"; Done with assign to array");
+
+            elsif assignment_destination.entry_ptr.token_scope /= 0 then
+               Ada.Text_IO.Put_Line(F, "store "&common.ub2s(assignment_value_type)&" %t" & common.int_to_String(assignment_value_id) & ", "&common.ub2s(symbol_table.get_type_from_var_id(assignment_destination.location,in_node.scope))&"* %""v"&common.int_to_String(assignment_destination.location)&"""");
+            else
+               Ada.Text_IO.Put_Line(F, "store "&common.ub2s(assignment_value_type)&" %t" & common.int_to_String(assignment_value_id) & ", "&common.ub2s(symbol_table.get_type_from_var_id(assignment_destination.location,in_node.scope))&"* @""v"&common.int_to_String(assignment_destination.location)&"""");
+            end if;
          end if;
 
       elsif in_node.Branch_Type = common.b_IF_STATEMENT then
@@ -650,6 +745,7 @@ package body code_gen is
 
       var_name_tree : common.Node_Ptr;
       index_tree : common.Node_Ptr;
+      index_parsed_value : common.parsed_value;
 
       argument_string : Ada.Strings.Unbounded.Unbounded_String;
       argument_index : Integer := 0;
@@ -659,6 +755,8 @@ package body code_gen is
       returned_value : common.parsed_value;
 
       temp_value : common.parsed_value;
+
+      returned_entry : symbol_table.Table_Entry_ptr;
    begin
 
       if in_node = null then
@@ -737,7 +835,10 @@ package body code_gen is
          in_node.Name := common.tub("%t" & common.int_to_String(temp_id));
       elsif common.ub2s(in_node.Name) = "Variable_Value" then
          var_name_tree := get_child_of_branch(in_node,common.b_VARIABLE_NAME);
+
+         -- writes and returns a T value to be used as an index for reading arrays, will still write a statment with a t-value equal to zero if unneeded
          index_tree := get_child_of_branch(in_node, common.b_INDEX);
+         index_parsed_value := parse_value_from_tree(index_tree,True,size_of_tree(index_tree));
 
          Ada.Text_IO.Put_Line(F,";Found Variable! :" & common.ub2s(var_name_tree.Name));
 
@@ -748,7 +849,18 @@ package body code_gen is
             else
                temp_id := Var_Counter.Get_Next;
                --Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(current_temp_var_id) & " BOGUS BUGUS SDUSHDOUSHDSU " & common.ub2s(in_node.Left.Name) & " , " & common.ub2s(in_node.Right.Name));
-               Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & "= load i32, i32* %v" & common.int_to_String(symbol_table.lookupHash(var_name_tree.Name,in_node.scope).variable_id));
+               returned_entry := symbol_table.lookupHash(var_name_tree.Name,in_node.scope);
+               if returned_entry.array_size /= 0 then
+                    Ada.Text_IO.Put_Line(F,"; Reading from Array");
+                  Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = load <" & common.int_to_String(returned_entry.array_size) & " x " & common.ub2s(returned_entry.value.llvm_type) & ">, <" & common.int_to_String(returned_entry.array_size) & " x " & common.ub2s(returned_entry.value.llvm_type) & ">* @""v"&common.int_to_String(symbol_table.lookupHash(var_name_tree.Name,in_node.scope).variable_id)&"""");
+                  temp_id := Var_Counter.Get_Next;
+                  Ada.Text_IO.Put_Line(F,"; for error checking make sure that the returned index value is an int");
+                  Ada.Text_IO.Put_Line(F,"%t" &common.int_to_String(temp_id) & " = extractelement <" & common.int_to_String(returned_entry.array_size) & " x " & common.ub2s(returned_entry.value.llvm_type) & "> %t" & common.int_to_String(temp_id-1)& ", i32 %t" & common.int_to_String(index_parsed_value.t_value));
+               elsif symbol_table.lookupHash(var_name_tree.Name,in_node.scope).token_scope /= 0 then
+                  Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & "= load i32, i32* %v" & common.int_to_String(symbol_table.lookupHash(var_name_tree.Name,in_node.scope).variable_id));
+               else
+                  Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & "= load i32, i32* @v" & common.int_to_String(symbol_table.lookupHash(var_name_tree.Name,in_node.scope).variable_id));
+               end if;
                in_node.Name := common.tub("%t" & common.int_to_String(temp_id));
             end if;
 
@@ -949,6 +1061,18 @@ package body code_gen is
 
          -- The variable that contains the comparison result
          return temp_id;
+      else
+
+         -- Check to see if maybe parse value from tree could work here?
+         if common.ub2s(in_node.Name) = "TRUE" or common.ub2s(in_node.Name)="1" then
+            temp_id := Var_Counter.Get_Next;
+            Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = icmp eq i32 1, 1");
+            return temp_id;
+         elsif common.ub2s(in_node.Name) = "FALSE" or common.ub2s(in_node.Name)="0" then
+            temp_id := Var_Counter.Get_Next;
+            Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = icmp eq i32 1, 0");
+            return temp_id;
+         end if;
       end if;
 
       return 0;

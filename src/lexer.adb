@@ -37,7 +37,14 @@ package body lexer is
       insert_reserved_entry(common.tub("."), common.t_DOT, LastEntry);
       insert_reserved_entry(common.tub("//"), common.t_LINE_COMMENT, LastEntry);
       insert_reserved_entry(common.tub("INTEGER"), common.t_INTEGER, LastEntry);
-      insert_reserved_entry(common.tub("BOOL"), common.t_BOOL, LastEntry);
+
+
+      -- I am changing Boolean to just be an integer under the hood
+      insert_reserved_entry(common.tub("BOOL"), common.t_INTEGER, LastEntry);
+      insert_reserved_entry(common.tub("TRUE"), common.t_TRUE, LastEntry);
+      insert_reserved_entry(common.tub("FALSE"), common.t_FALSE, LastEntry);
+
+
       insert_reserved_entry(common.tub("FLOAT"), common.t_FLOAT, LastEntry);
       insert_reserved_entry(common.tub("STRING"), common.t_STRING, LastEntry);
       insert_reserved_entry(common.tub("CHAR"), common.t_CHAR, LastEntry);
@@ -72,8 +79,6 @@ package body lexer is
       insert_reserved_entry(common.tub(")"), common.t_RIGHT_PAREN, LastEntry);
       insert_reserved_entry(common.tub("["), common.t_LEFT_BRACKET, LastEntry);
       insert_reserved_entry(common.tub("]"), common.t_RIGHT_BRACKET, LastEntry);
-      insert_reserved_entry(common.tub("TRUE"), common.t_TRUE, LastEntry);
-      insert_reserved_entry(common.tub("FALSE"), common.t_FALSE, LastEntry);
    end populate_reserved_words;
 
    procedure insert_reserved_entry(in_keyword : Ada.Strings.Unbounded.Unbounded_String; in_type : common.token_types; insert_location : IN OUT Reserved_Entry_ptr) is

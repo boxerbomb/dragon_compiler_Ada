@@ -1,4 +1,4 @@
-; ModuleID = "GRANT"
+; ModuleID = "LOOPFIB"
 target triple = ""
 target datalayout = ""
 @"fmt_double" = constant [4 x i8] c"%lf\00"
@@ -48,85 +48,156 @@ store i8* %0, i8** %3, align 8
 ret i32 0
 }
 
+; Variable Name: MAX
+@"v6" = global i32 0
+; Variable Name: OUT
+@"v8" = global i32 0
+; Variable Name: I
+@"v5" = global i32 0
+; Variable Name: X
+@"v4" = global i32 0
+; Variable Name: TMP
+@"v7" = global i32 0
+; Variable Name: TMP
+@"v11" = global <2 x i32> <i32 0,i32 0>
 
 define i32 @"main"()
 {
-; Variable Name: ZACH
-%"v6" = alloca i32
-; Variable Name: JAKE
-%"v4" = alloca i32
-; Variable Name: TMP
-%"v7" = alloca i32
-; Variable Name: RYAN
-%"v5_raw" = call i8* @"malloc"(i32 3)
-%"v5" = bitcast i8* %"v5_raw" to i32*
-%"v5.0" = getelementptr i32, i32* %"v5", i32 1
-%"v5.1" = getelementptr i32, i32* %"v5", i32 2
-%"v5.2" = getelementptr i32, i32* %"v5", i32 3
-%"v5.3" = getelementptr i32, i32* %"v5", i32 4
 ; A note here: 0
 %t1 = add i32 0 , 0
-%t2 = call i32 @"IF_PROC"()
-store i32 %t2, i32* %"v7"
+%t2 = call i32 @"GETINTEGER"()
+store i32 %t2, i32* @"v6"
 ; A note here: 0
 %t3 = add i32 0 , 0
-%t4 = call i32 @"FOR_PROC"()
-store i32 %t4, i32* %"v7"
-; This is a hard-coded return line for now
-ret i32 0
-}
-
-define i32 @"IF_PROC"()
-{
-; Variable Name: DECLARATION
-%"v9" = alloca i32
-br i1 %t0, label %"label_1", label %"label_2"
-label_1:
+; A note here: 0
+%t4 = add i32 0 , 0
+store i32 %t4, i32* @"v5"
 ; A note here: 0
 %t5 = add i32 0 , 0
-;Found Variable! :JAKE
-%t6= load i32, i32* %v4
-%t7 = add i32 %t6 , 1
-store i32 %t7, i32* %"v4"
-br label %"label_3"
-label_2:
 ; A note here: 0
-%t8 = add i32 0 , 0
-;Found Variable! :ZACH
-%t9= load i32, i32* %v6
-;Found Variable! :RYAN
-%t10= load i32, i32* %v5
-%t11 = add i32 %t9 , %t10
-store i32 %t11, i32* %"v6"
-br label %"label_3"
-label_3:
+%t6 = add i32 0 , 0
+;Found Variable! :I
+%t7= load i32, i32* @v5
+%t8 = call i32 @"FIB"(i32 %t7)
+store i32 %t8, i32* @"v4"
 ; A note here: 0
-%t12 = add i32 0 , 0
-ret i32 %t12
-; This is a hard-coded return line for now
-ret i32 0
-}
-
-define i32 @"FOR_PROC"()
-{
-; Variable Name: I
-%"v11" = alloca i32
+%t9 = add i32 0 , 0
+; A note here: 0
+%t10 = add i32 0 , 0
+;Found Variable! :X
+%t11= load i32, i32* @v4
+%t12 = call i32 @"PUTINTEGER"(i32 %t11)
+store i32 %t12, i32* @"v8"
 ; A note here: 0
 %t13 = add i32 0 , 0
 ; A note here: 0
 %t14 = add i32 0 , 0
-store i32 %t14, i32* %"v11"
-; A note here: 1
-%t15 = add i32 0 , 1
-;Found Variable! :ZACH
-%t16= load i32, i32* %v6
 ;Found Variable! :I
-%t17= load i32, i32* %v11
-%t18 = add i32 %t16 , %t17
-store i32 %t18, i32* %"v5"
+%t15= load i32, i32* @v5
+%t16 = add i32 %t15 , 1
+store i32 %t16, i32* @"v5"
+; This is a hard-coded return line for now
+ret i32 0
+}
+
+define i32 @"FIB"(i32 %"VAL_arg")
+{
+; Variable Name: LOOPVAL
+%"v12" = alloca i32
+; Variable Name: RET
+%"v13" = alloca i32
+; Variable Name: TMP
+%"v11_raw" = call i8* @"malloc"(i32 2)
+%"v11" = bitcast i8* %"v11_raw" to i32*
+%"v11.0" = getelementptr i32, i32* %"v11", i32 1
+%"v11.1" = getelementptr i32, i32* %"v11", i32 2
+%"v11.2" = getelementptr i32, i32* %"v11", i32 3
+; Variable Name: VAL
+%"v10" = alloca i32
+store i32 %"VAL_arg", i32* %"v10"
 ; A note here: 0
-%t19 = add i32 0 , 0
-ret i32 %t19
+%t17 = add i32 0 , 0
+; A note here: 1
+%t18 = add i32 0 , 1
+; Begin array
+; make more generic  with currentElement.value.llvm_type
+%t19 = load <2 x i32>, <2 x i32>* @"v11"
+%t20 = insertelement <2 x i32> %t19, i32 %t18, i32 %t17
+store <2 x i32> %t20,<2 x i32>* @"v11"
+; Done with assign to array
+; A note here: 1
+%t21 = add i32 0 , 1
+; A note here: 1
+%t22 = add i32 0 , 1
+; Begin array
+; make more generic  with currentElement.value.llvm_type
+%t23 = load <2 x i32>, <2 x i32>* @"v11"
+%t24 = insertelement <2 x i32> %t23, i32 %t22, i32 %t21
+store <2 x i32> %t24,<2 x i32>* @"v11"
+; Done with assign to array
+; A note here: 0
+%t25 = add i32 0 , 0
+; A note here: 0
+%t26 = add i32 0 , 0
+store i32 %t26, i32* %"v12"
+; A note here: 0
+%t27 = add i32 0 , 0
+; A note here: 0
+%t28 = add i32 0 , 0
+;Found Variable! :TMP
+; Reading from Array
+%t29 = load <2 x i32>, <2 x i32>* @"v11"
+; for error checking make sure that the returned index value is an int
+%t30 = extractelement <2 x i32> %t29, i32 %t28
+; A note here: 1
+%t31 = add i32 0 , 1
+;Found Variable! :TMP
+; Reading from Array
+%t32 = load <2 x i32>, <2 x i32>* @"v11"
+; for error checking make sure that the returned index value is an int
+%t33 = extractelement <2 x i32> %t32, i32 %t31
+%t34 = add i32 %t30 , %t33
+store i32 %t34, i32* %"v13"
+; A note here: 0
+%t35 = add i32 0 , 0
+; A note here: 1
+%t36 = add i32 0 , 1
+;Found Variable! :TMP
+; Reading from Array
+%t37 = load <2 x i32>, <2 x i32>* @"v11"
+; for error checking make sure that the returned index value is an int
+%t38 = extractelement <2 x i32> %t37, i32 %t36
+; Begin array
+; make more generic  with currentElement.value.llvm_type
+%t39 = load <2 x i32>, <2 x i32>* @"v11"
+%t40 = insertelement <2 x i32> %t39, i32 %t38, i32 %t35
+store <2 x i32> %t40,<2 x i32>* @"v11"
+; Done with assign to array
+; A note here: 1
+%t41 = add i32 0 , 1
+; A note here: 0
+%t42 = add i32 0 , 0
+;Found Variable! :RET
+%t43= load i32, i32* %v13
+; Begin array
+; make more generic  with currentElement.value.llvm_type
+%t44 = load <2 x i32>, <2 x i32>* @"v11"
+%t45 = insertelement <2 x i32> %t44, i32 %t43, i32 %t41
+store <2 x i32> %t45,<2 x i32>* @"v11"
+; Done with assign to array
+; A note here: 0
+%t46 = add i32 0 , 0
+; A note here: 0
+%t47 = add i32 0 , 0
+;Found Variable! :LOOPVAL
+%t48= load i32, i32* %v12
+%t49 = add i32 %t48 , 1
+store i32 %t49, i32* %"v12"
+; A note here: 0
+%t50 = add i32 0 , 0
+;Found Variable! :RET
+%t51= load i32, i32* %v13
+ret i32 %t51
 ; This is a hard-coded return line for now
 ret i32 0
 }

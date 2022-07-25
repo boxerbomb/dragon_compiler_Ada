@@ -515,10 +515,7 @@ package body parser is
             matchStack.pop (popped_token);
             --new_node.Name := new_node.Name & "." & popped_token.value;
             --new_node.Name := new_node.Name & "." & matchStack.pop().Value;
-            new_node.Name :=
-              Ada.Strings.Unbounded."&"
-                (new_node.Name,
-                 Ada.Strings.Unbounded."&" (".", popped_token.value));
+            new_node.Name := Ada.Strings.Unbounded."&"(new_node.Name,Ada.Strings.Unbounded."&" (".", popped_token.value));
             common.add (parent_node, new_node);
             return True;
          end if;
@@ -572,12 +569,14 @@ package body parser is
       end if;
 
       if match (common.t_TRUE) then
-         new_node.Name := common.tub ("TRUE");
+         new_node.Name := common.tub("1");
+         common.add (parent_node, new_node);
          return True;
       end if;
 
       if match (common.t_FALSE) then
-         new_node.Name := common.tub ("False");
+         new_node.Name := common.tub("0");
+         common.add (parent_node, new_node);
          return True;
       end if;
 
