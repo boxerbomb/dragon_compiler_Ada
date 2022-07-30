@@ -153,6 +153,22 @@ package body code_gen is
       Ada.Text_IO.Put_Line(F,"");
 
 
+      Ada.Text_IO.Put_Line(F,"define i32 @""PUTFLOAT""(double %""in_arg"")");
+      Ada.Text_IO.Put_Line(F,"{");
+      Ada.Text_IO.Put_Line(F,"entry:");
+      Ada.Text_IO.Put_Line(F,"%""in"" = alloca double");
+      Ada.Text_IO.Put_Line(F,"store double %""in_arg"", double* %""in""");
+      Ada.Text_IO.Put_Line(F,"%""fmt_ptr"" = getelementptr [4 x i8], [4 x i8]* @""fmt_double"", i32 0, i32 0");
+      Ada.Text_IO.Put_Line(F,"%""print"" = call i32 (i8*, ...) @""printf""(i8* %""fmt_ptr"", double %""in_arg"")");
+      Ada.Text_IO.Put_Line(F,"%""fmt_ptr.1"" = getelementptr [2 x i8], [2 x i8]* @""fmt_newline"", i32 0, i32 0");
+      Ada.Text_IO.Put_Line(F," %""print.1"" = call i32 (i8*, ...) @""printf""(i8* %""fmt_ptr.1"")");
+      Ada.Text_IO.Put_Line(F,"ret i32 0");
+      Ada.Text_IO.Put_Line(F,"}");
+      Ada.Text_IO.Put_Line(F,"");
+
+
+
+
 
       -- CONSTANTS/GLBOAL Variables, right now starting with strings but I might have to add more later
         for current_hash_table of symbol_table.scope_hash_vector loop
@@ -272,7 +288,41 @@ package body code_gen is
 
 
 
-                  if currentElement.value.id_type=common.id_INTEGER then
+                  -- Working with Floats
+                  if currentElement.value.id_type = common.id_FLOAT then
+                     if currentElement.array_size /= 0 then
+
+                        --Ada.Text_IO.Put_Line(F, "%""v" & common.int_to_String(currentElement.variable_id) & "_raw"" = call i8* @""malloc""(i32 " & common.int_to_String(currentElement.array_size) & ")");
+                        --Ada.Text_IO.Put_Line(F, "%""v" & common.int_to_String(currentElement.variable_id) & """ = bitcast i8* %""v" & common.int_to_String(currentElement.variable_id)&"_raw"" to i32*");
+                        Ada.Text_IO.Put_Line(F, "; Float Array Code");
+                        -- Here we need to loop through and add an element.# for each element in the array
+                        for i in 0 .. currentElement.array_size loop
+                              --Ada.Text_IO.Put_Line(F, "%""v" & common.int_to_String(currentElement.variable_id) & "." & common.int_to_String(i) & """ = getelementptr i32, i32* %""v" & common.int_to_String(currentElement.variable_id) & """, i32 " & common.int_to_String(i+1));
+                              Ada.Text_IO.Put_Line(F, "; Float Array Code");
+                        end loop;
+                     else
+                           Ada.Text_IO.Put_Line(F, "%""v" & common.int_to_String(currentElement.variable_id) & """ = alloca double");
+                           Ada.Text_IO.Put_Line(F, "; Float Array Code");
+                     end if;
+
+                        if currentElement.is_param = True then
+
+                           if currentElement.array_size /= 0 then
+                              -- Float Pararm Araray Code
+                              Ada.Text_IO.Put_Line(F, "; Float Array Param Code");
+                           else
+                              -- Not an array, work normally here
+                              if currentElement.token_scope /= 0 then
+                                 -- Not global param
+                                 Ada.Text_IO.Put_Line(F,"store double %""" & common.ub2s(currentElement.keyword)&"_arg"", double* %""v"& common.int_to_String(currentElement.variable_id) &"""");
+                              else
+                                 --Global param
+                                 Ada.Text_IO.Put_Line(F,"store double %""" & common.ub2s(currentElement.keyword)&"_arg"", double* @""v"& common.int_to_String(currentElement.variable_id) &"""");
+                              end if;
+                          end if;
+                     end if;
+
+                  elsif currentElement.value.id_type=common.id_INTEGER then
 
 
                      Ada.Text_IO.Put_Line(F,"; Variable Name: " & common.ub2s(currentElement.keyword));
@@ -1060,8 +1110,49 @@ package body code_gen is
             procedure_return_type := common.tub("i32");
          end if;
 
-         -- This assumes that all fucntions return an I32, this can be tackled another time
-         Ada.Text_IO.Put_Line(F, "%t" & common.int_to_String(procedure_return_value_id) & " = call " & common.ub2s(procedure_return_type) & " @""" & Ada.Strings.Unbounded.Slice(in_node.Name,1,proc_length-2) & """(" & common.ub2s(argument_string) & ")");
+         -- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx
+         -- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+         -- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx
+         -- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+          -- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx
+          -- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+          -- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx
+         -- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+         -- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx
+         -- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+          -- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx
+          -- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+
+         --    ATTENTION !!! MORE WORK NEEDS TO BE DONE HERE, THIS IS A HACK
+         --  THE COMPILER ASSUMES ALL t-values are I32!!!
+         -- A global t-value lookup is needed!!!!!
+         -- This might be true!!! I am very tired
+
+
+
+         -- LINE 551 is bad LINE 551 is bad
+
+         -- The program works if you change the ll file line 88 from i32 to double
+
+
+            Ada.Text_IO.Put_Line(F, "%t" & common.int_to_String(procedure_return_value_id) & " = call " & common.ub2s(procedure_return_type) & " @""" & Ada.Strings.Unbounded.Slice(in_node.Name,1,proc_length-2) & """(" & common.ub2s(argument_string) & ")");
+
+
+
+
+         -- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx
+         -- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+         -- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx
+         -- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+          -- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx
+          -- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+          -- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx
+         -- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+         -- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx
+         -- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+          -- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx
+          -- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 
          --  if size_of_tree(argument_node) > 0 then

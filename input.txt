@@ -1,16 +1,16 @@
 program testArguments is
     variable out : bool;
-    variable tmp : integer;
+    variable tmp : float;
 
-    procedure add : integer (variable n1 : integer, variable n2 : integer, variable n3 : integer)
-        variable result : integer;
+    procedure add : float (variable n1 : float)
+        variable result : float;
     begin
-        result := n1 + n2 + n3;
+        result := n1 + 1.99;
         return result;
     end procedure
 
-    tmp := 8 + add(9,10,11);
+    tmp := add(1.5);
 
-    out := putInteger(10+add(1,2,3));
+    out := putfloat(tmp);
 
 end program.
