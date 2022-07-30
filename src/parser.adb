@@ -842,6 +842,8 @@ package body parser is
       procedure_name : Ada.Strings.Unbounded.Unbounded_String;
       temp_bool      : Boolean;
       returned_id    : Ada.Strings.Unbounded.Unbounded_String;
+
+      llvm_return_type : Ada.Strings.Unbounded.Unbounded_String;
    begin
       if match (common.t_PROCEDURE) then
          -- Returned ID is the variable name
@@ -850,6 +852,21 @@ package body parser is
             matchStack.pop (popped_token);
             procedure_name := popped_token.value;
             if match (common.t_COLON) and then type_mark (new_node, common.b_RETURN_TYPE) and then match (common.t_LEFT_PAREN) then
+               matchStack.pop (popped_token);
+               matchStack.pop (popped_token);
+
+               if common.ub2s(popped_token.value) = "INTEGER" then
+                  llvm_return_type := common.tub("i32");
+               elsif common.ub2s(popped_token.value) = "BOOL" then
+                  llvm_return_type := common.tub("i32");
+               elsif common.ub2s(popped_token.value) = "FLOAT" then
+                  llvm_return_type := common.tub("double");
+               else
+                  Ada.Text_IO.Put_Line("Procedure Header Type Error");
+               end if;
+
+               symbol_table.lookupHash(returned_id,parent_node.scope).return_type := llvm_return_type;
+
                temp_bool := parameter_list (new_node);
                if match (common.t_RIGHT_PAREN) then
                   common.current_scope := common.scope_max + 1;

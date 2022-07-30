@@ -43,7 +43,7 @@ package body id_value_pkg is
       elsif in_id_type = common.id_INTEGER then
          return_entry.llvm_type := common.tub("i32");
       elsif in_id_type = common.id_FLOAT then
-         return_entry.llvm_type := common.tub("Floats are not done yet");
+         return_entry.llvm_type := common.tub("double");
       elsif in_id_type = common.id_BOOLEAN then
          return_entry.llvm_type := common.tub("Error booleans should be ints");
       end if;

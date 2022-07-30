@@ -4,6 +4,7 @@ with Ada.Strings.Unbounded;
 with Ada.Containers.Vectors;
 with symbol_table;
 with id_value_pkg;
+with gstack;
 
 
 package code_gen is
@@ -44,7 +45,9 @@ package code_gen is
        (Index_Type   => Natural,
         Element_Type => argument_data);
 
-   argument_list : Argument_Vectors_Package.Vector;
+   empty_argument_list : Argument_Vectors_Package.Vector;
+
+   package argument_stack is new gstack(10,Argument_Vectors_Package.Vector);
 
 
    procedure add_parameters_to_list(in_node : common.Node_Ptr);

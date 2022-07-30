@@ -5,7 +5,7 @@ with common;
 package body symbol_table is
 
    procedure insert_entry(in_keyword : Ada.Strings.Unbounded.Unbounded_String; in_scope : Integer; in_value : id_value_pkg.id_value; insert_location : IN OUT Table_Entry_ptr; is_param : Boolean := False) is
-      new_entry : Table_Entry_ptr := new Table_Entry'(in_keyword, in_scope, in_value, NULL,-1,is_param,0);
+      new_entry : Table_Entry_ptr := new Table_Entry'(in_keyword, in_scope, in_value, NULL,-1,is_param,0,common.tub(""));
    begin
 
       insert_location.next_entry := new_entry;
@@ -97,6 +97,7 @@ package body symbol_table is
                Ada.Text_IO.Put_Line(" Type-> Program Name");
             elsif currentElement.value.id_type=common.id_PROCEDURE_NAME then
                Ada.Text_IO.Put_Line(" Type-> Procedure Name");
+               Ada.Text_IO.Put_Line("Return: " & common.ub2s(currentElement.return_type));
             else
                Ada.Text_IO.Put_Line(" Type->Invalid");
             end if;
@@ -110,7 +111,7 @@ package body symbol_table is
 
    -- Used on Line 183 of parser
    function lookupHash(keyword : Ada.Strings.Unbounded.Unbounded_String; in_scope : Integer) return Table_Entry_ptr is
-      InvalidEntry : Table_Entry_ptr := new Table_Entry'(common.tub(""),-1,id_value_pkg.empty_value,NULL,-1,False,0);
+      InvalidEntry : Table_Entry_ptr := new Table_Entry'(common.tub(""),-1,id_value_pkg.empty_value,NULL,-1,False,0,common.tub(""));
       returnEntry : Table_Entry_ptr;
    begin
 
@@ -141,7 +142,7 @@ package body symbol_table is
 
    function lookup(keyword : Ada.Strings.Unbounded.Unbounded_String; in_scope : Integer) return Table_Entry_ptr is
       currentEntry : Table_Entry_ptr := TableStart;
-      InvalidEntry : Table_Entry_ptr := new Table_Entry'(common.tub(""),-1,id_value_pkg.empty_value,NULL,-1,False,0);
+      InvalidEntry : Table_Entry_ptr := new Table_Entry'(common.tub(""),-1,id_value_pkg.empty_value,NULL,-1,False,0,common.tub(""));
    begin
 
       -- Break this
@@ -188,7 +189,7 @@ package body symbol_table is
       use type common.id_types;
 
       currentEntry : Table_Entry_ptr := TableStart;
-      InvalidEntry : Table_Entry_ptr := new Table_Entry'(common.tub(""),-1,id_value_pkg.empty_value,NULL,-1,False,0);
+      InvalidEntry : Table_Entry_ptr := new Table_Entry'(common.tub(""),-1,id_value_pkg.empty_value,NULL,-1,False,0,common.tub(""));
    begin
 
       -- Break this
@@ -218,7 +219,7 @@ package body symbol_table is
       elsif currentEntry.value.id_type = common.id_INTEGER then
          return common.tub("i32");
       elsif currentEntry.value.id_type = common.id_FLOAT then
-         return common.tub("FLOAT TYPE VALUE");
+         return common.tub("double");
       elsif currentEntry.value.id_type = common.id_BOOLEAN then
          return common.tub("BOOLEAN TYPE VALUE, OR MAYBE JUST USE i32 and 1 and 0");
       else

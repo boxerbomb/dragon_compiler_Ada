@@ -48,9 +48,10 @@ package common is
 
 
    type Node;
+
    type Node_Ptr is access Node;
 
-   type Node is
+  type Node is
       record
          Name: Ada.Strings.Unbounded.Unbounded_String;
          Branch_Type : common.branch_types;
