@@ -1,30 +1,29 @@
-program MultipleProcs is
+PROGRAM grant IS
+    global variable JAKE : integer;
+    global variable ryan : integer[3];
+    global variable zach : integer;
+    variable tmp : BOOL;
 
-global variable y : integer;
-variable tmp : bool;
+   procedure if_proc : integer()
+        variable declaration : integer;
+      begin
+      if(true) then jake := jake + 1;
+      else zach := zach + RYAN[2];
+      end if;
+      return (0);
+   end procedure;
 
-procedure Proc1 : integer(variable val : integer)
-    procedure Proc2 : integer(variable val : integer)
-        procedure Proc1 : integer(variable val : integer)
-            begin
-                val := val + 1;
-                return val;
-        end procedure;
-        begin
-            val := val + 1;
-            val := Proc1(val);
-            return val;
-    end procedure;
-    begin
-        val := val + 1;
-        val := Proc1(val);
-        return val;
-end procedure;
+   procedure for_proc : integer()
+      variable i : integer;
+      begin
+      for(i := 0; i < zach)
+         ryan[1] := zach + i;
+      end for;
+      return (0);
+      end procedure;
 
-
-begin
-
-y := Proc1(y);
-tmp := putInteger(y);
-
+   begin
+      tmp := if_proc();
+      
+      tmp := putinteger(tmp);
 end program.

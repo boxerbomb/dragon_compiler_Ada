@@ -113,10 +113,18 @@ package body symbol_table is
    function lookupHash(keyword : Ada.Strings.Unbounded.Unbounded_String; in_scope : Integer) return Table_Entry_ptr is
       InvalidEntry : Table_Entry_ptr := new Table_Entry'(common.tub(""),-1,id_value_pkg.empty_value,NULL,-1,False,0,common.tub(""));
       returnEntry : Table_Entry_ptr;
+      cleaned_in_scope : Integer;
    begin
 
       begin
-         returnEntry := scope_hash_vector.Element(in_scope).Element(keyword);
+
+         if in_scope = -1 then
+            cleaned_in_scope := 0;
+         else
+            cleaned_in_scope := in_scope;
+         end if;
+
+         returnEntry := scope_hash_vector.Element(cleaned_in_scope).Element(keyword);
       exception
          when E : Constraint_Error =>
             returnEntry := InvalidEntry;
@@ -132,7 +140,7 @@ package body symbol_table is
       --     end if;
       --  end if;
 
-      if returnEntry = InvalidEntry and in_scope /= 0 then
+      if returnEntry = InvalidEntry and cleaned_in_scope /= 0 then
          return lookupHash(keyword, 0);
       end if;
 

@@ -77,6 +77,8 @@ package body code_gen is
       proc_length : Natural;
 
       procedure_return_type : Ada.Strings.Unbounded.Unbounded_String;
+
+      procedure_scope : Integer;
    begin
 
 
@@ -111,7 +113,7 @@ package body code_gen is
       Ada.Text_IO.Put_Line(F,"");
 
 
-      Ada.Text_IO.Put_Line(F,"define i32 @""PUTINTEGER""(i32 %""in_arg"") ");
+      Ada.Text_IO.Put_Line(F,"define i32 @""PUTINTEGER.0""(i32 %""in_arg"") ");
       Ada.Text_IO.Put_Line(F,"{");
       Ada.Text_IO.Put_Line(F,"entry:");
       Ada.Text_IO.Put_Line(F,"%""in"" = alloca i32");
@@ -126,7 +128,7 @@ package body code_gen is
       Ada.Text_IO.Put_Line(F,"");
 
 
-      Ada.Text_IO.Put_Line(F,"define i32 @""GETINTEGER""()");
+      Ada.Text_IO.Put_Line(F,"define i32 @""GETINTEGER.0""()");
       Ada.Text_IO.Put_Line(F,"{");
       Ada.Text_IO.Put_Line(F,"entry:");
       Ada.Text_IO.Put_Line(F,"  %""x"" = alloca i32");
@@ -138,7 +140,7 @@ package body code_gen is
       Ada.Text_IO.Put_Line(F,"}");
       Ada.Text_IO.Put_Line(F,"");
 
-      Ada.Text_IO.Put_Line(F,"define i32 @""PUTSTRING""(i8*)");
+      Ada.Text_IO.Put_Line(F,"define i32 @""PUTSTRING.0""(i8*)");
       Ada.Text_IO.Put_Line(F,"{");
       Ada.Text_IO.Put_Line(F,"%2 = alloca i32, align 4");
       Ada.Text_IO.Put_Line(F,"%3 = alloca i8*, align 8");
@@ -153,7 +155,7 @@ package body code_gen is
       Ada.Text_IO.Put_Line(F,"");
 
 
-      Ada.Text_IO.Put_Line(F,"define i32 @""PUTFLOAT""(double %""in_arg"")");
+      Ada.Text_IO.Put_Line(F,"define i32 @""PUTFLOAT.0""(double %""in_arg"")");
       Ada.Text_IO.Put_Line(F,"{");
       Ada.Text_IO.Put_Line(F,"entry:");
       Ada.Text_IO.Put_Line(F,"%""in"" = alloca double");
@@ -277,8 +279,10 @@ package body code_gen is
                parameter_string := Ada.Strings.Unbounded."&" (parameter_string, (common.ub2s(element.parameter_type) & " %""" & common.ub2s(element.parameter_name)&"_arg"""));
                parameter_index := parameter_index + 1;
             end loop;
-
-            Ada.Text_IO.Put_Line(F,"define " & common.ub2s(procedure_return_type) & " @""" & common.ub2s(parent_Element.Name) & """("&common.ub2s(parameter_string)&")");
+            -- Old definition before add .[scope]
+            --Ada.Text_IO.Put_Line(F,"define " & common.ub2s(procedure_return_type) & " @""" & common.ub2s(parent_Element.Name) & """("&common.ub2s(parameter_string)&")");
+            procedure_scope := symbol_table.lookupHash( parent_Element.Name, parent_Element.scope-1).token_scope;
+             Ada.Text_IO.Put_Line(F,"define " & common.ub2s(procedure_return_type) & " @""" & common.ub2s(parent_Element.Name) & "." & common.int_to_String(procedure_scope) & """("&common.ub2s(parameter_string)&")");
          end if;
 
          Ada.Text_IO.Put_Line(F,"{");
@@ -934,6 +938,8 @@ package body code_gen is
       found_argument_branch : common.Node_Ptr;
 
       procedure_return_type : Ada.Strings.Unbounded.Unbounded_String;
+
+      procedure_scope : Integer;
    begin
 
       if in_node = null then
@@ -1134,12 +1140,16 @@ package body code_gen is
 
          procedure_return_value_id := Var_Counter.Get_Next;
 
-         if symbol_table.lookupHash( common.tub(Ada.Strings.Unbounded.Slice(in_node.Name,1,proc_length-2)), in_node.scope) /= symbol_table.InvalidEntry then
+
+         -- I might need to subtract one from the scope here. I should check this
+         if symbol_table.lookupHash( common.tub(Ada.Strings.Unbounded.Slice(in_node.Name,1,proc_length-2)), in_node.scope).token_scope /= -1 then
             procedure_return_type := symbol_table.lookupHash(common.tub(Ada.Strings.Unbounded.Slice(in_node.Name,1,proc_length-2)), in_node.scope).return_type;
+            procedure_scope := symbol_table.lookupHash( common.tub(Ada.Strings.Unbounded.Slice(in_node.Name,1,proc_length-2)), in_node.scope).token_scope;
          else
             Ada.Text_IO.Put_Line("Error: Procedure Does not exist in this scope.");
             Ada.Text_IO.Put_Line(F, "; Defaulting to i32 for procedure call");
             procedure_return_type := common.tub("i32");
+            procedure_scope := 0;
          end if;
 
          -- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx
@@ -1165,7 +1175,7 @@ package body code_gen is
          -- The program works if you change the ll file line 88 from i32 to double
 
 
-            Ada.Text_IO.Put_Line(F, "%t" & common.int_to_String(procedure_return_value_id) & " = call " & common.ub2s(procedure_return_type) & " @""" & Ada.Strings.Unbounded.Slice(in_node.Name,1,proc_length-2) & """(" & common.ub2s(argument_string) & ")");
+            Ada.Text_IO.Put_Line(F, "%t" & common.int_to_String(procedure_return_value_id) & " = call " & common.ub2s(procedure_return_type) & " @""" & Ada.Strings.Unbounded.Slice(in_node.Name,1,proc_length-2) & "." & common.int_to_String(procedure_scope) & """(" & common.ub2s(argument_string) & ")");
 
 
 
