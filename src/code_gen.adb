@@ -812,11 +812,12 @@ package body code_gen is
       elsif common.ub2s(in_node.Name) = "loop_statement" then
          Ada.Text_IO.Put_Line(F, "; Begin Loop");
 
-         loop_assignment_tree := get_child_of_branch(in_node,common.b_LOOP_ASSIGNMENT);
+         loop_assignment_tree := get_child_of_branch(in_node,common.b_ASSIGNMENT_STATEMENT);
          loop_body_tree := get_child_of_branch(in_node, common.b_LOOP_BODY);
          loop_condition_tree := get_child_of_branch(in_node, common.b_LOOP_CONDITION);
 
-
+         -- Assign the loop starting conditons
+         print_preorder(loop_assignment_tree);
 
          -- The label before the condition is tested
          current_label_id := current_label_id + 1;
@@ -1450,7 +1451,7 @@ package body code_gen is
 
          temp_id := Var_Counter.Get_Next;
          --Ada.Text_IO.Put_Line("%t" & current_temp_var_id & " = icmp eq i32 %\"" & left_var_id'Image & "\", %\" & right_var_id'Image & \"");
-         Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = icmp sle i32 %t" & common.int_to_String(left_var_id) & """, %t" & common.int_to_String(right_var_id));
+         Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = icmp sle i32 %t" & common.int_to_String(left_var_id) & ", %t" & common.int_to_String(right_var_id));
 
          -- The variable that contains the comparison result
          return temp_id;
