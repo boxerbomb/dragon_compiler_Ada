@@ -61,6 +61,7 @@ package common is
          Center: Node_Ptr;
          internal_tree_num : Integer := 0;
          scope : Integer;
+         llvm_type : Ada.Strings.Unbounded.Unbounded_String;
       end record;
 
 

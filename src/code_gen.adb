@@ -240,11 +240,24 @@ package body code_gen is
 
              proc_length := Ada.Strings.Unbounded.Length(parent_Element.Name);
 
-          if symbol_table.lookupHash(parent_Element.Name, parent_Element.scope) /= symbol_table.InvalidEntry then
-               procedure_return_type := symbol_table.lookupHash(parent_Element.Name, parent_Element.scope).return_type;
-         else
-            Ada.Text_IO.Put_Line("Error: Procedure Does not exist in this scope.");
-            Ada.Text_IO.Put_Line(F, "; Defaulting to i32 for procedure call");
+          if symbol_table.lookupHash(parent_Element.Name, parent_Element.scope-1).variable_id /= -1 then
+               procedure_return_type := symbol_table.lookupHash(parent_Element.Name, parent_Element.scope-1).return_type;
+               Ada.Text_IO.Put_Line("============================================");
+               Ada.Text_IO.Put_Line("============================================");
+               Ada.Text_IO.Put_Line(common.ub2s(parent_Element.Name)&" : " & common.int_to_String(parent_Element.scope));
+               Ada.Text_IO.Put_Line("============================================");
+               Ada.Text_IO.Put_Line("============================================");
+               Ada.Text_IO.Put_Line("============================================");
+            else
+              Ada.Text_IO.Put_Line("============================================");
+               Ada.Text_IO.Put_Line("============================================");
+               Ada.Text_IO.Put_Line("============================================");
+               Ada.Text_IO.Put_Line("Error: Procedure Does not exist in this scope.");
+               Ada.Text_IO.Put_Line(F, "; Defaulting to i32 for procedure call");
+               Ada.Text_IO.Put_Line(common.ub2s(parent_Element.Name)&" : " & common.int_to_String(parent_Element.scope));
+               Ada.Text_IO.Put_Line("============================================");
+               Ada.Text_IO.Put_Line("============================================");
+               Ada.Text_IO.Put_Line("============================================");
             procedure_return_type := common.tub("i32");
          end if;
 
@@ -548,7 +561,14 @@ package body code_gen is
          elsif common.ub2s(Ada.Strings.Unbounded.Head(in_node.Name,1)) = "%" then
             Ada.Text_IO.Put_Line("HERE3");
             argument_record.argument_value := in_node.Name;
-            argument_record.argument_type := common.tub("i32");
+
+            if common.ub2s(in_node.llvm_type) = "" then
+               Ada.Text_IO.Put_Line("Error, t-value does not have type");
+               Ada.Text_IO.Put_Line(f, "; Assuming i32 for argument");
+               argument_record.argument_type := common.tub("i32");
+            else
+               argument_record.argument_type := in_node.llvm_type;
+            end if;
          elsif proc_length > 1 and then Ada.Strings.Unbounded.Slice(in_node.Name,proc_length-1,proc_length) = "()" then
             --Ada.Text_IO.Put_Line("The problem is, get_value is fiding a procedure and wants to deal with it but first wants to strip all the arguments out, here it finds another procedure and points back and thus an infinit loop. What I need to do is ");
             Ada.Text_IO.Put_Line("HERE3.5");
@@ -991,6 +1011,7 @@ package body code_gen is
          temp_id := Var_Counter.Get_Next;
          Ada.Text_IO.Put_Line(F,"%t"&common.int_to_String(temp_id) & " = mul i32 " & common.ub2s(in_node.Left.Name) & " , " & common.ub2s(in_node.Right.Name));
          in_node.Name := common.tub("%t"&common.int_to_String(temp_id));
+         in_node.llvm_type := common.tub("i32");
           returned_value.t_value := temp_id;
          returned_value.type_value := left_value.type_value;
          return returned_value;
@@ -998,6 +1019,7 @@ package body code_gen is
          temp_id := Var_Counter.Get_Next;
          Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = sdiv i32 " & common.ub2s(in_node.Left.Name) & " , " & common.ub2s(in_node.Right.Name));
          in_node.Name := common.tub("%t" & common.int_to_String(temp_id));
+         in_node.llvm_type := common.tub("i32");
           returned_value.t_value := temp_id;
          returned_value.type_value := left_value.type_value;
          return returned_value;
@@ -1011,11 +1033,14 @@ package body code_gen is
             temp_id := Var_Counter.Get_Next;
             if common.ub2s(left_value.type_value) = "i32" then
                Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = add i32 " & common.ub2s(in_node.Left.Name) & " , " & common.ub2s(in_node.Right.Name));
+               in_node.llvm_type := common.tub("i32");
             elsif common.ub2s(left_value.type_value) = "double" then
                Ada.Text_IO.Put_Line(F,"; floating point add");
                Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = fadd double " & common.ub2s(in_node.Left.Name) & " , " & common.ub2s(in_node.Right.Name));
+               in_node.llvm_type := common.tub("double");
             elsif common.ub2s(left_value.type_value) = "string" then
                Ada.Text_IO.Put_Line(F,"Error, string ops not added yet");
+               in_node.llvm_type := common.tub("ERROR SOMETHING FOR STRING, PROBABLY i8*");
             end if;
 
             -- All good, update node name with t-value
@@ -1030,7 +1055,7 @@ package body code_gen is
          temp_id := Var_Counter.Get_Next;
          Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = sub i32 " & common.ub2s(in_node.Left.Name) & " , " & common.ub2s(in_node.Right.Name));
          in_node.Name := common.tub("%t" & common.int_to_String(temp_id));
-
+         in_node.llvm_type := common.tub("i32");
          returned_value.t_value := temp_id;
          returned_value.type_value := left_value.type_value;
          return returned_value;
@@ -1046,23 +1071,30 @@ package body code_gen is
          if common.ub2s(symbol_table.lookupHash(var_name_tree.Name,in_node.scope).keyword) /= "" then
 
             if symbol_table.lookupHash(var_name_tree.Name,in_node.scope).value.id_type=common.id_STRING then
+               --String
                in_node.Name := common.tub("%""v" & common.int_to_String(symbol_table.lookupHash(var_name_tree.Name,in_node.scope).variable_id)&"""");
             else
+               -- Not a string
                temp_id := Var_Counter.Get_Next;
                --Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(current_temp_var_id) & " BOGUS BUGUS SDUSHDOUSHDSU " & common.ub2s(in_node.Left.Name) & " , " & common.ub2s(in_node.Right.Name));
                returned_entry := symbol_table.lookupHash(var_name_tree.Name,in_node.scope);
                if returned_entry.array_size /= 0 then
+                   --Array
                     Ada.Text_IO.Put_Line(F,"; Reading from Array");
                   Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = load <" & common.int_to_String(returned_entry.array_size) & " x " & common.ub2s(returned_entry.value.llvm_type) & ">, <" & common.int_to_String(returned_entry.array_size) & " x " & common.ub2s(returned_entry.value.llvm_type) & ">* @""v"&common.int_to_String(symbol_table.lookupHash(var_name_tree.Name,in_node.scope).variable_id)&"""");
                   temp_id := Var_Counter.Get_Next;
                   Ada.Text_IO.Put_Line(F,"; for error checking make sure that the returned index value is an int");
                   Ada.Text_IO.Put_Line(F,"%t" &common.int_to_String(temp_id) & " = extractelement <" & common.int_to_String(returned_entry.array_size) & " x " & common.ub2s(returned_entry.value.llvm_type) & "> %t" & common.int_to_String(temp_id-1)& ", i32 %t" & common.int_to_String(index_parsed_value.t_value));
+                  in_node.llvm_type := symbol_table.lookupHash(var_name_tree.Name,in_node.scope).value.llvm_type;
                elsif symbol_table.lookupHash(var_name_tree.Name,in_node.scope).token_scope /= 0 then
+                  -- Local Not an array
                   Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & "= load " & common.ub2s(symbol_table.lookupHash(var_name_tree.Name,in_node.scope).value.llvm_type) & ", "&common.ub2s(symbol_table.lookupHash(var_name_tree.Name,in_node.scope).value.llvm_type)&"* %v" & common.int_to_String(symbol_table.lookupHash(var_name_tree.Name,in_node.scope).variable_id));
+                  in_node.llvm_type := symbol_table.lookupHash(var_name_tree.Name,in_node.scope).value.llvm_type;
                else
-                  --NEW LINE NOT TESTED YET!!
+                  -- Global not an array
                   --Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & "= load i32, i32* @v" & common.int_to_String(symbol_table.lookupHash(var_name_tree.Name,in_node.scope).variable_id));
                   Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & "= load " & common.ub2s(symbol_table.lookupHash(var_name_tree.Name,in_node.scope).value.llvm_type) & ", " & common.ub2s(symbol_table.lookupHash(var_name_tree.Name,in_node.scope).value.llvm_type) & "* @v" & common.int_to_String(symbol_table.lookupHash(var_name_tree.Name,in_node.scope).variable_id));
+                  in_node.llvm_type := symbol_table.lookupHash(var_name_tree.Name,in_node.scope).value.llvm_type;
                end if;
                in_node.Name := common.tub("%t" & common.int_to_String(temp_id));
             end if;
@@ -1124,12 +1156,9 @@ package body code_gen is
           -- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 
-         --    ATTENTION !!! MORE WORK NEEDS TO BE DONE HERE, THIS IS A HACK
          --  THE COMPILER ASSUMES ALL t-values are I32!!!
          -- A global t-value lookup is needed!!!!!
          -- This might be true!!! I am very tired
-
-
 
          -- LINE 551 is bad LINE 551 is bad
 

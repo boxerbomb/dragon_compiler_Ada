@@ -1,16 +1,30 @@
-program testArguments is
-    variable out : bool;
-    variable tmp : float;
+program MultipleProcs is
 
-    procedure add : float (variable n1 : float)
-        variable result : float;
+global variable y : integer;
+variable tmp : bool;
+
+procedure Proc1 : integer(variable val : integer)
+    procedure Proc2 : integer(variable val : integer)
+        procedure Proc1 : integer(variable val : integer)
+            begin
+                val := val + 1;
+                return val;
+        end procedure;
+        begin
+            val := val + 1;
+            val := Proc1(val);
+            return val;
+    end procedure;
     begin
-        result := n1 + 1.99;
-        return result;
-    end procedure
+        val := val + 1;
+        val := Proc1(val);
+        return val;
+end procedure;
 
-    tmp := add(1.5);
 
-    out := putfloat(tmp);
+begin
+
+y := Proc1(y);
+tmp := putInteger(y);
 
 end program.
