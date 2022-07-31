@@ -706,6 +706,14 @@ package body code_gen is
       decline_label_id : Integer;
       end_if_label_id : Integer;
 
+
+      loop_body_tree : common.Node_Ptr;
+      loop_condition_tree : common.Node_Ptr;
+      loop_assignment_tree : common.Node_Ptr;
+      loop_condition_label_id : Integer;
+      loop_body_start_label_id : Integer;
+      loop_end_label_id : Integer;
+
       return_id : Integer;
       return_value_tree : common.Node_Ptr;
 
@@ -800,6 +808,45 @@ package body code_gen is
                Ada.Text_IO.Put_Line(F, "store "&common.ub2s(assignment_value_type)&" %t" & common.int_to_String(assignment_value_id) & ", "&common.ub2s(symbol_table.get_type_from_var_id(assignment_destination.location,in_node.scope))&"* @""v"&common.int_to_String(assignment_destination.location)&"""");
             end if;
          end if;
+
+      elsif common.ub2s(in_node.Name) = "loop_statement" then
+         Ada.Text_IO.Put_Line(F, "; Begin Loop");
+
+         loop_assignment_tree := get_child_of_branch(in_node,common.b_LOOP_ASSIGNMENT);
+         loop_body_tree := get_child_of_branch(in_node, common.b_LOOP_BODY);
+         loop_condition_tree := get_child_of_branch(in_node, common.b_LOOP_CONDITION);
+
+
+
+         -- The label before the condition is tested
+         current_label_id := current_label_id + 1;
+         loop_condition_label_id := current_label_id;
+
+         -- Loop conditon label
+         Ada.Text_IO.Put_Line(F,"br label %""label_" & common.int_to_String(loop_condition_label_id) & """");
+         Ada.Text_IO.Put_Line(F,"label_" & common.int_to_String(loop_condition_label_id) & ":");
+
+         comparison_result := parse_comparison_from_tree(loop_condition_tree);
+
+         -- I might need to create an object counter with these like what was done for t_count
+         -- A good test will be to put an if statment inside a loop and see if it still works
+         current_label_id := current_label_id + 1;
+         loop_body_start_label_id := current_label_id;
+
+         current_label_id := current_label_id + 1;
+         loop_end_label_id := current_label_id;
+
+         -- Branch Instructions
+         Ada.Text_IO.Put_Line(F, "br i1 %t" & common.int_to_String(comparison_result) & ", label %""label_" & common.int_to_String(loop_body_start_label_id) & """, label %""label_" & common.int_to_String(loop_end_label_id) &"""");
+
+
+         -- Generate Loop Body and then jump back to loop condition checking
+         Ada.Text_IO.Put_Line(F,"label_" & common.int_to_String(loop_body_start_label_id) & ":");
+         print_preorder(loop_body_tree);
+         Ada.Text_IO.Put_Line(F,"br label %""label_" & common.int_to_String(loop_condition_label_id) & """");
+
+         --End label just sits at the end
+         Ada.Text_IO.Put_Line(F,"label_" & common.int_to_String(loop_end_label_id) & ":");
 
       elsif in_node.Branch_Type = common.b_IF_STATEMENT then
          if_condition_tree := get_child_of_branch(in_node,common.b_IF_CONDITION);
@@ -1357,7 +1404,7 @@ package body code_gen is
 
       --Ada.Text_IO.Put_Line("Current Count: "& common.int_to_String(Var_Counter.Get_Current));
       returned_value.t_value := temp_id;
-      Ada.Text_IO.Put_Line(f,";Hopefully this wont get called: " & common.ub2s(in_node.Name));
+      --Ada.Text_IO.Put_Line(f,";Hopefully this wont get called: " & common.ub2s(in_node.Name));
       returned_value.type_value := common.tub("i32");
       return returned_value;
 

@@ -60,12 +60,16 @@ store double %"in_arg", double* %"in"
 ret i32 0
 }
 
+; Variable Name: MAX
+@"v9" = global i32 0
 ; Variable Name: OUT
 @"v6" = global i32 0
-; Variable Name: R
-@"v9" = global double 0x0
-; Variable Name: R_I
+; Variable Name: I
 @"v8" = global i32 0
+; Variable Name: R
+@"v11" = global double 0x0
+; Variable Name: R_I
+@"v10" = global i32 0
 ; Variable Name: TMP
 @"v7" = global i32 0
 
@@ -91,39 +95,66 @@ define i32 @"main"()
 %t9 = fdiv double %t7 , 1.1
 ; floating point add
 %t10 = fadd double %t4 , %t9
-store double %t10, double* @"v9"
+store double %t10, double* @"v11"
 ; Integer Value: 0
 %t11 = add i32 0 , 0
-;Hopefully this wont get called: 10
-;Hopefully this wont get called: 20
 %t12 = mul i32 10 , 20
-;Hopefully this wont get called: 8
-;Hopefully this wont get called: 2
 %t13 = sdiv i32 8 , 2
 %t14 = add i32 %t12 , %t13
-store i32 %t14, i32* @"v8"
+store i32 %t14, i32* @"v10"
 ; Integer Value: 0
 %t15 = add i32 0 , 0
-;Hopefully this wont get called: 0
-;Hopefully this wont get called: R
 ; Integer Value: 0
 %t16 = add i32 0 , 0
 ;Found Variable! :R
-%t17= load double, double* @v9
-;Hopefully this wont get called: Get From SymbolTable
+%t17= load double, double* @v11
 %t18 = call i32 @"PUTFLOAT.0"(double %t17)
 store i32 %t18, i32* @"v7"
 ; Integer Value: 0
 %t19 = add i32 0 , 0
-;Hopefully this wont get called: 0
-;Hopefully this wont get called: R_I
 ; Integer Value: 0
 %t20 = add i32 0 , 0
 ;Found Variable! :R_I
-%t21= load i32, i32* @v8
-;Hopefully this wont get called: Get From SymbolTable
+%t21= load i32, i32* @v10
 %t22 = call i32 @"PUTINTEGER.0"(i32 %t21)
 store i32 %t22, i32* @"v7"
+; Integer Value: 0
+%t23 = add i32 0 , 0
+; Integer Value: 99
+%t24 = add i32 0 , 99
+store i32 %t24, i32* @"v9"
+; Begin Loop
+br label %"label_1"
+label_1:
+; Integer Value: 0
+%t25 = add i32 0 , 0
+;Found Variable! :I
+%t26= load i32, i32* @v8
+; Integer Value: 0
+%t27 = add i32 0 , 0
+;Found Variable! :MAX
+%t28= load i32, i32* @v9
+%t29 = icmp slt i32 %t26, %t28
+br i1 %t29, label %"label_2", label %"label_3"
+label_2:
+; Integer Value: 0
+%t30 = add i32 0 , 0
+; Integer Value: 0
+%t31 = add i32 0 , 0
+;Found Variable! :I
+%t32= load i32, i32* @v8
+%t33 = call i32 @"PUTINTEGER.0"(i32 %t32)
+store i32 %t33, i32* @"v7"
+; Integer Value: 0
+%t34 = add i32 0 , 0
+; Integer Value: 0
+%t35 = add i32 0 , 0
+;Found Variable! :I
+%t36= load i32, i32* @v8
+%t37 = add i32 %t36 , 1
+store i32 %t37, i32* @"v8"
+br label %"label_1"
+label_3:
 ; This is a hard-coded return line for now
 ret i32 0
 }

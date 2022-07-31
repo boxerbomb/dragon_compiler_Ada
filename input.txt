@@ -2,13 +2,23 @@ program testArguments is
     variable out : bool;
     variable tmp : integer;
 
+    variable i : integer;
+    variable max : integer;
+
     variable r_i : integer;
     variable r : float;
 
+    begin
     r := (1.234/4.0)+(3.2*9.0)/1.1;
     r_i := (10*20)+8/2;
 
     tmp := putfloat(r);
     tmp := putInteger(r_i);
+
+    max := 99;
+    for (i:=0; i < max)
+        tmp := putInteger(i);
+        i := i + 1;
+    end for;
 
 end program.

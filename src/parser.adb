@@ -293,11 +293,11 @@ package body parser is
          Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Signal True for 'FOR('");
          if assignment_statement(new_node) and then match (common.t_SEMI_COLON) then
             Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Signal True for 'ASS;'");
-            if expression (new_node) then
+            if expression (new_node, common.b_LOOP_CONDITION) then
                Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Signal True for expression");
                if match (common.t_RIGHT_PAREN) then
                   Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Signal True for ')'");
-                  if statement_list(new_node) and then match (common.t_END)and then match (common.t_FOR)then
+                  if statement_list(new_node, common.b_LOOP_BODY) and then match (common.t_END)and then match (common.t_FOR)then
                      Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Signal True for 'list end for'");
                      common.add (parent_node, new_node);
                      return True;
