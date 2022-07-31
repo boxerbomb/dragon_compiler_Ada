@@ -1,29 +1,14 @@
-PROGRAM grant IS
-    global variable JAKE : integer;
-    global variable ryan : integer[3];
-    global variable zach : integer;
-    variable tmp : BOOL;
+program testArguments is
+    variable out : bool;
+    variable tmp : integer;
 
-   procedure if_proc : integer()
-        variable declaration : integer;
-      begin
-      if(true) then jake := jake + 1;
-      else zach := zach + RYAN[2];
-      end if;
-      return (0);
-   end procedure;
+    variable r_i : integer;
+    variable r : float;
 
-   procedure for_proc : integer()
-      variable i : integer;
-      begin
-      for(i := 0; i < zach)
-         ryan[1] := zach + i;
-      end for;
-      return (0);
-      end procedure;
+    r := (1.234/4.0)+(3.2*9.0)/1.1;
+    r_i := (10*20)+8/2;
 
-   begin
-      tmp := if_proc();
-      
-      tmp := putinteger(tmp);
+    tmp := putfloat(r);
+    tmp := putInteger(r_i);
+
 end program.

@@ -1,4 +1,4 @@
-; ModuleID = "GRANT"
+; ModuleID = "TESTARGUMENTS"
 target triple = ""
 target datalayout = ""
 @"fmt_double" = constant [4 x i8] c"%lf\00"
@@ -60,116 +60,71 @@ store double %"in_arg", double* %"in"
 ret i32 0
 }
 
-; Variable Name: ZACH
-@"v8" = global i32 0
-; Variable Name: JAKE
+; Variable Name: OUT
 @"v6" = global i32 0
+; Variable Name: R
+@"v9" = global double 0x0
+; Variable Name: R_I
+@"v8" = global i32 0
 ; Variable Name: TMP
-@"v9" = global i32 0
-; Variable Name: RYAN
-@"v7" = global <3 x i32> <i32 0,i32 0,i32 0>
+@"v7" = global i32 0
 
 define i32 @"main"()
 {
 ; Integer Value: 0
 %t1 = add i32 0 , 0
-;Hopefully this wont get called: No Params
-;Hopefully this wont get called: Get From SymbolTable
-%t2 = call i32 @"IF_PROC.0"()
-store i32 %t2, i32* @"v9"
+; Floating Point init: : 1.234
+%t2 = fadd double 0.0e+00 , 1.234e+00
+; Floating Point init: : 4.0
+%t3 = fadd double 0.0e+00 , 4.0e+00
+; floating point divide
+%t4 = fdiv double 1.234 , 4.0
+; Floating Point init: : 3.2
+%t5 = fadd double 0.0e+00 , 3.2e+00
+; Floating Point init: : 9.0
+%t6 = fadd double 0.0e+00 , 9.0e+00
+; floating point multiply
+%t7 = fmul double 3.2 , 9.0
+; Floating Point init: : 1.1
+%t8 = fadd double 0.0e+00 , 1.1e+00
+; floating point divide
+%t9 = fdiv double %t7 , 1.1
+; floating point add
+%t10 = fadd double %t4 , %t9
+store double %t10, double* @"v9"
 ; Integer Value: 0
-%t3 = add i32 0 , 0
-;Hopefully this wont get called: 0
-;Hopefully this wont get called: TMP
-; Integer Value: 0
-%t4 = add i32 0 , 0
-;Found Variable! :TMP
-%t5= load i32, i32* @v9
-;Hopefully this wont get called: Get From SymbolTable
-%t6 = call i32 @"PUTINTEGER.0"(i32 %t5)
-store i32 %t6, i32* @"v9"
-; This is a hard-coded return line for now
-ret i32 0
-}
-
-define i32 @"IF_PROC.0"()
-{
-; Variable Name: DECLARATION
-%"v11" = alloca i32
-%t7 = icmp eq i32 1, 1
-br i1 %t7, label %"label_1", label %"label_2"
-label_1:
-; Integer Value: 0
-%t8 = add i32 0 , 0
-;Hopefully this wont get called: 0
-;Hopefully this wont get called: JAKE
-; Integer Value: 0
-%t9 = add i32 0 , 0
-;Found Variable! :JAKE
-%t10= load i32, i32* @v6
-;Hopefully this wont get called: 1
-%t11 = add i32 %t10 , 1
-store i32 %t11, i32* @"v6"
-br label %"label_3"
-label_2:
-; Integer Value: 0
-%t12 = add i32 0 , 0
-;Hopefully this wont get called: 0
-;Hopefully this wont get called: ZACH
-; Integer Value: 0
-%t13 = add i32 0 , 0
-;Found Variable! :ZACH
-%t14= load i32, i32* @v8
+%t11 = add i32 0 , 0
+;Hopefully this wont get called: 10
+;Hopefully this wont get called: 20
+%t12 = mul i32 10 , 20
+;Hopefully this wont get called: 8
 ;Hopefully this wont get called: 2
-;Hopefully this wont get called: RYAN
-; Integer Value: 2
-%t15 = add i32 0 , 2
-;Found Variable! :RYAN
-; Reading from Array
-%t16 = load <3 x i32>, <3 x i32>* @"v7"
-; for error checking make sure that the returned index value is an int
-%t17 = extractelement <3 x i32> %t16, i32 %t15
-%t18 = add i32 %t14 , %t17
-store i32 %t18, i32* @"v8"
-br label %"label_3"
-label_3:
+%t13 = sdiv i32 8 , 2
+%t14 = add i32 %t12 , %t13
+store i32 %t14, i32* @"v8"
+; Integer Value: 0
+%t15 = add i32 0 , 0
+;Hopefully this wont get called: 0
+;Hopefully this wont get called: R
+; Integer Value: 0
+%t16 = add i32 0 , 0
+;Found Variable! :R
+%t17= load double, double* @v9
+;Hopefully this wont get called: Get From SymbolTable
+%t18 = call i32 @"PUTFLOAT.0"(double %t17)
+store i32 %t18, i32* @"v7"
 ; Integer Value: 0
 %t19 = add i32 0 , 0
-ret i32 %t19
-}
-
-define i32 @"FOR_PROC.0"()
-{
-; Variable Name: I
-%"v13" = alloca i32
+;Hopefully this wont get called: 0
+;Hopefully this wont get called: R_I
 ; Integer Value: 0
 %t20 = add i32 0 , 0
-; Integer Value: 0
-%t21 = add i32 0 , 0
-store i32 %t21, i32* %"v13"
-; Integer Value: 1
-%t22 = add i32 0 , 1
-;Hopefully this wont get called: 0
-;Hopefully this wont get called: ZACH
-; Integer Value: 0
-%t23 = add i32 0 , 0
-;Found Variable! :ZACH
-%t24= load i32, i32* @v8
-;Hopefully this wont get called: 0
-;Hopefully this wont get called: I
-; Integer Value: 0
-%t25 = add i32 0 , 0
-;Found Variable! :I
-%t26= load i32, i32* %v13
-%t27 = add i32 %t24 , %t26
-; Begin array
-; make more generic  with currentElement.value.llvm_type
-%t28 = load <3 x i32>, <3 x i32>* @"v7"
-%t29 = insertelement <3 x i32> %t28, i32 %t27, i32 %t22
-store <3 x i32> %t29,<3 x i32>* @"v7"
-; Done with assign to array
-; Integer Value: 0
-%t30 = add i32 0 , 0
-ret i32 %t30
+;Found Variable! :R_I
+%t21= load i32, i32* @v8
+;Hopefully this wont get called: Get From SymbolTable
+%t22 = call i32 @"PUTINTEGER.0"(i32 %t21)
+store i32 %t22, i32* @"v7"
+; This is a hard-coded return line for now
+ret i32 0
 }
 

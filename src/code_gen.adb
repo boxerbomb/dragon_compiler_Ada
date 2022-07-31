@@ -1014,21 +1014,76 @@ package body code_gen is
 
 
       if common.ub2s(in_node.Name)="*" then
-         temp_id := Var_Counter.Get_Next;
-         Ada.Text_IO.Put_Line(F,"%t"&common.int_to_String(temp_id) & " = mul i32 " & common.ub2s(in_node.Left.Name) & " , " & common.ub2s(in_node.Right.Name));
-         in_node.Name := common.tub("%t"&common.int_to_String(temp_id));
-         in_node.llvm_type := common.tub("i32");
+
+              -- Addtion
+         if common.ub2s(left_value.type_value) /= common.ub2s(right_value.type_value) then
+            Ada.Text_IO.Put_Line("Error: Type Mismatch");
+            Ada.Text_IO.Put_Line(common.ub2s(left_value.type_value) & " /= " & common.ub2s(right_value.type_value));
+         else
+            temp_id := Var_Counter.Get_Next;
+            if common.ub2s(left_value.type_value) = "i32" then
+               Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = mul i32 " & common.ub2s(in_node.Left.Name) & " , " & common.ub2s(in_node.Right.Name));
+               in_node.llvm_type := common.tub("i32");
+            elsif common.ub2s(left_value.type_value) = "double" then
+               Ada.Text_IO.Put_Line(F,"; floating point multiply");
+               Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = fmul double " & common.ub2s(in_node.Left.Name) & " , " & common.ub2s(in_node.Right.Name));
+               in_node.llvm_type := common.tub("double");
+            elsif common.ub2s(left_value.type_value) = "string" then
+               Ada.Text_IO.Put_Line(F,"Error, string ops not added yet");
+               in_node.llvm_type := common.tub("ERROR SOMETHING FOR STRING, PROBABLY i8*");
+            end if;
+
+            -- All good, update node name with t-value
+            in_node.Name := common.tub("%t" & common.int_to_String(temp_id));
+         end if;
+
           returned_value.t_value := temp_id;
          returned_value.type_value := left_value.type_value;
          return returned_value;
+
+         --  temp_id := Var_Counter.Get_Next;
+         --  Ada.Text_IO.Put_Line(F,"%t"&common.int_to_String(temp_id) & " = mul i32 " & common.ub2s(in_node.Left.Name) & " , " & common.ub2s(in_node.Right.Name));
+         --  in_node.Name := common.tub("%t"&common.int_to_String(temp_id));
+         --  in_node.llvm_type := common.tub("i32");
+         --   returned_value.t_value := temp_id;
+         --  returned_value.type_value := left_value.type_value;
+         --  return returned_value;
       elsif common.ub2s(in_node.Name)="/" then
-         temp_id := Var_Counter.Get_Next;
-         Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = sdiv i32 " & common.ub2s(in_node.Left.Name) & " , " & common.ub2s(in_node.Right.Name));
-         in_node.Name := common.tub("%t" & common.int_to_String(temp_id));
-         in_node.llvm_type := common.tub("i32");
+
+
+         -- Division
+         if common.ub2s(left_value.type_value) /= common.ub2s(right_value.type_value) then
+            Ada.Text_IO.Put_Line("Error: Type Mismatch");
+            Ada.Text_IO.Put_Line(common.ub2s(left_value.type_value) & " /= " & common.ub2s(right_value.type_value));
+         else
+            temp_id := Var_Counter.Get_Next;
+            if common.ub2s(left_value.type_value) = "i32" then
+               Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = sdiv i32 " & common.ub2s(in_node.Left.Name) & " , " & common.ub2s(in_node.Right.Name));
+               in_node.llvm_type := common.tub("i32");
+            elsif common.ub2s(left_value.type_value) = "double" then
+               Ada.Text_IO.Put_Line(F,"; floating point divide");
+               Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = fdiv double " & common.ub2s(in_node.Left.Name) & " , " & common.ub2s(in_node.Right.Name));
+               in_node.llvm_type := common.tub("double");
+            elsif common.ub2s(left_value.type_value) = "string" then
+               Ada.Text_IO.Put_Line(F,"Error, string ops not added yet");
+               in_node.llvm_type := common.tub("ERROR SOMETHING FOR STRING, PROBABLY i8*");
+            end if;
+
+            -- All good, update node name with t-value
+            in_node.Name := common.tub("%t" & common.int_to_String(temp_id));
+         end if;
+
           returned_value.t_value := temp_id;
          returned_value.type_value := left_value.type_value;
          return returned_value;
+
+         --  temp_id := Var_Counter.Get_Next;
+         --  Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = sdiv i32 " & common.ub2s(in_node.Left.Name) & " , " & common.ub2s(in_node.Right.Name));
+         --  in_node.Name := common.tub("%t" & common.int_to_String(temp_id));
+         --  in_node.llvm_type := common.tub("i32");
+         --   returned_value.t_value := temp_id;
+         --  returned_value.type_value := left_value.type_value;
+         --  return returned_value;
       elsif common.ub2s(in_node.Name)="+" then
 
         -- Addtion
@@ -1058,13 +1113,41 @@ package body code_gen is
          return returned_value;
 
       elsif common.ub2s(in_node.Name)="-" then
-         temp_id := Var_Counter.Get_Next;
-         Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = sub i32 " & common.ub2s(in_node.Left.Name) & " , " & common.ub2s(in_node.Right.Name));
-         in_node.Name := common.tub("%t" & common.int_to_String(temp_id));
-         in_node.llvm_type := common.tub("i32");
-         returned_value.t_value := temp_id;
+
+
+          -- Subtraction
+         if common.ub2s(left_value.type_value) /= common.ub2s(right_value.type_value) then
+            Ada.Text_IO.Put_Line("Error: Type Mismatch");
+            Ada.Text_IO.Put_Line(common.ub2s(left_value.type_value) & " /= " & common.ub2s(right_value.type_value));
+         else
+            temp_id := Var_Counter.Get_Next;
+            if common.ub2s(left_value.type_value) = "i32" then
+               Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = sub i32 " & common.ub2s(in_node.Left.Name) & " , " & common.ub2s(in_node.Right.Name));
+               in_node.llvm_type := common.tub("i32");
+            elsif common.ub2s(left_value.type_value) = "double" then
+               Ada.Text_IO.Put_Line(F,"; floating point sub");
+               Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = fsub double " & common.ub2s(in_node.Left.Name) & " , " & common.ub2s(in_node.Right.Name));
+               in_node.llvm_type := common.tub("double");
+            elsif common.ub2s(left_value.type_value) = "string" then
+               Ada.Text_IO.Put_Line(F,"Error, string ops not added yet");
+               in_node.llvm_type := common.tub("ERROR SOMETHING FOR STRING, PROBABLY i8*");
+            end if;
+
+            -- All good, update node name with t-value
+            in_node.Name := common.tub("%t" & common.int_to_String(temp_id));
+         end if;
+            returned_value.t_value := temp_id;
          returned_value.type_value := left_value.type_value;
          return returned_value;
+
+
+         --  temp_id := Var_Counter.Get_Next;
+         --  Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = sub i32 " & common.ub2s(in_node.Left.Name) & " , " & common.ub2s(in_node.Right.Name));
+         --  in_node.Name := common.tub("%t" & common.int_to_String(temp_id));
+         --  in_node.llvm_type := common.tub("i32");
+         --  returned_value.t_value := temp_id;
+         --  returned_value.type_value := left_value.type_value;
+         --  return returned_value;
       elsif common.ub2s(in_node.Name) = "Variable_Value" then
          var_name_tree := get_child_of_branch(in_node,common.b_VARIABLE_NAME);
 
