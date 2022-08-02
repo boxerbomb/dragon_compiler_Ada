@@ -1,39 +1,56 @@
-program LoopFib is
+Program Nathan is
 
-global variable x : integer;
-variable i : integer;
-variable max : integer;
-variable tmp : integer;
-variable out : bool;
-
-procedure Fib : integer(variable val : integer)
-    variable tmp :integer[2];
-    variable loopVal : integer;
-    variable ret : integer;
-
-    begin
-
-    tmp[0] := -1;
-    tmp[1] := 1;
-
-    for(loopVal := 0; loopVal <= val)
-        ret := tmp[0] + tmp[1];
-        tmp[0] := tmp[1];
-        tmp[1] := ret;
-        loopVal := loopVal + 1;
-    end for;
-
-    return ret;
-end procedure;
-
+variable n1 : integer;
+variable n2 : integer;
+variable n3 : integer;
+variable n4 : integer;
+variable test_float : float;
+variable tmp : bool;
 
 begin
 
-max := getInteger();
-for(i := 0; i < max)
-    x := Fib(i);
-    out := putInteger(x);
-    i := i + 1;
-end for;
+n1 := 2;
+n2 := 4;
+n3 := 9;
+n4 := 1;
+
+if (n3==n1) then
+    tmp := putstring("Yes");
+else
+    tmp := putstring("No");
+end if;
+
+if (n3 != n1) then
+    tmp := putstring("Yes");
+else
+    tmp := putstring("No");
+end if;
+
+if (n3>n1) then
+    tmp := putstring("Yes");
+else
+    tmp := putstring("No");
+end if;
+
+if (n3>=n1) then
+    tmp := putstring("Yes");
+else
+    tmp := putstring("No");
+end if;
+
+if (n3<n1) then
+    tmp := putstring("Yes");
+else
+    tmp := putstring("No");
+end if;
+
+if (n3<=n1) then
+    tmp := putstring("Yes");
+else
+    tmp := putstring("No");
+end if;    
+
+test_float := getfloat();
+tmp := putfloat(test_float);
 
 end program.

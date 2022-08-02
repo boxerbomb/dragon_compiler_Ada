@@ -224,6 +224,12 @@ package body lexer is
             return return_token;
          end if;
 
+         if cur_char = Character'Val(13) then
+            Ada.Text_IO.Put_Line("XXXXXXXXXXXXXXXXXX");
+            Ada.Text_IO.Put_Line("Hit End of Line");
+            Ada.Text_IO.Put_Line("XXXXXXXXXXXXXXXXXX");
+         end if;
+
          --Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,cur_char&next_char);
 
          if textMode = False and commentMode = False and cur_char&next_char/="//" and cur_char&next_char/="/*" then
@@ -256,6 +262,7 @@ package body lexer is
             if cur_char&next_char="//" then
                commentMode := True;
                temp_char := get_next_char2;
+               Ada.Text_IO.Put_Line("Comment Mode On");
             end if;
             if cur_char&next_char="/*" then
                Ada.Text_IO.Put_Line("Comment Mode Begin");
@@ -265,17 +272,21 @@ package body lexer is
             end if;
 
             if commentMode=True then
-               if cur_char=Character'Val (13) and multiLineCount=0 then
+
+               if cur_char=Character'Val(13) and multiLineCount=0 then
+                  Ada.Text_IO.Put_Line("Comment Mode Off");
                   commentMode := False;
                end if;
+
                if cur_char&next_char="*/" then
                   Ada.Text_IO.Put_Line("End Comment");
                   multiLineCount := multiLineCount - 1;
                   if multiLineCount=0 then
-                     Ada.Text_IO.Put_Line("Done");
                      commentMode := False;
+                     temp_char := get_next_char2;
                   end if;
                end if;
+
             end if;
 
             if textMode=True then
@@ -342,7 +353,7 @@ package body lexer is
    function get_next_char2 return Character is
       return_char : Character;
    begin
-      while WorkingLine_Index >= Ada.Strings.Unbounded.Length(WorkingLine) loop
+      while WorkingLine_Index = Ada.Strings.Unbounded.Length(WorkingLine)+1 loop
          WorkingLine_Index := 0;
          begin
             WorkingLine := common.tub(Ada.Text_IO.Get_Line(File => InputFile));
@@ -359,9 +370,14 @@ package body lexer is
 
       end loop;
 
-      WorkingLine_Index := WorkingLine_Index + 1;
-      return_char := Ada.Strings.Unbounded.Element(WorkingLine, WorkingLine_Index);
-      return return_char;
+      if WorkingLine_Index = Ada.Strings.Unbounded.Length(WorkingLine) then
+         WorkingLine_Index := WorkingLine_Index + 1;
+         return Character'val(13);
+      else
+         WorkingLine_Index := WorkingLine_Index + 1;
+         return_char := Ada.Strings.Unbounded.Element(WorkingLine, WorkingLine_Index);
+         return return_char;
+     end if;
    end get_next_char2;
 
    function peek_next_char2 return Character is

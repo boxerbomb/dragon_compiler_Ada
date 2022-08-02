@@ -623,6 +623,7 @@ package body parser is
       if match (common.t_LESS_THAN)
         or else match (common.t_LESS_THAN_OR_EQUAL)
         or else match (common.t_DOUBLE_EQUALS)
+        or else match (common.t_NOT_EQUAL)
         or else match (common.t_GREATER_THAN)
         or else match (common.t_GREATER_THAN_OR_EQUAL)
       then

@@ -140,6 +140,21 @@ package body code_gen is
       Ada.Text_IO.Put_Line(F,"}");
       Ada.Text_IO.Put_Line(F,"");
 
+
+
+      Ada.Text_IO.Put_Line(F,"define double @""GETFLOAT.0""()");
+      Ada.Text_IO.Put_Line(F,"{");
+      Ada.Text_IO.Put_Line(F,"entry:");
+      Ada.Text_IO.Put_Line(F," %""x"" = alloca double");
+      Ada.Text_IO.Put_Line(F,"%""fmt_ptr"" = getelementptr [4 x i8], [4 x i8]* @""fmt_double"", i32 0, i32 0");
+      Ada.Text_IO.Put_Line(F,"%""scan"" = call i32 (i8*, ...) @""scanf""(i8* %""fmt_ptr"", double* %""x"")");
+      Ada.Text_IO.Put_Line(F,"%""res"" = load double, double* %""x""");
+      Ada.Text_IO.Put_Line(F,"ret double %""res""");
+      Ada.Text_IO.Put_Line(F,"}");
+      Ada.Text_IO.Put_Line(F,"");
+
+
+
       Ada.Text_IO.Put_Line(F,"define i32 @""PUTSTRING.0""(i8*)");
       Ada.Text_IO.Put_Line(F,"{");
       Ada.Text_IO.Put_Line(F,"%2 = alloca i32, align 4");
@@ -1416,25 +1431,37 @@ package body code_gen is
       left_tree : common.Node_Ptr;
       right_tree : common.Node_Ptr;
 
-      left_var_id : Integer;
-      right_var_id : Integer;
+      left_value : common.parsed_value;
+      right_value : common.parsed_value;
       temp_id : Integer;
 
-      returned_parsed_value : common.parsed_value;
    begin
       if common.ub2s(in_node.Name)="<" then
          left_tree := get_child_of_branch(in_node,common.b_LEFT);
          right_tree := get_child_of_branch(in_node, common.b_RIGHT);
 
-         returned_parsed_value := parse_value_from_tree(left_tree,True,size_of_tree(left_tree));
-         left_var_id := returned_parsed_value.t_value;
+         left_value := parse_value_from_tree(left_tree,True,size_of_tree(left_tree));
+         right_value := parse_value_from_tree(right_tree,True,size_of_tree(right_tree));
 
-         returned_parsed_value := parse_value_from_tree(right_tree,True,size_of_tree(right_tree));
-         right_var_id := returned_parsed_value.t_value;
+         -- Less Than
+         if common.ub2s(left_value.type_value) /= common.ub2s(right_value.type_value) then
+            Ada.Text_IO.Put_Line("Error: Type Mismatch");
+            Ada.Text_IO.Put_Line(common.ub2s(left_value.type_value) & " /= " & common.ub2s(right_value.type_value));
+         else
+            temp_id := Var_Counter.Get_Next;
+            if common.ub2s(left_value.type_value) = "i32" then
+               Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = icmp slt i32 %t" & common.int_to_String(left_value.t_value) & ", %t" & common.int_to_String(right_value.t_value));
+               --in_node.llvm_type := common.tub("i32");
+            elsif common.ub2s(left_value.type_value) = "double" then
+               Ada.Text_IO.Put_Line(F,"; floating point less than");
+               Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = fcmp olt double %t" & common.int_to_String(left_value.t_value) & ", %t" & common.int_to_String(right_value.t_value));
+               --in_node.llvm_type := common.tub("double");
+            elsif common.ub2s(left_value.type_value) = "string" then
+               Ada.Text_IO.Put_Line(F,"Error, string ops not added yet");
+               --in_node.llvm_type := common.tub("ERROR SOMETHING FOR STRING, PROBABLY i8*");
+            end if;
 
-         temp_id := Var_Counter.Get_Next;
-         --Ada.Text_IO.Put_Line("%t" & current_temp_var_id & " = icmp eq i32 %\"" & left_var_id'Image & "\", %\" & right_var_id'Image & \"");
-         Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = icmp slt i32 %t" & common.int_to_String(left_var_id) & ", %t" & common.int_to_String(right_var_id));
+         end if;
 
          -- The variable that contains the comparison result
          return temp_id;
@@ -1443,75 +1470,149 @@ package body code_gen is
          left_tree := get_child_of_branch(in_node,common.b_LEFT);
          right_tree := get_child_of_branch(in_node, common.b_RIGHT);
 
-         returned_parsed_value := parse_value_from_tree(left_tree,True,size_of_tree(left_tree));
-         left_var_id := returned_parsed_value.t_value;
+         left_value := parse_value_from_tree(left_tree,True,size_of_tree(left_tree));
+         right_value := parse_value_from_tree(right_tree,True,size_of_tree(right_tree));
 
-         returned_parsed_value := parse_value_from_tree(right_tree,True,size_of_tree(right_tree));
-         right_var_id := returned_parsed_value.t_value;
+         -- Less Than or equal
+         if common.ub2s(left_value.type_value) /= common.ub2s(right_value.type_value) then
+            Ada.Text_IO.Put_Line("Error: Type Mismatch");
+            Ada.Text_IO.Put_Line(common.ub2s(left_value.type_value) & " /= " & common.ub2s(right_value.type_value));
+         else
+            temp_id := Var_Counter.Get_Next;
+            if common.ub2s(left_value.type_value) = "i32" then
+               Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = icmp sle i32 %t" & common.int_to_String(left_value.t_value) & ", %t" & common.int_to_String(right_value.t_value));
+               --in_node.llvm_type := common.tub("i32");
+            elsif common.ub2s(left_value.type_value) = "double" then
+               Ada.Text_IO.Put_Line(F,"; floating point less than or equal");
+               Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = fcmp ole double %t" & common.int_to_String(left_value.t_value) & ", %t" & common.int_to_String(right_value.t_value));
+               --in_node.llvm_type := common.tub("double");
+            elsif common.ub2s(left_value.type_value) = "string" then
+               Ada.Text_IO.Put_Line(F,"Error, string ops not added yet");
+               --in_node.llvm_type := common.tub("ERROR SOMETHING FOR STRING, PROBABLY i8*");
+            end if;
 
-         temp_id := Var_Counter.Get_Next;
-         --Ada.Text_IO.Put_Line("%t" & current_temp_var_id & " = icmp eq i32 %\"" & left_var_id'Image & "\", %\" & right_var_id'Image & \"");
-         Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = icmp sle i32 %t" & common.int_to_String(left_var_id) & ", %t" & common.int_to_String(right_var_id));
+         end if;
 
          -- The variable that contains the comparison result
          return temp_id;
+
       elsif common.ub2s(in_node.Name)=">" then
          left_tree := get_child_of_branch(in_node,common.b_LEFT);
          right_tree := get_child_of_branch(in_node, common.b_RIGHT);
 
-         returned_parsed_value := parse_value_from_tree(left_tree,True,size_of_tree(left_tree));
-         left_var_id := returned_parsed_value.t_value;
-         returned_parsed_value := parse_value_from_tree(right_tree,True,size_of_tree(right_tree));
-         right_var_id := returned_parsed_value.t_value;
+         left_value := parse_value_from_tree(left_tree,True,size_of_tree(left_tree));
+         right_value := parse_value_from_tree(right_tree,True,size_of_tree(right_tree));
 
-         temp_id := Var_Counter.Get_Next;
-         --Ada.Text_IO.Put_Line("%t" & current_temp_var_id & " = icmp eq i32 %\"" & left_var_id'Image & "\", %\" & right_var_id'Image & \"");
-         Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = icmp sgt i32 %t" & common.int_to_String(left_var_id) & ", %t" & common.int_to_String(right_var_id));
+                  -- Greater Than
+         if common.ub2s(left_value.type_value) /= common.ub2s(right_value.type_value) then
+            Ada.Text_IO.Put_Line("Error: Type Mismatch");
+            Ada.Text_IO.Put_Line(common.ub2s(left_value.type_value) & " /= " & common.ub2s(right_value.type_value));
+         else
+            temp_id := Var_Counter.Get_Next;
+            if common.ub2s(left_value.type_value) = "i32" then
+               Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = icmp sgt i32 %t" & common.int_to_String(left_value.t_value) & ", %t" & common.int_to_String(right_value.t_value));
+               --in_node.llvm_type := common.tub("i32");
+            elsif common.ub2s(left_value.type_value) = "double" then
+               Ada.Text_IO.Put_Line(F,"; floating point greater than");
+               Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = fcmp ogt double %t" & common.int_to_String(left_value.t_value) & ", %t" & common.int_to_String(right_value.t_value));
+               --in_node.llvm_type := common.tub("double");
+            elsif common.ub2s(left_value.type_value) = "string" then
+               Ada.Text_IO.Put_Line(F,"Error, string ops not added yet");
+               --in_node.llvm_type := common.tub("ERROR SOMETHING FOR STRING, PROBABLY i8*");
+            end if;
+
+         end if;
 
          -- The variable that contains the comparison result
          return temp_id;
+
       elsif common.ub2s(in_node.Name)=">=" then
          left_tree := get_child_of_branch(in_node,common.b_LEFT);
          right_tree := get_child_of_branch(in_node, common.b_RIGHT);
 
-         returned_parsed_value := parse_value_from_tree(left_tree,True,size_of_tree(left_tree));
-         left_var_id := returned_parsed_value.t_value;
-         returned_parsed_value := parse_value_from_tree(right_tree,True,size_of_tree(right_tree));
-         right_var_id := returned_parsed_value.t_value;
+         left_value := parse_value_from_tree(left_tree,True,size_of_tree(left_tree));
+         right_value := parse_value_from_tree(right_tree,True,size_of_tree(right_tree));
 
-         temp_id := Var_Counter.Get_Next;
-         --Ada.Text_IO.Put_Line("%t" & current_temp_var_id & " = icmp eq i32 %\"" & left_var_id'Image & "\", %\" & right_var_id'Image & \"");
-         Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = icmp sge i32 %t" & common.int_to_String(left_var_id) & ", %t" & common.int_to_String(right_var_id));
+                  -- Greater Than
+         if common.ub2s(left_value.type_value) /= common.ub2s(right_value.type_value) then
+            Ada.Text_IO.Put_Line("Error: Type Mismatch");
+            Ada.Text_IO.Put_Line(common.ub2s(left_value.type_value) & " /= " & common.ub2s(right_value.type_value));
+         else
+            temp_id := Var_Counter.Get_Next;
+            if common.ub2s(left_value.type_value) = "i32" then
+               Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = icmp sge i32 %t" & common.int_to_String(left_value.t_value) & ", %t" & common.int_to_String(right_value.t_value));
+               --in_node.llvm_type := common.tub("i32");
+            elsif common.ub2s(left_value.type_value) = "double" then
+               Ada.Text_IO.Put_Line(F,"; floating point greater than or equal");
+               Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = fcmp oge double %t" & common.int_to_String(left_value.t_value) & ", %t" & common.int_to_String(right_value.t_value));
+               --in_node.llvm_type := common.tub("double");
+            elsif common.ub2s(left_value.type_value) = "string" then
+               Ada.Text_IO.Put_Line(F,"Error, string ops not added yet");
+               --in_node.llvm_type := common.tub("ERROR SOMETHING FOR STRING, PROBABLY i8*");
+            end if;
+
+         end if;
 
          -- The variable that contains the comparison result
          return temp_id;
+
       elsif common.ub2s(in_node.Name)="==" then
          left_tree := get_child_of_branch(in_node,common.b_LEFT);
          right_tree := get_child_of_branch(in_node, common.b_RIGHT);
 
-         returned_parsed_value := parse_value_from_tree(left_tree,True,size_of_tree(left_tree));
-         left_var_id := returned_parsed_value.t_value;
-         returned_parsed_value := parse_value_from_tree(right_tree,True,size_of_tree(right_tree));
-         right_var_id := returned_parsed_value.t_value;
+         left_value := parse_value_from_tree(left_tree,True,size_of_tree(left_tree));
+         right_value := parse_value_from_tree(right_tree,True,size_of_tree(right_tree));
 
-         temp_id := Var_Counter.Get_Next;
-         --Ada.Text_IO.Put_Line("%t" & current_temp_var_id & " = icmp eq i32 %\"" & left_var_id'Image & "\", %\" & right_var_id'Image & \"");
-         Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = icmp eq i32 %t" & common.int_to_String(left_var_id) & ", %t" & common.int_to_String(right_var_id));
+          -- Equal to
+         if common.ub2s(left_value.type_value) /= common.ub2s(right_value.type_value) then
+            Ada.Text_IO.Put_Line("Error: Type Mismatch");
+            Ada.Text_IO.Put_Line(common.ub2s(left_value.type_value) & " /= " & common.ub2s(right_value.type_value));
+         else
+            temp_id := Var_Counter.Get_Next;
+            if common.ub2s(left_value.type_value) = "i32" then
+               Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = icmp eq i32 %t" & common.int_to_String(left_value.t_value) & ", %t" & common.int_to_String(right_value.t_value));
+               --in_node.llvm_type := common.tub("i32");
+            elsif common.ub2s(left_value.type_value) = "double" then
+               Ada.Text_IO.Put_Line(F,"; floating point greater than");
+               Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = fcmp oeq double %t" & common.int_to_String(left_value.t_value) & ", %t" & common.int_to_String(right_value.t_value));
+               --in_node.llvm_type := common.tub("double");
+            elsif common.ub2s(left_value.type_value) = "string" then
+               Ada.Text_IO.Put_Line(F,"Error, string ops not added yet");
+               --in_node.llvm_type := common.tub("ERROR SOMETHING FOR STRING, PROBABLY i8*");
+            end if;
+
+         end if;
 
          -- The variable that contains the comparison result
          return temp_id;
+
+
       elsif common.ub2s(in_node.Name)="!=" then
          left_tree := get_child_of_branch(in_node,common.b_LEFT);
          right_tree := get_child_of_branch(in_node, common.b_RIGHT);
 
-         returned_parsed_value := parse_value_from_tree(left_tree,True,size_of_tree(left_tree));
-         left_var_id := returned_parsed_value.t_value;
-         returned_parsed_value := parse_value_from_tree(right_tree,True,size_of_tree(right_tree));
-         right_var_id := returned_parsed_value.t_value;
+         left_value := parse_value_from_tree(left_tree,True,size_of_tree(left_tree));
+         right_value := parse_value_from_tree(right_tree,True,size_of_tree(right_tree));
 
-         temp_id := Var_Counter.Get_Next;
-         --Ada.Text_IO.Put_Line("%t" & current_temp_var_id & " = icmp eq i32 %\"" & left_var_id'Image & "\", %\" & right_var_id'Image & \"");
-         Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = icmp ne i32 %""" & common.int_to_String(left_var_id) & """, %""" & common.int_to_String(right_var_id) & """ ");
+          -- Not equal
+         if common.ub2s(left_value.type_value) /= common.ub2s(right_value.type_value) then
+            Ada.Text_IO.Put_Line("Error: Type Mismatch");
+            Ada.Text_IO.Put_Line(common.ub2s(left_value.type_value) & " /= " & common.ub2s(right_value.type_value));
+         else
+            temp_id := Var_Counter.Get_Next;
+            if common.ub2s(left_value.type_value) = "i32" then
+               Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = icmp ne i32 %t" & common.int_to_String(left_value.t_value) & ", %t" & common.int_to_String(right_value.t_value));
+               --in_node.llvm_type := common.tub("i32");
+            elsif common.ub2s(left_value.type_value) = "double" then
+               Ada.Text_IO.Put_Line(F,"; Not equal to");
+               Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = fcmp une double %t" & common.int_to_String(left_value.t_value) & ", %t" & common.int_to_String(right_value.t_value));
+               --in_node.llvm_type := common.tub("double");
+            elsif common.ub2s(left_value.type_value) = "string" then
+               Ada.Text_IO.Put_Line(F,"Error, string ops not added yet");
+               --in_node.llvm_type := common.tub("ERROR SOMETHING FOR STRING, PROBABLY i8*");
+            end if;
+
+         end if;
 
          -- The variable that contains the comparison result
          return temp_id;
