@@ -31,13 +31,19 @@ begin
    symbol_table.insert_entry(common.tub("PUTFLOAT"), 0, id_value_pkg.init(common.id_PROCEDURE_NAME), symbol_table.LastEntry);
    symbol_table.insert_entry(common.tub("GETINTEGER"), 0, id_value_pkg.init(common.id_PROCEDURE_NAME), symbol_table.LastEntry);
    symbol_table.insert_entry(common.tub("GETFLOAT"), 0, id_value_pkg.init(common.id_PROCEDURE_NAME), symbol_table.LastEntry);
+   symbol_table.insert_entry(common.tub("GETSTRING"), 0, id_value_pkg.init(common.id_PROCEDURE_NAME), symbol_table.LastEntry);
+   symbol_table.insert_entry(common.tub("GETBOOL"), 0, id_value_pkg.init(common.id_PROCEDURE_NAME), symbol_table.LastEntry);
+   symbol_table.insert_entry(common.tub("PUTBOOL"), 0, id_value_pkg.init(common.id_PROCEDURE_NAME), symbol_table.LastEntry);
 
    --These need to be set for all standard functions
    symbol_table.lookupHash(common.tub("PUTINTEGER"),0).return_type := common.tub("i32");
    symbol_table.lookupHash(common.tub("GETINTEGER"),0).return_type := common.tub("i32");
    symbol_table.lookupHash(common.tub("PUTSTRING"),0).return_type := common.tub("i32");
+   symbol_table.lookupHash(common.tub("GETSTRING"),0).return_type := common.tub("i8*");
    symbol_table.lookupHash(common.tub("PUTFLOAT"),0).return_type := common.tub("i32");
    symbol_table.lookupHash(common.tub("GETFLOAT"),0).return_type := common.tub("double");
+   symbol_table.lookupHash(common.tub("PUTBOOL"),0).return_type := common.tub("i32");
+   symbol_table.lookupHash(common.tub("GETBOOL"),0).return_type := common.tub("i32");
 
 
    if run_test = 1 then

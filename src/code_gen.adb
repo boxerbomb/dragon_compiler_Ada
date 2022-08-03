@@ -184,6 +184,58 @@ package body code_gen is
       Ada.Text_IO.Put_Line(F,"");
 
 
+      Ada.Text_IO.Put_Line(F,"@.str = private unnamed_addr constant [3 x i8] c""%s\00"", align 1");
+      Ada.Text_IO.Put_Line(F,"declare i32 @__isoc99_scanf(i8*, ...)");
+      Ada.Text_IO.Put_Line(F,"define i8* @GETSTRING.0(){");
+      Ada.Text_IO.Put_Line(F,"  %1 = alloca i8*, align 8");
+      Ada.Text_IO.Put_Line(F,"  %2 = call noalias i8* @malloc(i32 128)");
+      Ada.Text_IO.Put_Line(F,"  store i8* %2, i8** %1, align 8");
+      Ada.Text_IO.Put_Line(F,"  %3 = load i8*, i8** %1, align 8");
+      Ada.Text_IO.Put_Line(F,"  %4 = call i32 (i8*, ...) @__isoc99_scanf(i8* getelementptr inbounds ([3 x i8], [3 x i8]* @.str, i32 0, i32 0), i8* %3)");
+      Ada.Text_IO.Put_Line(F,"  %5 = load i8*, i8** %1, align 8");
+      Ada.Text_IO.Put_Line(F,"  ret i8* %5");
+      Ada.Text_IO.Put_Line(F,"}");
+      Ada.Text_IO.Put_Line(F,"");
+
+
+
+      Ada.Text_IO.Put_Line(F,"define i32 @""PUTBOOL.0""(i32 %""in_arg"") ");
+      Ada.Text_IO.Put_Line(F,"{");
+      Ada.Text_IO.Put_Line(F,"entry:");
+      Ada.Text_IO.Put_Line(F,"%""in"" = alloca i32");
+      Ada.Text_IO.Put_Line(F,"store i32 %""in_arg"", i32* %""in""");
+      Ada.Text_IO.Put_Line(F,"%""fmt_ptr"" = getelementptr [3 x i8], [3 x i8]* @""fmt_int"", i32 0, i32 0");
+      Ada.Text_IO.Put_Line(F,"%""in_val"" = load i32, i32* %""in""");
+      Ada.Text_IO.Put_Line(F,"%""print"" = call i32 (i8*, ...) @""printf""(i8* %""fmt_ptr"", i32 %""in_val"")");
+      Ada.Text_IO.Put_Line(F,"%""fmt_ptr.1"" = getelementptr [2 x i8], [2 x i8]* @""fmt_newline"", i32 0, i32 0");
+      Ada.Text_IO.Put_Line(F,"%""print.1"" = call i32 (i8*, ...) @""printf""(i8* %""fmt_ptr.1"")");
+      Ada.Text_IO.Put_Line(F,"ret i32 0");
+      Ada.Text_IO.Put_Line(F,"}");
+      Ada.Text_IO.Put_Line(F,"");
+
+
+      Ada.Text_IO.Put_Line(F,"define i32 @""GETBOOL.0""()");
+      Ada.Text_IO.Put_Line(F,"{");
+      Ada.Text_IO.Put_Line(F,"entry:");
+      Ada.Text_IO.Put_Line(F,"  %""x"" = alloca i32");
+      Ada.Text_IO.Put_Line(F," store i32 0, i32* %""x""");
+      Ada.Text_IO.Put_Line(F,"  %""fmt_ptr"" = getelementptr [3 x i8], [3 x i8]* @""fmt_int"", i32 0, i32 0");
+      Ada.Text_IO.Put_Line(F,"  %""scan"" = call i32 (i8*, ...) @""scanf""(i8* %""fmt_ptr"", i32* %""x"")");
+      Ada.Text_IO.Put_Line(F,"  %""res"" = load i32, i32* %""x""");
+      Ada.Text_IO.Put_Line(F,"  ret i32 %""res""");
+      Ada.Text_IO.Put_Line(F,"}");
+      Ada.Text_IO.Put_Line(F,"");
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -748,7 +800,7 @@ package body code_gen is
          if common.ub2s(assignment_value_type)="i8*" then
             assignment_destination.entry_ptr.variable_id := assignment_value_id;
             Ada.Text_IO.Put_Line(F,";Updated variable # for string in symbol table" & common.int_to_String(symbol_table.current_variable_id));
-            symbol_table.print_hash_entries;
+            --symbol_table.print_hash_entries;
          else
             if assignment_destination.entry_ptr.array_size /= 0 then
                -- All arrays are treated as global in my assembly
@@ -1276,8 +1328,13 @@ package body code_gen is
 
          -- The program works if you change the ll file line 88 from i32 to double
 
-
+         if common.ub2s(procedure_return_type) /= "i8*" then
             Ada.Text_IO.Put_Line(F, "%t" & common.int_to_String(procedure_return_value_id) & " = call " & common.ub2s(procedure_return_type) & " @""" & Ada.Strings.Unbounded.Slice(in_node.Name,1,proc_length-2) & "." & common.int_to_String(procedure_scope) & """(" & common.ub2s(argument_string) & ")");
+         else
+            Ada.Text_IO.Put_Line(F, "%v" & common.int_to_String(procedure_return_value_id) & "_pre = call " & common.ub2s(procedure_return_type) & " @""" & Ada.Strings.Unbounded.Slice(in_node.Name,1,proc_length-2) & "." & common.int_to_String(procedure_scope) & """(" & common.ub2s(argument_string) & ")");
+            Ada.Text_IO.Put_Line(F, "%v" & common.int_to_String(procedure_return_value_id) & " = call noalias i8* @malloc(i32 128)");
+            Ada.Text_IO.Put_Line(F, "call void @""memcpy""(i8* %v"& common.int_to_String(procedure_return_value_id) & ", i8* %v"& common.int_to_String(procedure_return_value_id) & "_pre, i32 128)");
+         end if;
 
 
 
@@ -1333,7 +1390,6 @@ package body code_gen is
          end if;
 
 
-         -- This goes along with what is mentioned above
          returned_value.t_value := procedure_return_value_id;
          returned_value.type_value := procedure_return_type;
 
