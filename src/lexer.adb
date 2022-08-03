@@ -169,6 +169,7 @@ package body lexer is
 
       use type common.token_types;
    begin
+      --Ada.Text_IO.Put_Line("Token: "&common.ub2s(inWord));
       -- Add Current Scope to this token
       return_token.scope := common.current_scope;
       -- Add Line Number to token
@@ -234,7 +235,7 @@ package body lexer is
 
          if textMode = False and commentMode = False and cur_char&next_char/="//" and cur_char&next_char/="/*" then
             -- If cur_char+next_char in two dig seperators
-            if cur_char & next_char in ":=" | "<=" | ">=" | "==" | "!=" | "//" | "*/"
+            if cur_char & next_char in ":=" | "<=" | ">=" | "==" | "!=" | "//" | "*/" | "/*"
             then
                -- Now it actually consumes this char, instead of jsut peeking
                temp_char := get_next_char2;
@@ -265,26 +266,26 @@ package body lexer is
                --Ada.Text_IO.Put_Line("Comment Mode On");
             end if;
             if cur_char&next_char="/*" then
-               --Ada.Text_IO.Put_Line("Comment Mode Begin");
                commentMode := True;
                multiLineCount := multiLineCount + 1;
+               --Ada.Text_IO.Put_Line("Comment Mode PLUS "&common.int_to_string(multiLineCount));
                temp_char := get_next_char2;
             end if;
 
             if commentMode=True then
 
                if cur_char=Character'Val(13) and multiLineCount=0 then
-                 -- Ada.Text_IO.Put_Line("Comment Mode Off");
+                  --Ada.Text_IO.Put_Line("Comment Mode Off Total");
                   commentMode := False;
                end if;
 
                if cur_char&next_char="*/" then
-                  --Ada.Text_IO.Put_Line("End Comment");
                   multiLineCount := multiLineCount - 1;
                   if multiLineCount=0 then
                      commentMode := False;
-                     temp_char := get_next_char2;
                   end if;
+                  temp_char := get_next_char2;
+                  --Ada.Text_IO.Put_Line("Comment Mode SUB "&common.int_to_string(multiLineCount));
                end if;
 
             end if;
