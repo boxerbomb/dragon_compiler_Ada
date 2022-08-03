@@ -1481,8 +1481,9 @@ package body code_gen is
                Ada.Text_IO.Put_Line(F,"; floating point less than");
                Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = fcmp olt double %t" & common.int_to_String(left_value.t_value) & ", %t" & common.int_to_String(right_value.t_value));
                --in_node.llvm_type := common.tub("double");
-            elsif common.ub2s(left_value.type_value) = "string" then
-               Ada.Text_IO.Put_Line(F,"Error, string ops not added yet");
+            elsif common.ub2s(left_value.type_value) = "i8*" then
+               Ada.Text_IO.Put_Line(F,"; String equal to");
+               Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = icmp eq i8* %v" & common.int_to_String(left_value.t_value) & ", %v" & common.int_to_String(right_value.t_value));
                --in_node.llvm_type := common.tub("ERROR SOMETHING FOR STRING, PROBABLY i8*");
             end if;
 
@@ -1512,8 +1513,9 @@ package body code_gen is
                Ada.Text_IO.Put_Line(F,"; floating point less than or equal");
                Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = fcmp ole double %t" & common.int_to_String(left_value.t_value) & ", %t" & common.int_to_String(right_value.t_value));
                --in_node.llvm_type := common.tub("double");
-            elsif common.ub2s(left_value.type_value) = "string" then
-               Ada.Text_IO.Put_Line(F,"Error, string ops not added yet");
+            elsif common.ub2s(left_value.type_value) = "i8*" then
+               Ada.Text_IO.Put_Line(F,"; String equal to");
+               Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = icmp eq i8* %v" & common.int_to_String(left_value.t_value) & ", %v" & common.int_to_String(right_value.t_value));
                --in_node.llvm_type := common.tub("ERROR SOMETHING FOR STRING, PROBABLY i8*");
             end if;
 
@@ -1543,8 +1545,9 @@ package body code_gen is
                Ada.Text_IO.Put_Line(F,"; floating point greater than");
                Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = fcmp ogt double %t" & common.int_to_String(left_value.t_value) & ", %t" & common.int_to_String(right_value.t_value));
                --in_node.llvm_type := common.tub("double");
-            elsif common.ub2s(left_value.type_value) = "string" then
-               Ada.Text_IO.Put_Line(F,"Error, string ops not added yet");
+            elsif common.ub2s(left_value.type_value) = "i8*" then
+               Ada.Text_IO.Put_Line(F,"; String equal to");
+               Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = icmp eq i8* %v" & common.int_to_String(left_value.t_value) & ", %v" & common.int_to_String(right_value.t_value));
                --in_node.llvm_type := common.tub("ERROR SOMETHING FOR STRING, PROBABLY i8*");
             end if;
 
@@ -1574,8 +1577,9 @@ package body code_gen is
                Ada.Text_IO.Put_Line(F,"; floating point greater than or equal");
                Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = fcmp oge double %t" & common.int_to_String(left_value.t_value) & ", %t" & common.int_to_String(right_value.t_value));
                --in_node.llvm_type := common.tub("double");
-            elsif common.ub2s(left_value.type_value) = "string" then
-               Ada.Text_IO.Put_Line(F,"Error, string ops not added yet");
+            elsif common.ub2s(left_value.type_value) = "i8*" then
+               Ada.Text_IO.Put_Line(F,"; String equal to");
+               Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = icmp eq i8* %v" & common.int_to_String(left_value.t_value) & ", %v" & common.int_to_String(right_value.t_value));
                --in_node.llvm_type := common.tub("ERROR SOMETHING FOR STRING, PROBABLY i8*");
             end if;
 
