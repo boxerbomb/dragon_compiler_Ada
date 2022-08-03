@@ -1,0 +1,24 @@
+Program MyTestProgram is
+
+variable i : integer;
+variable c : string;
+variable myArray : integer[15];
+
+begin
+
+i := 100;
+c := "A";
+
+if(i > 100) then
+//do something#
+	i:= 1110;
+end if;
+
+/*Single #Line Block Comments*/
+
+/*
+/*
+Multiline Block Comments*/
+*/
+
+end program.

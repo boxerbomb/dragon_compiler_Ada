@@ -8,7 +8,7 @@ with gstack;
 
 
 package code_gen is
-   procedure print_preorder(in_node : common.Node_Ptr);
+   procedure print_preorder (in_node : common.Node_Ptr; procedure_return_type : Ada.Strings.Unbounded.Unbounded_String);
    procedure print_postorder(in_node : common.Node_Ptr);
 
    function get_child_of_branch (in_node : common.Node_Ptr; search_type : common.branch_types) return common.Node_Ptr;

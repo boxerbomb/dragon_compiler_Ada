@@ -495,7 +495,7 @@ package body code_gen is
 
 
 
-         print_preorder(parent_Element);
+         print_preorder(parent_Element,procedure_return_type);
 
 
          if common.ub2s(parser.found_program_name) = common.ub2s(parent_Element.Name) then
@@ -692,7 +692,7 @@ package body code_gen is
 
 
 
-   procedure print_preorder (in_node : common.Node_Ptr) is
+   procedure print_preorder (in_node : common.Node_Ptr; procedure_return_type : Ada.Strings.Unbounded.Unbounded_String) is
       use type common.Node_Ptr;
       use type common.branch_types;
 
@@ -828,7 +828,7 @@ package body code_gen is
          loop_condition_tree := get_child_of_branch(in_node, common.b_LOOP_CONDITION);
 
          -- Assign the loop starting conditons
-         print_preorder(loop_assignment_tree);
+         print_preorder(loop_assignment_tree,procedure_return_type);
 
          -- The label before the condition is tested
          current_label_id := current_label_id + 1;
@@ -854,7 +854,7 @@ package body code_gen is
 
          -- Generate Loop Body and then jump back to loop condition checking
          Ada.Text_IO.Put_Line(F,"label_" & common.int_to_String(loop_body_start_label_id) & ":");
-         print_preorder(loop_body_tree);
+         print_preorder(loop_body_tree,procedure_return_type);
          Ada.Text_IO.Put_Line(F,"br label %""label_" & common.int_to_String(loop_condition_label_id) & """");
 
          --End label just sits at the end
@@ -882,12 +882,12 @@ package body code_gen is
 
          -- Accept condition label and Code Generation
          Ada.Text_IO.Put_Line(F,"label_" & common.int_to_String(accept_label_id) & ":");
-         print_preorder(accept_if_tree);
+         print_preorder(accept_if_tree,procedure_return_type);
          Ada.Text_IO.Put_Line(F,"br label %""label_" & common.int_to_String(end_if_label_id) & """");
 
          -- Else Condition label and code generation
          Ada.Text_IO.Put_Line(F,"label_" & common.int_to_String(decline_label_id) & ":");
-         print_preorder(decline_if_tree);
+         print_preorder(decline_if_tree,procedure_return_type);
          Ada.Text_IO.Put_Line(F,"br label %""label_" & common.int_to_String(end_if_label_id) & """");
 
          --End If Label, now to get with the rest of the program
@@ -901,11 +901,15 @@ package body code_gen is
 
         -- Ada.Text_IO.Put_Line("ZZZZZZZZZZZZZZZZ: "&common.ub2s(return_value_tree.Name)&" "&common.int_to_String(return_id));
 
-         Ada.Text_IO.Put_Line(F,"ret " & common.ub2s(returned_parsed_value.type_value) & " %t" & common.int_to_String(return_id));
+         if common.ub2s(procedure_return_type) /= common.ub2s(returned_parsed_value.type_value) then
+            Ada.Text_IO.Put_Line("Warning: Line: "&common.int_to_String(in_node.line_num)&" ensure that floats are specified with a .0");
+         end if;
+            --Ada.Text_IO.Put_Line(F,"ret " & common.ub2s(returned_parsed_value.type_value) & " %t" & common.int_to_String(return_id));
+            Ada.Text_IO.Put_Line(F,"ret " & common.ub2s(procedure_return_type) & " %t" & common.int_to_String(return_id));
       else
-         print_preorder (in_node.Left);
-         print_preorder (in_node.Center);
-         print_preorder (in_node.Right);
+         print_preorder (in_node.Left,procedure_return_type);
+         print_preorder (in_node.Center,procedure_return_type);
+         print_preorder (in_node.Right,procedure_return_type);
       end if;
 
    end print_preorder;

@@ -39,7 +39,7 @@ package body id_value_pkg is
       return_entry.float_value := 0.0;
 
       if in_id_type = common.id_STRING or in_id_type = common.id_STRING_VALUE then
-         return_entry.llvm_type := common.tub(" x i8");
+         return_entry.llvm_type := common.tub("i8*");
       elsif in_id_type = common.id_INTEGER then
          return_entry.llvm_type := common.tub("i32");
       elsif in_id_type = common.id_FLOAT then

@@ -1,0 +1,42 @@
+
+// so, this character: @ should not cause a problem as any ascii character can be in a comment.
+
+/*  ok, so just for fun, let's see if this gives you any headaches.  this // should be ok
+    and the comment should just proceeds as designed */
+
+
+program test_program is
+
+    // your lexer should throw an error on the illegal character
+    variable fibb_re#sult : integer;
+    variable out : bool;
+
+    procedure fibb : integer(variable n : integer)
+        variable result : integer;
+        variable a : integer;
+        variable b : integer;
+    begin
+        if (n < 0) then
+            result := -1;
+            return result;
+        end if;
+        if (n == 0) then
+            result := 0;
+            return result;
+        end if;
+        if (n == 1) then
+            result := 1;
+            return result;
+        end if;
+        
+        a := fibb(n-1);
+        b := fibb(n-2);
+
+        result := a + b;
+	return result;
+    end procedure;
+begin
+    fibb_result := -1234;
+    fibb_result := fibb(12);
+    out := putInteger(fibb_result);
+end program.

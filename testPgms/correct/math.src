@@ -1,0 +1,72 @@
+program Maths is
+
+variable value : integer;
+variable tmp2 : float;  //this variable will be hidden by the declaration in Fib
+variable out : bool;
+
+procedure Fib : integer(variable val : integer)
+    variable tmp1 : integer;
+    variable tmp2 : integer;
+    variable ret : integer;
+	begin
+	if(val == 0) then
+		ret := 0;
+		return ret;
+	end if;
+	if(val == 1) then
+		ret := 1;
+		return ret;
+	end if;
+	val := val - 1;
+	tmp1 := Fib(val);
+	val := val - 1;
+	tmp2 := Fib(val);
+	ret := tmp1 + tmp2;
+	return ret;
+end procedure;
+
+begin
+
+value := Fib(15);
+out := putInteger(value);
+
+end program.
+
+
+
+
+
+program testArguments is
+    variable out : bool;
+    variable tmp : integer;
+
+    procedure add : integer (variable n1 : integer, variable n2 : integer, variable n3 : integer)
+        variable result : integer;
+    begin
+        result := n1 + n2 + n3;
+        return result;
+    end procedure
+
+    tmp := 8 + add(9,10,11);
+
+    out := putInteger(10+add(1,2,3));
+
+end program.
+
+
+program testArguments is
+    variable out : bool;
+    variable tmp : float;
+
+    procedure add : float (variable n1 : float)
+        variable result : float;
+    begin
+        result := n1 + 1.99;
+        return result;
+    end procedure
+
+    tmp := add(1.5);
+
+    out := putfloat(tmp);
+
+end program.

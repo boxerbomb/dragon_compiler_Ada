@@ -1,0 +1,30 @@
+program MultipleProcs is
+
+global variable y : integer;
+variable tmp : bool;
+
+procedure Proc1 : integer(variable val : integer)
+	procedure Proc2 : integer(variable val : integer)
+		procedure Proc1 : integer(variable val : integer)
+			begin
+				val := val + 1;
+                return val;
+		end procedure;
+		begin
+			val := val + 1;
+			val := Proc1(val);
+            return val;
+	end procedure;
+	begin
+		val := val + 1;
+		val := Proc2(val);
+        return val;
+end procedure;
+
+
+begin
+
+y := Proc1(y);
+tmp := putInteger(y);  // Result should be 3
+
+end program.
