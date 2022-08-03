@@ -25,6 +25,10 @@ package common is
    --  b_ACCEPT_IF,
    --  b_DECLINE_IF,
    --  b_BOUND
+
+   debug : Integer := 0;
+
+
    function tub(Source : String) return Ada.Strings.Unbounded.Unbounded_String renames Ada.Strings.Unbounded.To_Unbounded_String;
    function ub2s(Source : Ada.Strings.Unbounded.Unbounded_String) return String renames Ada.Strings.Unbounded.To_String;
 
@@ -34,6 +38,7 @@ package common is
          t_type : token_types;
          value : Ada.Strings.Unbounded.Unbounded_String;
          scope : Integer := 99;
+         line_num : Integer := -1;
       end record;
 
    type parsed_value is
@@ -43,7 +48,7 @@ package common is
       end record;
 
    --empty_token : token(t_type <= t_INVALID, value <= tub("INVALID"));
-   empty_token : token := (t_INVALID,tub("INVALID"),-1);
+   empty_token : token := (t_INVALID,tub("INVALID"),-1,-1);
 
 
 
@@ -62,6 +67,7 @@ package common is
          internal_tree_num : Integer := 0;
          scope : Integer;
          llvm_type : Ada.Strings.Unbounded.Unbounded_String;
+         line_num : Integer;
       end record;
 
 

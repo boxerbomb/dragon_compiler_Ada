@@ -11,9 +11,9 @@ digraph parsetree {
   node3 -> node4 [ label= "B_VARIABLE_DECLARATION" ];
   node5 [label="statement_list"]
   node3 -> node5 [ label= "" ];
-  node6 [label="INTEGER"]
+  node6 [label="FLOAT"]
   node4 -> node6 [ label= "B_VARIABLE_TYPE" ];
-  node7 [label="DECLARATION"]
+  node7 [label="ZACH"]
   node4 -> node7 [ label= "B_VARIABLE_NAME" ];
   node8 [label="if_statement"]
   node5 -> node8 [ label= "B_IF_STATEMENT" ];

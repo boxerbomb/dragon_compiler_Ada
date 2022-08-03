@@ -30,13 +30,18 @@ package body parser is
 
       if next_token.t_type = inType then
          matchStack.push (next_token);
-         Ada.Text_IO.Put_Line (Ada.Text_IO.Standard_Output,"Matched: " & next_token.t_type'Image);
+         --Ada.Text_IO.Put_Line (Ada.Text_IO.Standard_Output,"Matched: " & next_token.t_type'Image);
 
          next_token := get_token;
-         --Ada.Text_IO.Put_Line("[[[[[[[[[ "&next_token.scope'Image&" ]]]]]]]]]]]");
+
+         current_line_num := next_token.line_num;
+
+         --Reset Expected String
+         expected_string := common.tub("Expected: ");
          return True;
       else
-         Ada.Text_IO.Put_Line("Expected: " & inType'Image & "   Received: " &next_token.t_type'Image);
+         --Ada.Text_IO.Put_Line("Expected: " & inType'Image & "   Received: " &next_token.t_type'Image);
+         expected_string := Ada.Strings.Unbounded."&"(expected_string,common.tub(inType'Image & " , "));
          return False;
       end if;
 
@@ -140,10 +145,13 @@ package body parser is
          end if;
          new_id_value := id_value_pkg.init(given_id_type);
 
+         --Ada.Text_IO.Put_Line("Calling Insert Entry with "&common.ub2s(return_string)&" "&common.int_to_String(possible_id_scope));
+         if symbol_table.lookupHash(return_string, possible_id_scope).variable_id /= -1 then
+            Ada.Text_IO.Put_Line("Line: "&common.int_to_String(parent_node.line_num)&" Error: Variable: "&common.ub2s(return_string)&" already declared in this scope.");
+         end if;
          symbol_table.insert_entry(return_string, possible_id_scope, new_id_value, symbol_table.LastEntry, is_Parameter);
          return return_string;
       else
-         Ada.Text_IO.Put_Line("Not a game breaking error this might be called when just 'looking'");
          return common.tub("");
       end if;
    end add_var_to_sym_table;
@@ -151,7 +159,7 @@ package body parser is
 
 
    function program_header (parent_node : common.Node_Ptr) return Ada.Strings.Unbounded.Unbounded_String is
-      new_node : common.Node_Ptr :=new common.Node'(common.tub ("program_header"), common.b_NONE, 0, null, null, null,0,parent_node.scope,common.tub(""));
+      new_node : common.Node_Ptr :=new common.Node'(common.tub ("program_header"), common.b_NONE, 0, null, null, null,0,parent_node.scope,common.tub(""),current_line_num);
       program_name : Ada.Strings.Unbounded.Unbounded_String;
    begin
       if match (common.t_PROGRAM) then
@@ -165,13 +173,13 @@ package body parser is
          end if;
          return program_name;
       else
-         Ada.Text_IO.Put_Line (next_token.t_type'Image);
+         --Ada.Text_IO.Put_Line (next_token.t_type'Image);
          return common.tub("");
       end if;
    end program_header;
 
    function program_body (parent_node : common.Node_Ptr) return Boolean is
-      new_node : common.Node_Ptr := new common.Node'(common.tub ("program_body"), common.b_NONE, 0, null, null, null, 0,parent_node.scope,common.tub(""));
+      new_node : common.Node_Ptr := new common.Node'(common.tub ("program_body"), common.b_NONE, 0, null, null, null, 0,parent_node.scope,common.tub(""),current_line_num);
       temp_bool : Boolean;
    begin
       temp_bool := declaration_list (new_node);
@@ -195,7 +203,7 @@ package body parser is
    end program_body;
 
    function program (parent_node : common.Node_Ptr) return Boolean is
-      new_node : common.Node_Ptr := new common.Node'(common.tub ("Unset"), common.b_NONE, 0, null, null, null, 0,parent_node.scope,common.tub(""));
+      new_node : common.Node_Ptr := new common.Node'(common.tub ("Unset"), common.b_NONE, 0, null, null, null, 0,parent_node.scope,common.tub(""),current_line_num);
       program_name : Ada.Strings.Unbounded.Unbounded_String;
    begin
       program_name := program_header(new_node);
@@ -219,7 +227,7 @@ package body parser is
 
    function id(parent_node : common.Node_Ptr; inType : common.branch_types := common.b_NONE) return Boolean
    is
-      new_node : common.Node_Ptr := new common.Node'(common.tub ("id"), inType, 0, null, null, null, 0,parent_node.scope,common.tub(""));
+      new_node : common.Node_Ptr := new common.Node'(common.tub ("id"), inType, 0, null, null, null, 0,parent_node.scope,common.tub(""),current_line_num);
       popped_token : common.token;
       lookup_return_entry : symbol_table.Table_Entry_ptr;
    begin
@@ -229,12 +237,12 @@ package body parser is
          lookup_return_entry := symbol_table.lookupHash(popped_token.value, common.current_scope);
 
          if common.ub2s(lookup_return_entry.keyword) /= "" then
-            Ada.Text_IO.Put_Line("ID WAS found in symbol table by: "&common.ub2s(popped_token.value));
+            --Ada.Text_IO.Put_Line("ID WAS found in symbol table by: "&common.ub2s(popped_token.value));
             new_node.Name := popped_token.value;
             common.add (parent_node, new_node);
             return True;
          else
-            Ada.Text_IO.Put_Line("ID NOT found in symbol table by: "&common.ub2s(popped_token.value));
+            Ada.Text_IO.Put_Line("ERROR: ID NOT found in symbol table by: "&common.ub2s(popped_token.value));
             return False;
          end if;
 
@@ -244,7 +252,7 @@ package body parser is
 
    function statement_list(parent_node : common.Node_Ptr; inType : common.branch_types := common.b_NONE) return Boolean
    is
-      new_node : common.Node_Ptr :=new common.Node'(common.tub ("statement_list"), inType, 0, null, null, null,0,parent_node.scope,common.tub(""));
+      new_node : common.Node_Ptr :=new common.Node'(common.tub ("statement_list"), inType, 0, null, null, null,0,parent_node.scope,common.tub(""),current_line_num);
       temp_bool : Boolean;
    begin
       -- This area needs to be reworked for error detection
@@ -253,15 +261,15 @@ package body parser is
          temp_bool := statement_list (new_node);
          temp_bool := match (common.t_SEMI_COLON);
          common.add (parent_node, new_node);
-         Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Returned True for Statement List");
+         --Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Returned True for Statement List");
          return True;
       end if;
-      Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Returned False for Statement List");
+      --Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Returned False for Statement List");
       return False;
    end statement_list;
 
    function statement (parent_node : common.Node_Ptr) return Boolean is
-      new_node : common.Node_Ptr := new common.Node'(common.tub ("statement"), common.b_NONE, 0, null, null, null, 0,parent_node.scope,common.tub(""));
+      new_node : common.Node_Ptr := new common.Node'(common.tub ("statement"), common.b_NONE, 0, null, null, null, 0,parent_node.scope,common.tub(""),current_line_num);
    begin
       if assignment_statement (new_node) or if_statement (new_node) or
         loop_statement (new_node) or return_statement (new_node)
@@ -273,8 +281,8 @@ package body parser is
    end statement;
 
    function return_statement (parent_node : common.Node_Ptr) return Boolean is
-      new_node : common.Node_Ptr := new common.Node'(common.tub ("return_statement"), common.b_RETURN_STATEMENT, 0, null, null, null,0,parent_node.scope,common.tub(""));
-      return_type_node : common.Node_Ptr := new common.Node'(common.tub ("Check Symbol Table"), common.b_RETURN_TYPE, 0, null, null, null,0,parent_node.scope,common.tub(""));
+      new_node : common.Node_Ptr := new common.Node'(common.tub ("return_statement"), common.b_RETURN_STATEMENT, 0, null, null, null,0,parent_node.scope,common.tub(""),current_line_num);
+      return_type_node : common.Node_Ptr := new common.Node'(common.tub ("Check Symbol Table"), common.b_RETURN_TYPE, 0, null, null, null,0,parent_node.scope,common.tub(""),current_line_num);
    begin
       if match (common.t_RETURN) and then expression (new_node,common.b_VALUE) then
          common.add(new_node,return_type_node);
@@ -287,18 +295,18 @@ package body parser is
 
    function loop_statement (parent_node : common.Node_Ptr) return Boolean is
       new_node : common.Node_Ptr :=
-        new common.Node'(common.tub ("loop_statement"), common.b_NONE, 0, null, null, null,0,parent_node.scope,common.tub(""));
+        new common.Node'(common.tub ("loop_statement"), common.b_NONE, 0, null, null, null,0,parent_node.scope,common.tub(""),current_line_num);
    begin
       if match (common.t_FOR) and then match (common.t_LEFT_PAREN) then
-         Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Signal True for 'FOR('");
+         --Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Signal True for 'FOR('");
          if assignment_statement(new_node) and then match (common.t_SEMI_COLON) then
-            Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Signal True for 'ASS;'");
+            --Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Signal True for 'ASS;'");
             if expression (new_node, common.b_LOOP_CONDITION) then
-               Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Signal True for expression");
+               --Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Signal True for expression");
                if match (common.t_RIGHT_PAREN) then
-                  Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Signal True for ')'");
+                  --Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Signal True for ')'");
                   if statement_list(new_node, common.b_LOOP_BODY) and then match (common.t_END)and then match (common.t_FOR)then
-                     Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Signal True for 'list end for'");
+                     --Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Signal True for 'list end for'");
                      common.add (parent_node, new_node);
                      return True;
                   end if;
@@ -306,12 +314,12 @@ package body parser is
             end if;
          end if;
       end if;
-      Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Returned False for For $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+      --Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Returned False for For $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
       return False;
    end loop_statement;
 
    function if_statement (parent_node : common.Node_Ptr) return Boolean is
-      new_node : common.Node_Ptr := new common.Node'(common.tub ("if_statement"), common.b_IF_STATEMENT, 0, null, null, null, 0,parent_node.scope,common.tub(""));
+      new_node : common.Node_Ptr := new common.Node'(common.tub ("if_statement"), common.b_IF_STATEMENT, 0, null, null, null, 0,parent_node.scope,common.tub(""),current_line_num);
       temp_bool : Boolean;
    begin
       if match (common.t_IF) and then match (common.t_LEFT_PAREN) and then expression (new_node, common.b_IF_CONDITION) then
@@ -337,27 +345,27 @@ package body parser is
 
    function assignment_statement (parent_node : common.Node_Ptr) return Boolean
    is
-      new_node : common.Node_Ptr := new common.Node'(common.tub ("assignment_statement"), common.b_ASSIGNMENT_STATEMENT, 0, null, null,null, 0,parent_node.scope,common.tub(""));
+      new_node : common.Node_Ptr := new common.Node'(common.tub ("assignment_statement"), common.b_ASSIGNMENT_STATEMENT, 0, null, null,null, 0,parent_node.scope,common.tub(""),current_line_num);
    begin
       if destination (new_node) and then match (common.t_ASSIGN) and then expression (new_node, common.b_VALUE)
       then
          common.add (parent_node, new_node);
-         Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Return True for Assignment Statement");
+         --Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Return True for Assignment Statement");
          return True;
       end if;
-      Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Return False for Assignment Statement");
+      --Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Return False for Assignment Statement");
       return False;
    end assignment_statement;
 
    function destination (parent_node : common.Node_Ptr) return Boolean is
-      new_node : common.Node_Ptr := new common.Node'(common.tub ("destination"), common.b_DESTINATION, 0, null, null, null, 0,parent_node.scope,common.tub(""));
-      default_index_node : common.Node_Ptr := new common.Node'(common.tub ("0"), common.b_INDEX, 0, null, null, null, 0,parent_node.scope,common.tub(""));
+      new_node : common.Node_Ptr := new common.Node'(common.tub ("destination"), common.b_DESTINATION, 0, null, null, null, 0,parent_node.scope,common.tub(""),current_line_num);
+      default_index_node : common.Node_Ptr := new common.Node'(common.tub ("0"), common.b_INDEX, 0, null, null, null, 0,parent_node.scope,common.tub(""),current_line_num);
    begin
       if id(new_node, common.b_VARIABLE_NAME) then
          if match (common.t_LEFT_BRACKET) then
             if expression (new_node, common.b_INDEX) and then match (common.t_RIGHT_BRACKET) then
                common.add (parent_node, new_node);
-               Ada.Text_IO.Put_Line ("NODE DONE: destination");
+               --Ada.Text_IO.Put_Line ("NODE DONE: destination");
                return True;
             end if;
             --Error here but return false for now
@@ -366,7 +374,7 @@ package body parser is
          --No bracket
          common.add (new_node, default_index_node);
          common.add (parent_node, new_node);
-         Ada.Text_IO.Put_Line ("NODE DONE: destination");
+         --Ada.Text_IO.Put_Line ("NODE DONE: destination");
          return True;
       end if;
       return False;
@@ -377,7 +385,7 @@ package body parser is
 
 
    function expression_prime (parent_node : common.Node_Ptr) return Boolean is
-      new_node : common.Node_Ptr := new common.Node'(common.tub ("LEFT BLANK"), common.b_NONE, 0, null, null, null, 0,parent_node.scope,common.tub(""));
+      new_node : common.Node_Ptr := new common.Node'(common.tub ("LEFT BLANK"), common.b_NONE, 0, null, null, null, 0,parent_node.scope,common.tub(""),current_line_num);
    begin
       if match (common.t_AND) and then expression (new_node) then
          new_node.Name := common.tub ("& (and)");
@@ -392,18 +400,18 @@ package body parser is
    end expression_prime;
 
    function expression(parent_node : common.Node_Ptr; inType : common.branch_types := common.b_NONE) return Boolean is
-      new_node : common.Node_Ptr := new common.Node'(common.tub ("expression"), inType, 0, null, null, null, 0,parent_node.scope,common.tub(""));
+      new_node : common.Node_Ptr := new common.Node'(common.tub ("expression"), inType, 0, null, null, null, 0,parent_node.scope,common.tub(""),current_line_num);
    begin
 
       if match (common.t_NOT) then
          raise Program_Error with "Aborted because NOT in function expression, not implemented";
       end if;
 
-      Ada.Text_IO.Put_Line ("Trying Expression");
+      --Ada.Text_IO.Put_Line ("Trying Expression");
 
       if arith_op (new_node) and then expression_prime (new_node) then
          common.add (parent_node, new_node);
-         Ada.Text_IO.Put_Line ("NODE DONE: expression");
+         --Ada.Text_IO.Put_Line ("NODE DONE: expression");
          return True;
       end if;
 
@@ -411,7 +419,7 @@ package body parser is
    end expression;
 
    function argument_list (parent_node : common.Node_Ptr) return Boolean is
-      new_node : common.Node_Ptr := new common.Node'(common.tub ("argument_list"), common.b_NONE, 0, null, null, null,0,parent_node.scope,common.tub(""));
+      new_node : common.Node_Ptr := new common.Node'(common.tub ("argument_list"), common.b_NONE, 0, null, null, null,0,parent_node.scope,common.tub(""),current_line_num);
       temp_bool : Boolean;
    begin
       if expression (new_node, common.b_ARGUMENT) then
@@ -427,9 +435,9 @@ package body parser is
    end argument_list;
 
    function procedure_call_stripped(parent_node : common.Node_Ptr; id_name : Ada.Strings.Unbounded.Unbounded_String) return Boolean is
-      new_node : common.Node_Ptr := new common.Node'(common.tub("Made in Code later"), common.b_NONE, 0, null,null, null, 0,parent_node.scope,common.tub(""));
-      return_type_node : common.Node_Ptr := new common.Node'(common.tub ("Get From SymbolTable"), common.b_RETURN_TYPE, 0, null,null, null, 0,parent_node.scope,common.tub(""));
-      no_params : common.Node_Ptr := new common.Node'(common.tub("No Params"), common.b_NONE, 0, null,null, null, 0,parent_node.scope,common.tub(""));
+      new_node : common.Node_Ptr := new common.Node'(common.tub("Made in Code later"), common.b_NONE, 0, null,null, null, 0,parent_node.scope,common.tub(""),current_line_num);
+      return_type_node : common.Node_Ptr := new common.Node'(common.tub ("Get From SymbolTable"), common.b_RETURN_TYPE, 0, null,null, null, 0,parent_node.scope,common.tub(""),current_line_num);
+      no_params : common.Node_Ptr := new common.Node'(common.tub("No Params"), common.b_NONE, 0, null,null, null, 0,parent_node.scope,common.tub(""),current_line_num);
       temp_bool : Boolean;
    begin
       new_node.Name := common.tub(common.ub2s(id_name) & "()" );
@@ -473,9 +481,9 @@ package body parser is
 
    function name_stripped(parent_node : common.Node_Ptr; id_name     : Ada.Strings.Unbounded.Unbounded_String) return Boolean
    is
-      new_node : common.Node_Ptr :=new common.Node'(common.tub ("name_stripped"), common.b_VARIABLE_NAME, 0, null, null, null,0,parent_node.scope,common.tub(""));
-      var_node : common.Node_Ptr := new common.Node'(common.tub("Variable_Value"), common.b_VARIABLE_VALUE, 0, null, null, null, 0,parent_node.scope,common.tub(""));
-      default_index_node : common.Node_Ptr :=new common.Node'(common.tub ("0"), common.b_INDEX, 0, null, null, null, 0,parent_node.scope,common.tub(""));
+      new_node : common.Node_Ptr :=new common.Node'(common.tub ("name_stripped"), common.b_VARIABLE_NAME, 0, null, null, null,0,parent_node.scope,common.tub(""),current_line_num);
+      var_node : common.Node_Ptr := new common.Node'(common.tub("Variable_Value"), common.b_VARIABLE_VALUE, 0, null, null, null, 0,parent_node.scope,common.tub(""),current_line_num);
+      default_index_node : common.Node_Ptr :=new common.Node'(common.tub ("0"), common.b_INDEX, 0, null, null, null, 0,parent_node.scope,common.tub(""),current_line_num);
    begin
 
       -- Assign ID name to node
@@ -502,7 +510,7 @@ package body parser is
    -- That will include a little more work in terms of floats
    -- Wilsey that the value of a token might work better as just a pointer to the symbol table entry, I like that
    function number (parent_node : common.Node_Ptr) return Boolean is
-      new_node : common.Node_Ptr := new common.Node'(common.tub ("Blank"), common.b_NONE, 0, null, null, null, 0,parent_node.scope,common.tub(""));
+      new_node : common.Node_Ptr := new common.Node'(common.tub ("Blank"), common.b_NONE, 0, null, null, null, 0,parent_node.scope,common.tub(""),current_line_num);
       popped_token : common.token;
    begin
       if match (common.t_NUMBER) then
@@ -527,7 +535,7 @@ package body parser is
    end number;
 
    function string (parent_node : common.Node_Ptr) return Boolean is
-      new_node : common.Node_Ptr := new common.Node'(common.tub (""), common.b_NONE, 0, null, null, null, 0,parent_node.scope,common.tub(""));
+      new_node : common.Node_Ptr := new common.Node'(common.tub (""), common.b_NONE, 0, null, null, null, 0,parent_node.scope,common.tub(""),current_line_num);
       popped_token : common.token;
    begin
       if match (common.t_STRING) then
@@ -542,12 +550,12 @@ package body parser is
    end string;
 
    function factor (parent_node : common.Node_Ptr) return Boolean is
-      new_node : common.Node_Ptr := new common.Node'(common.tub ("factor"), common.b_NONE, 0, null, null, null, 0,parent_node.scope,common.tub(""));
+      new_node : common.Node_Ptr := new common.Node'(common.tub ("factor"), common.b_NONE, 0, null, null, null, 0,parent_node.scope,common.tub(""),current_line_num);
       popped_token : common.token;
       temp_bool    : Boolean;
       matched_id   : Ada.Strings.Unbounded.Unbounded_String;
    begin
-      Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"In factor");
+      --Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"In factor");
       if match (common.t_LEFT_PAREN) and then expression (new_node) and then match (common.t_RIGHT_PAREN)
       then
          common.add (parent_node, new_node);
@@ -616,7 +624,7 @@ package body parser is
    end factor;
 
    function relation_prime (parent_node : common.Node_Ptr) return Boolean is
-      new_node : common.Node_Ptr := new common.Node'(common.tub ("relation_prime"), common.b_NONE, 0, null, null, null,0,parent_node.scope,common.tub(""));
+      new_node : common.Node_Ptr := new common.Node'(common.tub ("relation_prime"), common.b_NONE, 0, null, null, null,0,parent_node.scope,common.tub(""),current_line_num);
       popped_token : common.token;
       operator     : Ada.Strings.Unbounded.Unbounded_String;
    begin
@@ -651,7 +659,7 @@ package body parser is
    end relation_prime;
 
    function relation (parent_node : common.Node_Ptr) return Boolean is
-      new_node : common.Node_Ptr := new common.Node'(common.tub ("relation"), common.b_NONE, 0, null, null, null, 0,parent_node.scope,common.tub(""));
+      new_node : common.Node_Ptr := new common.Node'(common.tub ("relation"), common.b_NONE, 0, null, null, null, 0,parent_node.scope,common.tub(""),current_line_num);
    begin
       if term (new_node) and then relation_prime (new_node) then
 
@@ -691,7 +699,7 @@ package body parser is
    --  end term_prime;
 
    function term_prime (parent_node : common.Node_Ptr) return Boolean is
-      new_node : common.Node_Ptr := new common.Node'(common.tub ("term_prime"), common.b_NONE, 0, null, null, null, 0,parent_node.scope,common.tub(""));
+      new_node : common.Node_Ptr := new common.Node'(common.tub ("term_prime"), common.b_NONE, 0, null, null, null, 0,parent_node.scope,common.tub(""),current_line_num);
       popped_token   : common.token;
       operation_name : Ada.Strings.Unbounded.Unbounded_String;
    begin
@@ -710,7 +718,7 @@ package body parser is
    end term_prime;
 
    function term (parent_node : common.Node_Ptr; in_type : common.branch_types := common.b_NONE) return Boolean is
-      new_node : common.Node_Ptr := new common.Node'(common.tub ("term"), in_type, 0, null, null, null, 0,parent_node.scope,common.tub(""));
+      new_node : common.Node_Ptr := new common.Node'(common.tub ("term"), in_type, 0, null, null, null, 0,parent_node.scope,common.tub(""),current_line_num);
    begin
       if factor (new_node) and then term_prime (new_node) then
          common.add (parent_node, new_node);
@@ -726,7 +734,7 @@ package body parser is
    end term;
 
    function arith_op_prime (parent_node : common.Node_Ptr) return Boolean is
-      new_node : common.Node_Ptr := new common.Node'(common.tub ("arith_op_prime"), common.b_NONE, 0, null, null, null,0,parent_node.scope,common.tub(""));
+      new_node : common.Node_Ptr := new common.Node'(common.tub ("arith_op_prime"), common.b_NONE, 0, null, null, null,0,parent_node.scope,common.tub(""),current_line_num);
       popped_token   : common.token;
       operation_name : Ada.Strings.Unbounded.Unbounded_String;
    begin
@@ -744,11 +752,11 @@ package body parser is
    end arith_op_prime;
 
    function arith_op (parent_node : common.Node_Ptr) return Boolean is
-      new_node : common.Node_Ptr := new common.Node'(common.tub ("arith_op"), common.b_NONE, 0, null, null, null, 0,parent_node.scope,common.tub(""));
+      new_node : common.Node_Ptr := new common.Node'(common.tub ("arith_op"), common.b_NONE, 0, null, null, null, 0,parent_node.scope,common.tub(""),current_line_num);
    begin
       if relation (new_node) and then arith_op_prime (new_node) then
          common.add (parent_node, new_node);
-         Ada.Text_IO.Put_Line ("NODE DONE: arith_op");
+         --Ada.Text_IO.Put_Line ("NODE DONE: arith_op");
 
          if new_node.Left /= null and then new_node.Right /= null then
             new_node.Left.Branch_Type := common.b_LEFT;
@@ -761,11 +769,12 @@ package body parser is
    end arith_op;
 
    function declaration (parent_node : common.Node_Ptr) return Boolean is
-      new_node : common.Node_Ptr := new common.Node'(common.tub ("declaration"), common.b_NONE, 0, null, null, null, 0,parent_node.scope,common.tub(""));
+      new_node : common.Node_Ptr := new common.Node'(common.tub ("declaration"), common.b_NONE, 0, null, null, null, 0,parent_node.scope,common.tub(""),current_line_num);
       temp_bool : Boolean;
    begin
       -- This needs to be implemented
       -- TODO
+      --Ada.Text_IO.Put_Line("In Dec");
       temp_bool := match (common.t_GLOBAL);
       if variable_declaration (new_node) or procedure_declaration (new_node) then
          common.add (parent_node, new_node);
@@ -775,7 +784,7 @@ package body parser is
    end declaration;
 
    function declaration_list (parent_node : common.Node_Ptr) return Boolean is
-      new_node : common.Node_Ptr := new common.Node'(common.tub ("declaration_list"), common.b_NONE, 0, null, null, null,0,parent_node.scope,common.tub(""));
+      new_node : common.Node_Ptr := new common.Node'(common.tub ("declaration_list"), common.b_NONE, 0, null, null, null,0,parent_node.scope,common.tub(""),current_line_num);
       temp_bool : Boolean;
    begin
       if declaration (new_node) then
@@ -788,8 +797,8 @@ package body parser is
    end declaration_list;
 
    function procedure_declaration(parent_node : common.Node_Ptr) return Boolean is
-      new_node : common.Node_Ptr := new common.Node'(common.tub (""), common.b_PROCEDURE_DECLARATION, 0, null, null,null, 0,parent_node.scope,common.tub(""));
-      new_root_node : common.Node_Ptr := new common.Node'(common.tub ("New_Procedure_ROOT"), common.b_NONE, 0, null, null,null, 0,parent_node.scope,common.tub(""));
+      new_node : common.Node_Ptr := new common.Node'(common.tub (""), common.b_PROCEDURE_DECLARATION, 0, null, null,null, 0,parent_node.scope,common.tub(""),current_line_num);
+      new_root_node : common.Node_Ptr := new common.Node'(common.tub ("New_Procedure_ROOT"), common.b_NONE, 0, null, null,null, 0,parent_node.scope,common.tub(""),current_line_num);
       procedure_name : Ada.Strings.Unbounded.Unbounded_String;
    begin
 
@@ -810,7 +819,7 @@ package body parser is
    end procedure_declaration;
 
    function procedure_body (parent_node : common.Node_Ptr) return Boolean is
-      new_node : common.Node_Ptr := new common.Node'(common.tub ("procedure_body"), common.b_PROCEDURE_BODY, 0, null, null, null,0,parent_node.scope,common.tub(""));
+      new_node : common.Node_Ptr := new common.Node'(common.tub ("procedure_body"), common.b_PROCEDURE_BODY, 0, null, null, null,0,parent_node.scope,common.tub(""),current_line_num);
       temp_bool : Boolean;
    begin
       temp_bool := declaration_list (new_node);
@@ -822,7 +831,7 @@ package body parser is
       temp_bool := match (common.t_SEMI_COLON);
 
       temp_bool := return_statement (new_node);
-      Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Done with Return Statement");
+      --Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Done with Return Statement");
       temp_bool := match (common.t_SEMI_COLON);
 
       if match (common.t_END) and then match (common.t_PROCEDURE) then
@@ -838,7 +847,7 @@ package body parser is
 -- On fail it should return either an official NULL string or I can make one up
    function procedure_header(parent_node : common.Node_Ptr) return Ada.Strings.Unbounded.Unbounded_String
    is
-      new_node : common.Node_Ptr := new common.Node'(common.tub ("procedure_header"), common.b_PROCEDURE_HEADER, 0, null, null, null,0,parent_node.scope,common.tub(""));
+      new_node : common.Node_Ptr := new common.Node'(common.tub ("procedure_header"), common.b_PROCEDURE_HEADER, 0, null, null, null,0,parent_node.scope,common.tub(""),current_line_num);
       popped_token   : common.token;
       procedure_name : Ada.Strings.Unbounded.Unbounded_String;
       temp_bool      : Boolean;
@@ -891,7 +900,7 @@ package body parser is
    end procedure_header;
 
    function parameter (parent_node : common.Node_Ptr) return Boolean is
-      new_node : common.Node_Ptr := new common.Node'(common.tub ("parameter"), common.b_NONE, 0, null, null, null, 0,parent_node.scope,common.tub(""));
+      new_node : common.Node_Ptr := new common.Node'(common.tub ("parameter"), common.b_NONE, 0, null, null, null, 0,parent_node.scope,common.tub(""),current_line_num);
    begin
       if variable_declaration (new_node, True) then
          common.add (parent_node, new_node);
@@ -901,7 +910,7 @@ package body parser is
    end parameter;
 
    function parameter_list (parent_node : common.Node_Ptr) return Boolean is
-      new_node : common.Node_Ptr := new common.Node'(common.tub ("parameter_list"), common.b_NONE, 0, null, null, null,0,parent_node.scope,common.tub(""));
+      new_node : common.Node_Ptr := new common.Node'(common.tub ("parameter_list"), common.b_NONE, 0, null, null, null,0,parent_node.scope,common.tub(""),current_line_num);
       temp_bool : Boolean;
    begin
       if parameter (new_node) then
@@ -915,8 +924,8 @@ package body parser is
    end parameter_list;
 
    function type_mark(parent_node : common.Node_Ptr; inType : common.branch_types := common.b_NONE) return Boolean is
-      new_node : common.Node_Ptr := new common.Node'(common.tub ("type_mark"), inType, 0, null, null, null, 0,parent_node.scope,common.tub(""));
-      type_node : common.Node_Ptr := new common.Node'(common.tub("<Type_Value_HERE>"), common.b_NONE, 0, null, null, null, 0,parent_node.scope,common.tub(""));
+      new_node : common.Node_Ptr := new common.Node'(common.tub ("type_mark"), inType, 0, null, null, null, 0,parent_node.scope,common.tub(""),current_line_num);
+      type_node : common.Node_Ptr := new common.Node'(common.tub("<Type_Value_HERE>"), common.b_NONE, 0, null, null, null, 0,parent_node.scope,common.tub(""),current_line_num);
       popped_token : common.token;
    begin
       if match (common.t_INTEGER) or match (common.t_FLOAT) or match (common.t_BOOL) or match (common.t_STRING) then
@@ -933,8 +942,8 @@ package body parser is
 
    function variable_declaration (parent_node : common.Node_Ptr; is_Parameter : Boolean := False) return Boolean
    is
-      new_node : common.Node_Ptr := new common.Node'(common.tub ("variable_declaration"), common.b_VARIABLE_DECLARATION, 0, null, null,null, 0,parent_node.scope,common.tub(""));
-      id_node : common.Node_Ptr := new common.Node'(common.tub ("id_name"), common.b_VARIABLE_NAME, 0, null, null,null, 0,parent_node.scope,common.tub(""));
+      new_node : common.Node_Ptr := new common.Node'(common.tub ("variable_declaration"), common.b_VARIABLE_DECLARATION, 0, null, null,null, 0,parent_node.scope,common.tub(""),current_line_num);
+      id_node : common.Node_Ptr := new common.Node'(common.tub ("id_name"), common.b_VARIABLE_NAME, 0, null, null,null, 0,parent_node.scope,common.tub(""),current_line_num);
       id_string : Ada.Strings.Unbounded.Unbounded_String;
       popped_token : common.token;
    begin
@@ -956,16 +965,17 @@ package body parser is
                   matchStack.pop(popped_token);
                   matchStack.pop(popped_token);
                   symbol_table.lookup(id_string, new_node.scope).array_size := Integer'Value(common.ub2s(popped_token.value));
-                Ada.Text_IO.Put_Line ("Found Array of Size: " & common.ub2s(popped_token.value));
+                --Ada.Text_IO.Put_Line ("Found Array of Size: " & common.ub2s(popped_token.value));
                return True;
             end if;
-         end if;
+            end if;
          -- No bound, (not an array)
          common.add (parent_node, new_node);
-         Ada.Text_IO.Put_Line ("NODE DONE: variable_declaration");
+         --Ada.Text_IO.Put_Line ("NODE DONE: variable_declaration");
          return True;
        end if;
       end if;
+      --Ada.Text_IO.Put_Line("returning false for var_declaration");
       return False;
    end variable_declaration;
 
@@ -977,7 +987,7 @@ package body parser is
       inType      : common.branch_types := common.b_NONE) return Boolean
    is
       new_node : common.Node_Ptr :=
-        new common.Node'(common.tub ("bound"), inType, 0, null, null, null, 0,parent_node.scope,common.tub(""));
+        new common.Node'(common.tub ("bound"), inType, 0, null, null, null, 0,parent_node.scope,common.tub(""),current_line_num);
    begin
       if number (new_node) then
          common.add (parent_node, new_node);
@@ -991,7 +1001,7 @@ package body parser is
       if in_node = null then
          return;
       end if;
-      Ada.Text_IO.Put_Line(common.ub2s (in_node.Name) & " : " & in_node.Branch_Type'Image);
+      --Ada.Text_IO.Put_Line(common.ub2s (in_node.Name) & " : " & in_node.Branch_Type'Image);
 
       print_preorder (in_node.Left);
       print_preorder (in_node.Center);
@@ -1144,16 +1154,16 @@ package body parser is
 
       -- Append a starting node to the root_nodes list.
       -- Other root_nodes will be added when new procedures are found
-      root_nodes.Append(new common.Node'(common.tub ("PROGRAM_ROOT"), common.b_NONE, 0, null, null, null,0,0,common.tub("")));
+      root_nodes.Append(new common.Node'(common.tub ("PROGRAM_ROOT"), common.b_NONE, 0, null, null, null,0,0,common.tub(""),current_line_num));
 
       -- Active Node is being used to avoid a tampering with cursors issue
       -- 'if program(root_nodes(0))' does not work because the vector is being edited in "program()"
       active_node := root_nodes (0);
 
       if program (active_node) then
-         Ada.Text_IO.Put_Line ("Program Success.");
+         Ada.Text_IO.Put_Line ("Parse Finished.");
       else
-         Ada.Text_IO.Put_Line ("Program Failure.");
+         Ada.Text_IO.Put_Line ("Parse Failed to Finish.");
          return;
       end if;
 
@@ -1171,8 +1181,8 @@ package body parser is
       end loop;
 
 
-      symbol_table.test_vector;
-      symbol_table.print_hash_entries;
+      --symbol_table.test_vector;
+      --symbol_table.print_hash_entries;
       --symbol_table.generate_declared;
       --symbol_table.print_entries(symbol_table.DeclaredTableStart);
       --symbol_table.print_entries;

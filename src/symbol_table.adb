@@ -14,10 +14,12 @@ package body symbol_table is
       current_variable_id := current_variable_id + 1;
       insert_location.variable_id := current_variable_id;
 
-      if in_scope > (Integer(scope_hash_vector.Length)-1) then
-         scope_hash_vector.Append(empty_hash_map);
-      end if;
+      while in_scope > (Integer(scope_hash_vector.Length)-1) loop
+            scope_hash_vector.Append(empty_hash_map);
+      end loop;
+
       scope_hash_vector(in_scope).Insert(in_keyword, new_entry);
+
    end insert_entry;
 
    procedure test_vector is
@@ -159,7 +161,9 @@ package body symbol_table is
 
       while True loop
          if Ada.Strings.Unbounded."="(currentEntry.keyword,keyword) and then in_scope=currentEntry.token_scope then
-            Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Found a Token with string: "& common.ub2s(currentEntry.keyword));
+            if common.debug = 1 then
+               Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Found a Token with string: "& common.ub2s(currentEntry.keyword));
+            end if;
             exit;
          end if;
 
@@ -206,7 +210,9 @@ package body symbol_table is
 
       while True loop
          if currentEntry.variable_id = var_id and then in_scope=currentEntry.token_scope then
-            Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Found a Token with string: "& common.ub2s(currentEntry.keyword));
+            if common.debug = 1 then
+               Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Found a Token with string: "& common.ub2s(currentEntry.keyword));
+            end if;
             exit;
          end if;
 

@@ -14,7 +14,7 @@ with id_value_pkg;
 use type common.token_types;
 
 procedure Main is
-   temp_node : common.Node_Ptr := new common.Node'(common.tub(""), common.b_NONE ,0,Null,Null,Null,0,0,common.tub(""));
+   temp_node : common.Node_Ptr := new common.Node'(common.tub(""), common.b_NONE ,0,Null,Null,Null,0,0,common.tub(""),-1);
 
    test_char : Character;
    test_peek : Character;
@@ -69,7 +69,7 @@ begin
       id_value_pkg.test(test_entry);
    else
       parser.parser_main;
-      Ada.Text_IO.Put_Line("------- Generate Preorder ------");
+      --Ada.Text_IO.Put_Line("------- Generate Preorder ------");
 
       code_gen.open_program_file;
       code_gen.gen_program_header;

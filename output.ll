@@ -1,4 +1,4 @@
-; ModuleID = "NATHAN"
+; ModuleID = "GRANT"
 target triple = ""
 target datalayout = ""
 @"fmt_double" = constant [4 x i8] c"%lf\00"
@@ -70,240 +70,74 @@ store double %"in_arg", double* %"in"
 ret i32 0
 }
 
-; Variable Name: TEST_FLOAT
-@"v11" = global double 0x0
-@"STRING10" = constant [4 x i8] c"Yes\00"
-@"STRING11" = constant [3 x i8] c"No\00"
-@"STRING0" = constant [4 x i8] c"Yes\00"
-@"STRING1" = constant [3 x i8] c"No\00"
-@"STRING2" = constant [4 x i8] c"Yes\00"
-@"STRING3" = constant [3 x i8] c"No\00"
-@"STRING4" = constant [4 x i8] c"Yes\00"
-@"STRING5" = constant [3 x i8] c"No\00"
-@"STRING6" = constant [4 x i8] c"Yes\00"
-@"STRING7" = constant [3 x i8] c"No\00"
-@"STRING8" = constant [4 x i8] c"Yes\00"
-@"STRING9" = constant [3 x i8] c"No\00"
-; Variable Name: TMP
-@"v12" = global i32 0
-; Variable Name: N1
-@"v7" = global i32 0
-; Variable Name: N2
-@"v8" = global i32 0
-; Variable Name: N3
+; Variable Name: ZACH
 @"v9" = global i32 0
-; Variable Name: N4
+; Variable Name: JAKE
+@"v7" = global i32 0
+; Variable Name: TMP
 @"v10" = global i32 0
+; Variable Name: RYAN
+@"v8" = global <3 x i32> <i32 0,i32 0,i32 0>
+@"STRING0" = constant [7 x i8] c"passed\00"
 
-define i32 @"main"()
+; Defaulting to i32 for procedure call
+define i32 @"PROGRAM_ROOT.-1"()
 {
+}
+
+define double @"DUMMY.1"()
+{
+; Variable Name: TST
+%"v15" = alloca i32
+%"v14" = alloca double
+; Float Array Code
 ; Integer Value: 0
 %t1 = add i32 0 , 0
-; Integer Value: 2
-%t2 = add i32 0 , 2
-store i32 %t2, i32* @"v7"
+; Floating Point init: : 4.5
+%t2 = fadd double 0.0e+00 , 4.5e+00
+store i32 %t999999, double* %"v14"
 ; Integer Value: 0
 %t3 = add i32 0 , 0
-; Integer Value: 4
-%t4 = add i32 0 , 4
-store i32 %t4, i32* @"v8"
+%t4 = call i32 @"PUTSTRING.0"(i32 %t999999)
+store i32 %t999999, i32* %"v15"
+ret i32 %t999999
+}
+
+define i32 @"IF_PROC.0"()
+{
+; Variable Name: I
+%"v12" = alloca i32
 ; Integer Value: 0
 %t5 = add i32 0 , 0
-; Integer Value: 9
-%t6 = add i32 0 , 9
-store i32 %t6, i32* @"v9"
-; Integer Value: 0
-%t7 = add i32 0 , 0
-; Integer Value: 1
-%t8 = add i32 0 , 1
-store i32 %t8, i32* @"v10"
-; Integer Value: 0
-%t9 = add i32 0 , 0
-;Found Variable! :N3
-%t10= load i32, i32* @v9
-; Integer Value: 0
-%t11 = add i32 0 , 0
-;Found Variable! :N1
-%t12= load i32, i32* @v7
-%t13 = icmp eq i32 %t10, %t12
-br i1 %t13, label %"label_1", label %"label_2"
+%t6 = call i32 @"FOR_PROC.0"()
+store i32 %t999999, i32* %"v12"
+br i1 %t0, label %"label_1", label %"label_2"
 label_1:
 ; Integer Value: 0
-%t14 = add i32 0 , 0
-%"STRING0_ptr" = getelementptr [4 x i8], [4 x i8]* @"STRING0", i32 0, i32 0
-%"v25"= call i8* @"malloc"(i32 4)
-call void @"memcpy"(i8* %"v25", i8* %"STRING0_ptr", i32 4)
-%t16 = call i32 @"PUTSTRING.0"(i8* %"v25")
-store i32 %t16, i32* @"v12"
+%t7 = add i32 0 , 0
+; Integer Value: 0
+%t8 = add i32 0 , 0
+;Found Variable! :JAKE
+%t9= load i32, i32* @v7
+%t10 = add i32 relation , arith_op_prime
+store i32 %t999999, i32* @"v7"
 br label %"label_3"
 label_2:
 ; Integer Value: 0
-%t17 = add i32 0 , 0
-%"STRING1_ptr" = getelementptr [3 x i8], [3 x i8]* @"STRING1", i32 0, i32 0
-%"v26"= call i8* @"malloc"(i32 3)
-call void @"memcpy"(i8* %"v26", i8* %"STRING1_ptr", i32 3)
-%t19 = call i32 @"PUTSTRING.0"(i8* %"v26")
-store i32 %t19, i32* @"v12"
+%t11 = add i32 0 , 0
+; Integer Value: 0
+%t12 = add i32 0 , 0
+;Found Variable! :ZACH
+%t13= load i32, i32* @v9
+;Found Variable! :RYAN
+; Reading from Array
+%t14 = load <3 x i32>, <3 x i32>* @"v8"
+; for error checking make sure that the returned index value is an int
+%t15 = extractelement <3 x i32> %t14, i32 %t999999
+%t16 = add i32 relation , arith_op_prime
+store i32 %t999999, i32* @"v9"
 br label %"label_3"
 label_3:
-; Integer Value: 0
-%t20 = add i32 0 , 0
-;Found Variable! :N3
-%t21= load i32, i32* @v9
-; Integer Value: 0
-%t22 = add i32 0 , 0
-;Found Variable! :N1
-%t23= load i32, i32* @v7
-%t24 = icmp ne i32 %t21, %t23
-br i1 %t24, label %"label_4", label %"label_5"
-label_4:
-; Integer Value: 0
-%t25 = add i32 0 , 0
-%"STRING2_ptr" = getelementptr [4 x i8], [4 x i8]* @"STRING2", i32 0, i32 0
-%"v27"= call i8* @"malloc"(i32 4)
-call void @"memcpy"(i8* %"v27", i8* %"STRING2_ptr", i32 4)
-%t27 = call i32 @"PUTSTRING.0"(i8* %"v27")
-store i32 %t27, i32* @"v12"
-br label %"label_6"
-label_5:
-; Integer Value: 0
-%t28 = add i32 0 , 0
-%"STRING3_ptr" = getelementptr [3 x i8], [3 x i8]* @"STRING3", i32 0, i32 0
-%"v28"= call i8* @"malloc"(i32 3)
-call void @"memcpy"(i8* %"v28", i8* %"STRING3_ptr", i32 3)
-%t30 = call i32 @"PUTSTRING.0"(i8* %"v28")
-store i32 %t30, i32* @"v12"
-br label %"label_6"
-label_6:
-; Integer Value: 0
-%t31 = add i32 0 , 0
-;Found Variable! :N3
-%t32= load i32, i32* @v9
-; Integer Value: 0
-%t33 = add i32 0 , 0
-;Found Variable! :N1
-%t34= load i32, i32* @v7
-%t35 = icmp sgt i32 %t32, %t34
-br i1 %t35, label %"label_7", label %"label_8"
-label_7:
-; Integer Value: 0
-%t36 = add i32 0 , 0
-%"STRING4_ptr" = getelementptr [4 x i8], [4 x i8]* @"STRING4", i32 0, i32 0
-%"v29"= call i8* @"malloc"(i32 4)
-call void @"memcpy"(i8* %"v29", i8* %"STRING4_ptr", i32 4)
-%t38 = call i32 @"PUTSTRING.0"(i8* %"v29")
-store i32 %t38, i32* @"v12"
-br label %"label_9"
-label_8:
-; Integer Value: 0
-%t39 = add i32 0 , 0
-%"STRING5_ptr" = getelementptr [3 x i8], [3 x i8]* @"STRING5", i32 0, i32 0
-%"v30"= call i8* @"malloc"(i32 3)
-call void @"memcpy"(i8* %"v30", i8* %"STRING5_ptr", i32 3)
-%t41 = call i32 @"PUTSTRING.0"(i8* %"v30")
-store i32 %t41, i32* @"v12"
-br label %"label_9"
-label_9:
-; Integer Value: 0
-%t42 = add i32 0 , 0
-;Found Variable! :N3
-%t43= load i32, i32* @v9
-; Integer Value: 0
-%t44 = add i32 0 , 0
-;Found Variable! :N1
-%t45= load i32, i32* @v7
-%t46 = icmp sge i32 %t43, %t45
-br i1 %t46, label %"label_10", label %"label_11"
-label_10:
-; Integer Value: 0
-%t47 = add i32 0 , 0
-%"STRING6_ptr" = getelementptr [4 x i8], [4 x i8]* @"STRING6", i32 0, i32 0
-%"v31"= call i8* @"malloc"(i32 4)
-call void @"memcpy"(i8* %"v31", i8* %"STRING6_ptr", i32 4)
-%t49 = call i32 @"PUTSTRING.0"(i8* %"v31")
-store i32 %t49, i32* @"v12"
-br label %"label_12"
-label_11:
-; Integer Value: 0
-%t50 = add i32 0 , 0
-%"STRING7_ptr" = getelementptr [3 x i8], [3 x i8]* @"STRING7", i32 0, i32 0
-%"v32"= call i8* @"malloc"(i32 3)
-call void @"memcpy"(i8* %"v32", i8* %"STRING7_ptr", i32 3)
-%t52 = call i32 @"PUTSTRING.0"(i8* %"v32")
-store i32 %t52, i32* @"v12"
-br label %"label_12"
-label_12:
-; Integer Value: 0
-%t53 = add i32 0 , 0
-;Found Variable! :N3
-%t54= load i32, i32* @v9
-; Integer Value: 0
-%t55 = add i32 0 , 0
-;Found Variable! :N1
-%t56= load i32, i32* @v7
-%t57 = icmp slt i32 %t54, %t56
-br i1 %t57, label %"label_13", label %"label_14"
-label_13:
-; Integer Value: 0
-%t58 = add i32 0 , 0
-%"STRING8_ptr" = getelementptr [4 x i8], [4 x i8]* @"STRING8", i32 0, i32 0
-%"v33"= call i8* @"malloc"(i32 4)
-call void @"memcpy"(i8* %"v33", i8* %"STRING8_ptr", i32 4)
-%t60 = call i32 @"PUTSTRING.0"(i8* %"v33")
-store i32 %t60, i32* @"v12"
-br label %"label_15"
-label_14:
-; Integer Value: 0
-%t61 = add i32 0 , 0
-%"STRING9_ptr" = getelementptr [3 x i8], [3 x i8]* @"STRING9", i32 0, i32 0
-%"v34"= call i8* @"malloc"(i32 3)
-call void @"memcpy"(i8* %"v34", i8* %"STRING9_ptr", i32 3)
-%t63 = call i32 @"PUTSTRING.0"(i8* %"v34")
-store i32 %t63, i32* @"v12"
-br label %"label_15"
-label_15:
-; Integer Value: 0
-%t64 = add i32 0 , 0
-;Found Variable! :N3
-%t65= load i32, i32* @v9
-; Integer Value: 0
-%t66 = add i32 0 , 0
-;Found Variable! :N1
-%t67= load i32, i32* @v7
-%t68 = icmp sle i32 %t65, %t67
-br i1 %t68, label %"label_16", label %"label_17"
-label_16:
-; Integer Value: 0
-%t69 = add i32 0 , 0
-%"STRING10_ptr" = getelementptr [4 x i8], [4 x i8]* @"STRING10", i32 0, i32 0
-%"v35"= call i8* @"malloc"(i32 4)
-call void @"memcpy"(i8* %"v35", i8* %"STRING10_ptr", i32 4)
-%t71 = call i32 @"PUTSTRING.0"(i8* %"v35")
-store i32 %t71, i32* @"v12"
-br label %"label_18"
-label_17:
-; Integer Value: 0
-%t72 = add i32 0 , 0
-%"STRING11_ptr" = getelementptr [3 x i8], [3 x i8]* @"STRING11", i32 0, i32 0
-%"v36"= call i8* @"malloc"(i32 3)
-call void @"memcpy"(i8* %"v36", i8* %"STRING11_ptr", i32 3)
-%t74 = call i32 @"PUTSTRING.0"(i8* %"v36")
-store i32 %t74, i32* @"v12"
-br label %"label_18"
-label_18:
-; Integer Value: 0
-%t75 = add i32 0 , 0
-%t76 = call double @"GETFLOAT.0"()
-store double %t76, double* @"v11"
-; Integer Value: 0
-%t77 = add i32 0 , 0
-; Integer Value: 0
-%t78 = add i32 0 , 0
-;Found Variable! :TEST_FLOAT
-%t79= load double, double* @v11
-%t80 = call i32 @"PUTFLOAT.0"(double %t79)
-store i32 %t80, i32* @"v12"
-; This is a hard-coded return line for now
-ret i32 0
+ret i32 %t999999
 }
 
