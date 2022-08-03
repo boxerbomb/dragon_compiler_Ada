@@ -27,7 +27,7 @@ package common is
    --  b_BOUND
 
    debug : Integer := 0;
-
+   compile_failed : Boolean := False;
 
    function tub(Source : String) return Ada.Strings.Unbounded.Unbounded_String renames Ada.Strings.Unbounded.To_Unbounded_String;
    function ub2s(Source : Ada.Strings.Unbounded.Unbounded_String) return String renames Ada.Strings.Unbounded.To_String;

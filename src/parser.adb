@@ -193,8 +193,10 @@ package body parser is
       temp_bool := match (common.t_SEMI_COLON);
 
       if match (common.t_END) and then match (common.t_PROGRAM)
-        and then match (common.t_DOT)
       then
+         if not match (common.t_DOT) then
+            Ada.Text_IO.Put_Line("Missing Dot at the end of file, continuing anyways");
+         end if;
          common.add (parent_node, new_node);
          return True;
       end if;
@@ -242,8 +244,12 @@ package body parser is
             common.add (parent_node, new_node);
             return True;
          else
-            Ada.Text_IO.Put_Line("ERROR: ID NOT found in symbol table by: "&common.ub2s(popped_token.value));
-            return False;
+            Ada.Text_IO.Put_Line("ERROR: on Line: "&common.int_to_String(parent_node.line_num)&" "&common.ub2s(popped_token.value)&" was referenced before declaration.");
+            new_node.Name := popped_token.value;
+            common.add(parent_node,new_node);
+            return True;
+            -- It should return false here, but for re-synching I am allowing it pass
+            --return False
          end if;
 
       end if;

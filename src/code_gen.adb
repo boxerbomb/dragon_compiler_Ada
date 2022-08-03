@@ -261,10 +261,11 @@ package body code_gen is
                procedure_return_type := symbol_table.lookupHash(parent_Element.Name, parent_Element.scope-1).return_type;
                --Ada.Text_IO.Put_Line(common.ub2s(parent_Element.Name)&" : " & common.int_to_String(parent_Element.scope));
             else
-               Ada.Text_IO.Put_Line("Error: Procedure Does not exist in this scope.");
+               Ada.Text_IO.Put_Line("Error: Procedure: "&common.ub2s(parent_Element.name)&" Does not exist in this scope.");
                Ada.Text_IO.Put_Line(F, "; Defaulting to i32 for procedure call");
                Ada.Text_IO.Put_Line(common.ub2s(parent_Element.Name)&" : " & common.int_to_String(parent_Element.scope));
-            procedure_return_type := common.tub("i32");
+               procedure_return_type := common.tub("i32");
+               common.compile_failed := True;
          end if;
 
 
@@ -404,8 +405,8 @@ package body code_gen is
                               --%0 = insertelement <3 x i32> %"element", i32 45, i32 0
                               --; Reassign entire array
                               --store <3 x i32> %0, <3 x i32>* @"ARRAY"
-                              Ada.Text_IO.Put_Line(F,"ZZZZZZZ Error on purpose this needs to be double checked before run");
-                              Ada.Text_IO.Put_Line(F,"ZZZZZZZ this needs to be more generic with the currentElement.value.llvm_type");
+                              --Ada.Text_IO.Put_Line(F,"ZZZZZZZ Error on purpose this needs to be double checked before run");
+                              --Ada.Text_IO.Put_Line(F,"ZZZZZZZ this needs to be more generic with the currentElement.value.llvm_type");
                               temp_id := Var_Counter.Get_Next;
                               Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = load <" & common.int_to_String(currentElement.array_size) & " x i32>, <" & common.int_to_String(currentElement.array_size) & " x i32>* @""v" & common.int_to_String(currentElement.variable_id)&"""");
                               temp_id := Var_Counter.Get_Next;
@@ -456,7 +457,12 @@ package body code_gen is
       end loop;
 
 
-
+      Ada.Text_IO.Put_Line("---------------------------------");
+      if common.compile_failed=True then
+         Ada.Text_IO.Put_Line("Compile Failed");
+      else
+         Ada.Text_IO.Put_Line("Compile Success");
+      end if;
    end gen_program_header;
 
 
@@ -881,7 +887,8 @@ package body code_gen is
             Ada.Text_IO.Put_Line("Found the variable: " & common.ub2s(var_name_node.Name) & " with ID:" & common.int_to_String(returned_entry.variable_id) & " in symbol table with offset t" & common.int_to_String(temp_var_ID_offset));
          end if;
       else
-         Ada.Text_IO.Put_Line("Did not find the variable in symbol table");
+         Ada.Text_IO.Put_Line("Error: Line: "&common.int_to_String(in_node.line_num)&" "&common.ub2s(var_name_node.Name)&" was not found in symbol table");
+         common.compile_failed := True;
       end if;
 
       return_dest.location := returned_entry.variable_id;
@@ -1025,6 +1032,7 @@ package body code_gen is
          if common.ub2s(left_value.type_value) /= common.ub2s(right_value.type_value) then
             Ada.Text_IO.Put_Line("Error: Type Mismatch on Line: "&common.int_to_String(in_node.line_num));
             Ada.Text_IO.Put_Line(common.ub2s(left_value.type_value) & " /= " & common.ub2s(right_value.type_value));
+            common.compile_failed := True;
          else
             temp_id := Var_Counter.Get_Next;
             if common.ub2s(left_value.type_value) = "i32" then
@@ -1061,6 +1069,7 @@ package body code_gen is
          if common.ub2s(left_value.type_value) /= common.ub2s(right_value.type_value) then
             Ada.Text_IO.Put_Line("Error: Type Mismatch on Line: "&common.int_to_String(in_node.line_num));
             Ada.Text_IO.Put_Line(common.ub2s(left_value.type_value) & " /= " & common.ub2s(right_value.type_value));
+            common.compile_failed := True;
          else
             temp_id := Var_Counter.Get_Next;
             if common.ub2s(left_value.type_value) = "i32" then
@@ -1096,6 +1105,7 @@ package body code_gen is
          if common.ub2s(left_value.type_value) /= common.ub2s(right_value.type_value) then
             Ada.Text_IO.Put_Line("Error: Type Mismatch on Line: "&common.int_to_String(in_node.line_num));
             Ada.Text_IO.Put_Line(common.ub2s(left_value.type_value) & " /= " & common.ub2s(right_value.type_value));
+            common.compile_failed := True;
          else
             temp_id := Var_Counter.Get_Next;
             if common.ub2s(left_value.type_value) = "i32" then
@@ -1125,6 +1135,7 @@ package body code_gen is
          if common.ub2s(left_value.type_value) /= common.ub2s(right_value.type_value) then
             Ada.Text_IO.Put_Line("Error: Type Mismatch on Line: "&common.int_to_String(in_node.line_num));
             Ada.Text_IO.Put_Line(common.ub2s(left_value.type_value) & " /= " & common.ub2s(right_value.type_value));
+            common.compile_failed := True;
          else
             temp_id := Var_Counter.Get_Next;
             if common.ub2s(left_value.type_value) = "i32" then
@@ -1318,6 +1329,7 @@ package body code_gen is
          else
             Ada.Text_IO.Put_Line("Error: Procedure Does not exist in this scope.");
             procedure_return_type := common.tub("i32 ; Defaults to this, although return type not found.");
+            common.compile_failed := True;
          end if;
 
 
@@ -1392,6 +1404,7 @@ package body code_gen is
          if common.ub2s(left_value.type_value) /= common.ub2s(right_value.type_value) then
             Ada.Text_IO.Put_Line("Error: Type Mismatch on Line: "&common.int_to_String(in_node.line_num));
             Ada.Text_IO.Put_Line(common.ub2s(left_value.type_value) & " /= " & common.ub2s(right_value.type_value));
+            common.compile_failed := True;
          else
             temp_id := Var_Counter.Get_Next;
             if common.ub2s(left_value.type_value) = "i32" then
@@ -1422,6 +1435,7 @@ package body code_gen is
          if common.ub2s(left_value.type_value) /= common.ub2s(right_value.type_value) then
            Ada.Text_IO.Put_Line("Error: Type Mismatch on Line: "&common.int_to_String(in_node.line_num));
             Ada.Text_IO.Put_Line(common.ub2s(left_value.type_value) & " /= " & common.ub2s(right_value.type_value));
+            common.compile_failed := True;
          else
             temp_id := Var_Counter.Get_Next;
             if common.ub2s(left_value.type_value) = "i32" then
@@ -1452,6 +1466,7 @@ package body code_gen is
          if common.ub2s(left_value.type_value) /= common.ub2s(right_value.type_value) then
             Ada.Text_IO.Put_Line("Error: Type Mismatch on Line: "&common.int_to_String(in_node.line_num));
             Ada.Text_IO.Put_Line(common.ub2s(left_value.type_value) & " /= " & common.ub2s(right_value.type_value));
+            common.compile_failed := True;
          else
             temp_id := Var_Counter.Get_Next;
             if common.ub2s(left_value.type_value) = "i32" then
@@ -1482,6 +1497,7 @@ package body code_gen is
          if common.ub2s(left_value.type_value) /= common.ub2s(right_value.type_value) then
             Ada.Text_IO.Put_Line("Error: Type Mismatch on Line: "&common.int_to_String(in_node.line_num));
             Ada.Text_IO.Put_Line(common.ub2s(left_value.type_value) & " /= " & common.ub2s(right_value.type_value));
+            common.compile_failed := True;
          else
             temp_id := Var_Counter.Get_Next;
             if common.ub2s(left_value.type_value) = "i32" then
@@ -1512,6 +1528,7 @@ package body code_gen is
          if common.ub2s(left_value.type_value) /= common.ub2s(right_value.type_value) then
             Ada.Text_IO.Put_Line("Error: Type Mismatch on Line: "&common.int_to_String(in_node.line_num));
             Ada.Text_IO.Put_Line(common.ub2s(left_value.type_value) & " /= " & common.ub2s(right_value.type_value));
+            common.compile_failed := True;
          else
             temp_id := Var_Counter.Get_Next;
             if common.ub2s(left_value.type_value) = "i32" then
@@ -1543,6 +1560,7 @@ package body code_gen is
          if common.ub2s(left_value.type_value) /= common.ub2s(right_value.type_value) then
             Ada.Text_IO.Put_Line("Error: Type Mismatch on Line: "&common.int_to_String(in_node.line_num));
             Ada.Text_IO.Put_Line(common.ub2s(left_value.type_value) & " /= " & common.ub2s(right_value.type_value));
+            common.compile_failed := True;
          else
             temp_id := Var_Counter.Get_Next;
             if common.ub2s(left_value.type_value) = "i32" then

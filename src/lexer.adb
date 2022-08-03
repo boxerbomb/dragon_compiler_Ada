@@ -399,7 +399,6 @@ package body lexer is
    function isWhiteSpace (in_char : Character) return Boolean is
    begin
       return
-        not
-        (Ada.Characters.Handling.Is_Alphanumeric (in_char) or in_char in '_');
+        not(Ada.Characters.Handling.Is_Alphanumeric (in_char) or in_char in '_');
    end isWhiteSpace;
 end lexer;

@@ -1,0 +1,26 @@
+digraph parsetree {
+  node [shape=box, fontsize=12, fontname="Courier", height=.1];
+  ranksep=.6;
+  edge [arrowsize=.5]
+  node1 [label="DUMMY2"]
+  node2 [label="FLOAT"]
+  node1 -> node2 [ label= "B_PROCEDURE_HEADER" ];
+  node3 [label="statement_list"]
+  node1 -> node3 [ label= "B_PROCEDURE_BODY" ];
+  node4 [label="assignment_statement"]
+  node3 -> node4 [ label= "B_ASSIGNMENT_STATEMENT" ];
+  node5 [label="return_statement"]
+  node3 -> node5 [ label= "B_RETURN_STATEMENT" ];
+  node6 [label="destination"]
+  node4 -> node6 [ label= "B_DESTINATION" ];
+  node7 [label="3"]
+  node4 -> node7 [ label= "B_VALUE" ];
+  node8 [label="1"]
+  node5 -> node8 [ label= "B_VALUE" ];
+  node9 [label="Check Symbol Table"]
+  node5 -> node9 [ label= "B_RETURN_TYPE" ];
+  node10 [label="I"]
+  node6 -> node10 [ label= "B_VARIABLE_NAME" ];
+  node11 [label="0"]
+  node6 -> node11 [ label= "B_INDEX" ];
+}

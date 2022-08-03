@@ -1,45 +1,39 @@
-//leaving off end of program period.  is it correct?  officially no, but should we compile and simply issue a warning?  i leave that up to you.
-PROGRAM grant IS
-    global variable JAKE : integer;
-    global variable ryan : integer[3];
-    global variable zach : integer;
-    variable tmp : integer;
+program LoopFib is
 
-    procedure if_proc : integer()
-        variable i : integer;
-        procedure dummy: float()
-        // this should just hide the i of the outter environment
-        variable i: float;
-        variable tst : bool;
-        begin
-            i := 4.5;
-            tst := putString("passed");
-            return (0);
-        end procedure;
-        begin
-            i := for_proc(); // this should fail; we do not allow forward references.
-            if(true) then jake := jake + 1;
-            else zach := zach + RYAN[2];
-            end if;
-            return (0);
-    end procedure;
+global variable x : integer;
+variable i : integer;
+variable max : integer;
+variable tmp : integer;
+variable out : bool;
 
-    procedure for_proc : integer()
-                variable x : bool;
-        procedure dummy2 : float()
-        begin
-            i := 3;  // this should fail; we do not allow forward references
-            return 1;
-        end procedure;
-                global variable i : integer;
-        begin
-            for(i := 0; i < zach)
-                ryan[1] := zach + i;
-            end for;
-            return (0);
-        end procedure;
+procedure Fib : integer(variable val : integer)
+    variable tmp :integer[2]; // change to float
+    variable loopVal : integer;
+    variable ret : integer;
 
     begin
-        tmp := if_proc();
-        tmp := for_proc();
-end program
+
+    tmp[0] := -1;
+    tmp[1] := 1;
+
+    for(loopVal := 0; loopVal <= val)
+        ret := tmp[0] + tmp[1];
+        tmp[0] := tmp[1];
+        tmp[1] := ret;
+        loopVal := loopVal + 1;
+    end for;
+
+    return ret;
+end procedure;
+
+
+begin
+
+max := getInteger();
+for(i := 0; i < max)
+    x := Fib(i);
+    out := putInteger(x);
+    i := i + 1;
+end for;
+
+end program.
