@@ -1223,6 +1223,7 @@ package body code_gen is
          --  return returned_value;
       elsif common.ub2s(in_node.Name) = "Variable_Value" then
          var_name_tree := get_child_of_branch(in_node,common.b_VARIABLE_NAME);
+         Ada.Text_IO.Put_Line("Parsing Variable value with name: "&common.ub2s(var_name_tree.Name));
 
          -- writes and returns a T value to be used as an index for reading arrays, will still write a statment with a t-value equal to zero if unneeded
          index_tree := get_child_of_branch(in_node, common.b_INDEX);
@@ -1235,6 +1236,9 @@ package body code_gen is
             if symbol_table.lookupHash(var_name_tree.Name,in_node.scope).value.id_type=common.id_STRING then
                --String
                in_node.Name := common.tub("%""v" & common.int_to_String(symbol_table.lookupHash(var_name_tree.Name,in_node.scope).variable_id)&"""");
+               returned_value.t_value := symbol_table.lookupHash(var_name_tree.Name,in_node.scope).variable_id;
+               returned_value.type_value := symbol_table.lookupHash(var_name_tree.Name,in_node.scope).value.llvm_type;
+               return returned_value;
             else
                -- Not a string
                temp_id := Var_Counter.Get_Next;
@@ -1450,6 +1454,9 @@ package body code_gen is
 
       left_value : common.parsed_value;
       right_value : common.parsed_value;
+
+      variable_value : common.parsed_value;
+
       temp_id : Integer;
 
    begin
@@ -1595,11 +1602,12 @@ package body code_gen is
                Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = icmp eq i32 %t" & common.int_to_String(left_value.t_value) & ", %t" & common.int_to_String(right_value.t_value));
                --in_node.llvm_type := common.tub("i32");
             elsif common.ub2s(left_value.type_value) = "double" then
-               Ada.Text_IO.Put_Line(F,"; floating point greater than");
+               Ada.Text_IO.Put_Line(F,"; Floating point equal to");
                Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = fcmp oeq double %t" & common.int_to_String(left_value.t_value) & ", %t" & common.int_to_String(right_value.t_value));
                --in_node.llvm_type := common.tub("double");
-            elsif common.ub2s(left_value.type_value) = "string" then
-               Ada.Text_IO.Put_Line(F,"Error, string ops not added yet");
+            elsif common.ub2s(left_value.type_value) = "i8*" then
+               Ada.Text_IO.Put_Line(F,"; String equal to");
+               Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = icmp eq i8* %v" & common.int_to_String(left_value.t_value) & ", %v" & common.int_to_String(right_value.t_value));
                --in_node.llvm_type := common.tub("ERROR SOMETHING FOR STRING, PROBABLY i8*");
             end if;
 
@@ -1640,6 +1648,12 @@ package body code_gen is
          -- The variable that contains the comparison result
          return temp_id;
       else
+            if common.ub2s(in_node.Name) = "Variable_Value" then
+               variable_value := parse_value_from_tree(in_node,True);
+               temp_id := Var_Counter.Get_Next;
+               Ada.Text_IO.Put_Line(F,"%t" & common.int_to_String(temp_id) & " = icmp eq i32 1, %t" & common.int_to_String(variable_value.t_value));
+               return temp_id;
+            end if;
 
          -- Check to see if maybe parse value from tree could work here?
          if common.ub2s(in_node.Name) = "TRUE" or common.ub2s(in_node.Name)="1" then
