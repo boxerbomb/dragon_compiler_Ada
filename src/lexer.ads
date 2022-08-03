@@ -5,7 +5,7 @@ with Ada.Strings.Unbounded;
 
 package lexer is
 
-   procedure openSourceFile;
+   procedure openSourceFile(file_name : String);
    procedure closeSourceFile;
    function get_next_token return common.token;
    function isWhiteSpace(in_char : Character) return Boolean;

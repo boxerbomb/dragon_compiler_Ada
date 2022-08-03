@@ -13,9 +13,9 @@ package body lexer is
    EOLReached : Boolean := False;
 
 
-   procedure openSourceFile is
+   procedure openSourceFile(file_name : String) is
    begin
-      Ada.Text_IO.Open(File => InputFile, Mode => Ada.Text_IO.In_File, Name => "input.txt");
+      Ada.Text_IO.Open(File => InputFile, Mode => Ada.Text_IO.In_File, Name => file_name);
       -- Not true to procedure name but..
       populate_reserved_words;
       --print_reserved_entries;

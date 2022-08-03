@@ -28,12 +28,14 @@ begin
 
      if Ada.Command_Line.Argument_Count = 0 then
     Ada.Text_IO.Put_Line("Error - No file names given.");
+    lexer.openSourceFile("input.txt");
   else
-    Ada.Text_IO.Put_Line("ARguments given");
+    Ada.Text_IO.Put_Line("Arguments given");
+    lexer.openSourceFile(Ada.Command_Line.Argument(1));
   end if;
 
 
-   lexer.openSourceFile;
+   
 
    symbol_table.insert_entry(common.tub("PUTSTRING"), 0, id_value_pkg.init(common.id_PROCEDURE_NAME), symbol_table.LastEntry);
    symbol_table.insert_entry(common.tub("PUTINTEGER"), 0, id_value_pkg.init(common.id_PROCEDURE_NAME), symbol_table.LastEntry);
