@@ -30,14 +30,6 @@ In order to achieve this, I allocate memeory each time a string is set.
 
 ### String Comparison Always Fails, this definetly should be solvebale although I procrastinatied on the project and ran out of time
 ### Float constants must be declared with a decimal point to avoid type-conflict
-### There is no implicit type castings
-
-
-
-# What I have learned
-
-### I learned a lot about Ada and the nature of it's strict typing.
-
-### As I progressed in the compiler, I realized that I was not keeping enough data in my IR. Throughout the project many times I had to return to the synbol table, or token/node objects to add feilds for more data.
+### There is no implicit type casting
 
 
