@@ -1,0 +1,23 @@
+program Logicals is
+
+global variable x : bool;
+global variable c : string;
+global variable tmp : bool;
+
+begin
+
+x := getBool();
+if(x) then
+	tmp := putString("T");
+else
+	tmp := putString("F");
+end if;
+
+c := getString();
+if(c == "A") then
+	tmp := putString("T");
+else
+	tmp := putString("F");
+end if;
+
+end program.

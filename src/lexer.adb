@@ -13,12 +13,12 @@ package body lexer is
    EOLReached : Boolean := False;
 
 
-   procedure openSourceFile is
+   procedure openSourceFile(file_name : String) is
    begin
-      Ada.Text_IO.Open(File => InputFile, Mode => Ada.Text_IO.In_File, Name => "input.txt");
+      Ada.Text_IO.Open(File => InputFile, Mode => Ada.Text_IO.In_File, Name => file_name);
       -- Not true to procedure name but..
       populate_reserved_words;
-      print_reserved_entries;
+      --print_reserved_entries;
    end openSourceFile;
 
    procedure closeSourceFile is
@@ -37,7 +37,14 @@ package body lexer is
       insert_reserved_entry(common.tub("."), common.t_DOT, LastEntry);
       insert_reserved_entry(common.tub("//"), common.t_LINE_COMMENT, LastEntry);
       insert_reserved_entry(common.tub("INTEGER"), common.t_INTEGER, LastEntry);
-      insert_reserved_entry(common.tub("BOOL"), common.t_BOOL, LastEntry);
+
+
+      -- I am changing Boolean to just be an integer under the hood
+      insert_reserved_entry(common.tub("BOOL"), common.t_INTEGER, LastEntry);
+      insert_reserved_entry(common.tub("TRUE"), common.t_TRUE, LastEntry);
+      insert_reserved_entry(common.tub("FALSE"), common.t_FALSE, LastEntry);
+
+
       insert_reserved_entry(common.tub("FLOAT"), common.t_FLOAT, LastEntry);
       insert_reserved_entry(common.tub("STRING"), common.t_STRING, LastEntry);
       insert_reserved_entry(common.tub("CHAR"), common.t_CHAR, LastEntry);
@@ -72,8 +79,6 @@ package body lexer is
       insert_reserved_entry(common.tub(")"), common.t_RIGHT_PAREN, LastEntry);
       insert_reserved_entry(common.tub("["), common.t_LEFT_BRACKET, LastEntry);
       insert_reserved_entry(common.tub("]"), common.t_RIGHT_BRACKET, LastEntry);
-      insert_reserved_entry(common.tub("TRUE"), common.t_TRUE, LastEntry);
-      insert_reserved_entry(common.tub("FALSE"), common.t_FALSE, LastEntry);
    end populate_reserved_words;
 
    procedure insert_reserved_entry(in_keyword : Ada.Strings.Unbounded.Unbounded_String; in_type : common.token_types; insert_location : IN OUT Reserved_Entry_ptr) is
@@ -93,7 +98,7 @@ package body lexer is
          Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,common.ub2s(currentEntry.keyword));
 
          if currentEntry.next_entry = NULL then
-            Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Break!");
+            --Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Break!");
             exit;
          end if;
          currentEntry := currentEntry.next_entry;
@@ -107,7 +112,11 @@ package body lexer is
    begin
       while True loop
          if Ada.Strings.Unbounded."="(currentEntry.keyword,keyword) then
-            Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Found a Token with string: "& common.ub2s(currentEntry.keyword));
+
+            if common.debug = 1 then
+               Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Found a Token with string: "& common.ub2s(currentEntry.keyword));
+            end if;
+
             exit;
          end if;
 
@@ -162,6 +171,8 @@ package body lexer is
    begin
       -- Add Current Scope to this token
       return_token.scope := common.current_scope;
+      -- Add Line Number to token
+      return_token.line_num := LineCount;
 
       token_text_in :=common.tub(Ada.Characters.Handling.To_Upper(Ada.Strings.Unbounded.To_String (inWord)));
       return_token.t_type := common.t_ID;
@@ -227,7 +238,7 @@ package body lexer is
             then
                -- Now it actually consumes this char, instead of jsut peeking
                temp_char := get_next_char2;
-               Ada.Text_IO.Put_Line ("Brackets for now");
+               --Ada.Text_IO.Put_Line ("Brackets for now");
                return identify_token (common.tub (cur_char & next_char));
             elsif cur_char in ',' | ';' | '(' | ')' | '[' | ']' | '+' | '-' | '/' | '*' | ':' | '.' | '<' | '>' then
                return identify_token (common.tub ("" & cur_char));
@@ -251,26 +262,31 @@ package body lexer is
             if cur_char&next_char="//" then
                commentMode := True;
                temp_char := get_next_char2;
+               --Ada.Text_IO.Put_Line("Comment Mode On");
             end if;
             if cur_char&next_char="/*" then
-               Ada.Text_IO.Put_Line("Comment Mode Begin");
+               --Ada.Text_IO.Put_Line("Comment Mode Begin");
                commentMode := True;
                multiLineCount := multiLineCount + 1;
                temp_char := get_next_char2;
             end if;
 
             if commentMode=True then
-               if cur_char=Character'Val (13) and multiLineCount=0 then
+
+               if cur_char=Character'Val(13) and multiLineCount=0 then
+                 -- Ada.Text_IO.Put_Line("Comment Mode Off");
                   commentMode := False;
                end if;
+
                if cur_char&next_char="*/" then
-                  Ada.Text_IO.Put_Line("End Comment");
+                  --Ada.Text_IO.Put_Line("End Comment");
                   multiLineCount := multiLineCount - 1;
                   if multiLineCount=0 then
-                     Ada.Text_IO.Put_Line("Done");
                      commentMode := False;
+                     temp_char := get_next_char2;
                   end if;
                end if;
+
             end if;
 
             if textMode=True then
@@ -299,7 +315,7 @@ package body lexer is
       Ada.Text_IO.Get_Immediate (File => InputFile, Item => CurrentChar);
       if Ada.Text_IO.End_Of_File (File => InputFile) then
          --Ada.Text_IO.Get (File => InputFile, Item => CurrentChar);
-            Ada.Text_IO.Put_Line ("XXXXXXXXX END OF FILE XXXXXXXXX");
+            Ada.Text_IO.Put_Line ("-----END OF FILE-----");
             Ada.Text_IO.Put_Line (CurrentChar'Image);
             return Character'Val (0);
       end if;
@@ -337,14 +353,17 @@ package body lexer is
    function get_next_char2 return Character is
       return_char : Character;
    begin
-      while WorkingLine_Index >= Ada.Strings.Unbounded.Length(WorkingLine) loop
+      while WorkingLine_Index = Ada.Strings.Unbounded.Length(WorkingLine)+1 loop
          WorkingLine_Index := 0;
          begin
             WorkingLine := common.tub(Ada.Text_IO.Get_Line(File => InputFile));
-            Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Consumed Line: "&common.ub2s(WorkingLine)&" Index: "&WorkingLine_Index'Image&"  length: "&Ada.Strings.Unbounded.Length(WorkingLine)'Image );
+
+            if common.debug = 1 then
+               Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Consumed Line: "&common.ub2s(WorkingLine)&" Index: "&WorkingLine_Index'Image&"  length: "&Ada.Strings.Unbounded.Length(WorkingLine)'Image );
+             end if;
          exception
             when E : Ada.IO_Exceptions.END_ERROR =>
-               Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Reached End Of File2");
+               --Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Reached End Of File2");
               Ada.Text_IO.Put_Line("End of Input File Reached : "&LineCount'Image);
                return Character'Val(0);
                --raise;
@@ -354,9 +373,14 @@ package body lexer is
 
       end loop;
 
-      WorkingLine_Index := WorkingLine_Index + 1;
-      return_char := Ada.Strings.Unbounded.Element(WorkingLine, WorkingLine_Index);
-      return return_char;
+      if WorkingLine_Index = Ada.Strings.Unbounded.Length(WorkingLine) then
+         WorkingLine_Index := WorkingLine_Index + 1;
+         return Character'val(13);
+      else
+         WorkingLine_Index := WorkingLine_Index + 1;
+         return_char := Ada.Strings.Unbounded.Element(WorkingLine, WorkingLine_Index);
+         return return_char;
+     end if;
    end get_next_char2;
 
    function peek_next_char2 return Character is
@@ -375,7 +399,6 @@ package body lexer is
    function isWhiteSpace (in_char : Character) return Boolean is
    begin
       return
-        not
-        (Ada.Characters.Handling.Is_Alphanumeric (in_char) or in_char in '_');
+        not(Ada.Characters.Handling.Is_Alphanumeric (in_char) or in_char in '_');
    end isWhiteSpace;
 end lexer;

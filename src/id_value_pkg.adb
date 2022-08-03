@@ -28,6 +28,7 @@ package body id_value_pkg is
    end test;
 
    function init(in_id_type : common.id_types) return id_value is
+      use type common.id_types;
       return_entry : id_value;
    begin
       return_entry.id_type:= in_id_type;
@@ -36,7 +37,17 @@ package body id_value_pkg is
       return_entry.boolean_value := False;
       return_entry.integer_value := 0;
       return_entry.float_value := 0.0;
-      return_entry.llvm_type := common.tub("USE MODIFY_VALUE TO SET TYPE");
+
+      if in_id_type = common.id_STRING or in_id_type = common.id_STRING_VALUE then
+         return_entry.llvm_type := common.tub("i8*");
+      elsif in_id_type = common.id_INTEGER then
+         return_entry.llvm_type := common.tub("i32");
+      elsif in_id_type = common.id_FLOAT then
+         return_entry.llvm_type := common.tub("double");
+      elsif in_id_type = common.id_BOOLEAN then
+         return_entry.llvm_type := common.tub("Error booleans should be ints");
+      end if;
+
       return return_entry;
    end init;
 

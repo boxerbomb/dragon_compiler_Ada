@@ -1,31 +1,12 @@
-program Nathan is
-variable tmp : Integer;
-variable str_tmp : Integer;
-variable input1 : Integer;
-variable input2 : Integer;
-variable test_string : String;
+program stringTest is
 
-procedure countDown : integer(variable val :integer)
-variable tmp1 : integer;
-begin
-    tmp1 := putInteger(val);
-    if (val>0) then
-       val := val - 1;
-       tmp1 := countDown(val); 
-    end if;
-    return val;
-end procedure;
+variable test : string;
+variable out : bool;
 
 begin
-
-input1 := getInteger();
-input2 := getInteger();
-
-
-str_tmp := putString("Hello There Nathan!");
-
-test_string := "2ns string";
-
-tmp := countDown(input1+input2);
+test := "Nathan";
+test := "Henry";
+test := getString();
+out := putString(test);
 
 end program.

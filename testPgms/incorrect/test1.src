@@ -1,0 +1,30 @@
+
+PROGRAM grant IS
+    global variable JAKE : integer;
+    global variable ryan : integer[3];
+    global variable zach : integer;
+    variable tmp : integer;
+
+	procedure if_proc : integer()
+	// this next line should throw a duplicate declaration error.
+        global variable zach : float;
+		begin
+		if(true) then jake := jake + 1;
+		else zach := zach + RYAN[2];
+		end if;
+		return (0);
+	end procedure;
+
+	procedure for_proc : integer()
+                variable i : integer;
+		begin
+		for(i := 0; i < zach)
+			ryan[1] := zach + i;
+		end for;
+		return (0);
+		end procedure;
+
+	begin
+		tmp := if_proc();
+		tmp := for_proc();
+end program.

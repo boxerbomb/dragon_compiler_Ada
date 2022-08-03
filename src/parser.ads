@@ -20,6 +20,8 @@ package parser is
 
    next_token : common.token;
 
+   current_line_num : Integer;
+
    --This number gets assigned in the AST and is used to retrieve from the symbol table as well.
    string_num : Integer := 0;
 
@@ -79,6 +81,8 @@ package parser is
 
    function get_next_token_scope return Integer;
    function add_ID_to_sym_table(parent_node : common.Node_Ptr; in_id_type : common.id_types := common.id_INVALID) return Ada.Strings.Unbounded.Unbounded_String;
+
+   expected_string : Ada.Strings.Unbounded.Unbounded_String;
 
 
    procedure viewMatchStack;

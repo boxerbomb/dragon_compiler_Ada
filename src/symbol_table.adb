@@ -5,7 +5,7 @@ with common;
 package body symbol_table is
 
    procedure insert_entry(in_keyword : Ada.Strings.Unbounded.Unbounded_String; in_scope : Integer; in_value : id_value_pkg.id_value; insert_location : IN OUT Table_Entry_ptr; is_param : Boolean := False) is
-      new_entry : Table_Entry_ptr := new Table_Entry'(in_keyword, in_scope, in_value, NULL,-1,is_param);
+      new_entry : Table_Entry_ptr := new Table_Entry'(in_keyword, in_scope, in_value, NULL,-1,is_param,0,common.tub(""));
    begin
 
       insert_location.next_entry := new_entry;
@@ -14,10 +14,12 @@ package body symbol_table is
       current_variable_id := current_variable_id + 1;
       insert_location.variable_id := current_variable_id;
 
-      if in_scope > (Integer(scope_hash_vector.Length)-1) then
-         scope_hash_vector.Append(empty_hash_map);
-      end if;
+      while in_scope > (Integer(scope_hash_vector.Length)-1) loop
+            scope_hash_vector.Append(empty_hash_map);
+      end loop;
+
       scope_hash_vector(in_scope).Insert(in_keyword, new_entry);
+
    end insert_entry;
 
    procedure test_vector is
@@ -83,7 +85,7 @@ package body symbol_table is
             currentKey := hash_table.Key(hash_entry);
             currentElement := hash_table.Element(hash_entry);
 
-            Ada.Text_IO.Put(Ada.Text_IO.Standard_Output,common.ub2s(currentElement.keyword)&" | scope -> "&currentElement.token_scope'Image & " Var ID:" & currentElement.variable_id'Image & " is_params: " & currentElement.is_param'Image );
+            Ada.Text_IO.Put(Ada.Text_IO.Standard_Output,common.ub2s(currentElement.keyword)&" | scope -> "&currentElement.token_scope'Image & " Var ID:" & currentElement.variable_id'Image & " is_params: " & currentElement.is_param'Image & " Size: "&common.int_to_String(currentElement.array_size));
 
             if currentElement.value.id_type=common.id_INTEGER then
                Ada.Text_IO.Put_Line(" Type-> Integer");
@@ -97,6 +99,7 @@ package body symbol_table is
                Ada.Text_IO.Put_Line(" Type-> Program Name");
             elsif currentElement.value.id_type=common.id_PROCEDURE_NAME then
                Ada.Text_IO.Put_Line(" Type-> Procedure Name");
+               Ada.Text_IO.Put_Line("Return: " & common.ub2s(currentElement.return_type));
             else
                Ada.Text_IO.Put_Line(" Type->Invalid");
             end if;
@@ -110,12 +113,20 @@ package body symbol_table is
 
    -- Used on Line 183 of parser
    function lookupHash(keyword : Ada.Strings.Unbounded.Unbounded_String; in_scope : Integer) return Table_Entry_ptr is
-      InvalidEntry : Table_Entry_ptr := new Table_Entry'(common.tub(""),-1,id_value_pkg.empty_value,NULL,-1,False);
+      InvalidEntry : Table_Entry_ptr := new Table_Entry'(common.tub(""),-1,id_value_pkg.empty_value,NULL,-1,False,0,common.tub(""));
       returnEntry : Table_Entry_ptr;
+      cleaned_in_scope : Integer;
    begin
 
       begin
-         returnEntry := scope_hash_vector.Element(in_scope).Element(keyword);
+
+         if in_scope = -1 then
+            cleaned_in_scope := 0;
+         else
+            cleaned_in_scope := in_scope;
+         end if;
+
+         returnEntry := scope_hash_vector.Element(cleaned_in_scope).Element(keyword);
       exception
          when E : Constraint_Error =>
             returnEntry := InvalidEntry;
@@ -131,7 +142,7 @@ package body symbol_table is
       --     end if;
       --  end if;
 
-      if returnEntry = InvalidEntry and in_scope /= 0 then
+      if returnEntry = InvalidEntry and cleaned_in_scope /= 0 then
          return lookupHash(keyword, 0);
       end if;
 
@@ -141,7 +152,7 @@ package body symbol_table is
 
    function lookup(keyword : Ada.Strings.Unbounded.Unbounded_String; in_scope : Integer) return Table_Entry_ptr is
       currentEntry : Table_Entry_ptr := TableStart;
-      InvalidEntry : Table_Entry_ptr := new Table_Entry'(common.tub(""),-1,id_value_pkg.empty_value,NULL,-1,False);
+      InvalidEntry : Table_Entry_ptr := new Table_Entry'(common.tub(""),-1,id_value_pkg.empty_value,NULL,-1,False,0,common.tub(""));
    begin
 
       -- Break this
@@ -150,7 +161,9 @@ package body symbol_table is
 
       while True loop
          if Ada.Strings.Unbounded."="(currentEntry.keyword,keyword) and then in_scope=currentEntry.token_scope then
-            Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Found a Token with string: "& common.ub2s(currentEntry.keyword));
+            if common.debug = 1 then
+               Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Found a Token with string: "& common.ub2s(currentEntry.keyword));
+            end if;
             exit;
          end if;
 
@@ -188,7 +201,7 @@ package body symbol_table is
       use type common.id_types;
 
       currentEntry : Table_Entry_ptr := TableStart;
-      InvalidEntry : Table_Entry_ptr := new Table_Entry'(common.tub(""),-1,id_value_pkg.empty_value,NULL,-1,False);
+      InvalidEntry : Table_Entry_ptr := new Table_Entry'(common.tub(""),-1,id_value_pkg.empty_value,NULL,-1,False,0,common.tub(""));
    begin
 
       -- Break this
@@ -197,7 +210,9 @@ package body symbol_table is
 
       while True loop
          if currentEntry.variable_id = var_id and then in_scope=currentEntry.token_scope then
-            Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Found a Token with string: "& common.ub2s(currentEntry.keyword));
+            if common.debug = 1 then
+               Ada.Text_IO.Put_Line(Ada.Text_IO.Standard_Output,"Found a Token with string: "& common.ub2s(currentEntry.keyword));
+            end if;
             exit;
          end if;
 
@@ -218,7 +233,7 @@ package body symbol_table is
       elsif currentEntry.value.id_type = common.id_INTEGER then
          return common.tub("i32");
       elsif currentEntry.value.id_type = common.id_FLOAT then
-         return common.tub("FLOAT TYPE VALUE");
+         return common.tub("double");
       elsif currentEntry.value.id_type = common.id_BOOLEAN then
          return common.tub("BOOLEAN TYPE VALUE, OR MAYBE JUST USE i32 and 1 and 0");
       else

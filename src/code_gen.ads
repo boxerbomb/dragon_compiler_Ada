@@ -2,11 +2,13 @@ with common;
 with Ada.Text_IO;
 with Ada.Strings.Unbounded;
 with Ada.Containers.Vectors;
+with symbol_table;
 with id_value_pkg;
+with gstack;
 
 
 package code_gen is
-   procedure print_preorder(in_node : common.Node_Ptr);
+   procedure print_preorder (in_node : common.Node_Ptr; procedure_return_type : Ada.Strings.Unbounded.Unbounded_String);
    procedure print_postorder(in_node : common.Node_Ptr);
 
    function get_child_of_branch (in_node : common.Node_Ptr; search_type : common.branch_types) return common.Node_Ptr;
@@ -16,6 +18,7 @@ package code_gen is
       record
          location : Integer;
          offset : Integer;
+         entry_ptr : symbol_table.Table_Entry_ptr;
       end record;
 
    type parameter_data is
@@ -42,7 +45,9 @@ package code_gen is
        (Index_Type   => Natural,
         Element_Type => argument_data);
 
-   argument_list : Argument_Vectors_Package.Vector;
+   empty_argument_list : Argument_Vectors_Package.Vector;
+
+   package argument_stack is new gstack(10,Argument_Vectors_Package.Vector);
 
 
    procedure add_parameters_to_list(in_node : common.Node_Ptr);

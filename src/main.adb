@@ -7,6 +7,7 @@ with parser;
 with code_gen;
 with symbol_table;
 with id_value_pkg;
+with Ada.Command_Line;
 
 -- This is just used in a compiler test, it can be removed
 with id_value_pkg;
@@ -14,7 +15,7 @@ with id_value_pkg;
 use type common.token_types;
 
 procedure Main is
-   temp_node : common.Node_Ptr := new common.Node'(common.tub(""), common.b_NONE ,0,Null,Null,Null,0,0);
+   temp_node : common.Node_Ptr := new common.Node'(common.tub(""), common.b_NONE ,0,Null,Null,Null,0,0,common.tub(""),-1);
 
    test_char : Character;
    test_peek : Character;
@@ -24,10 +25,36 @@ procedure Main is
 
    test_entry : id_value_pkg.id_value;
 begin
-   lexer.openSourceFile;
+
+     if Ada.Command_Line.Argument_Count = 0 then
+    Ada.Text_IO.Put_Line("Error - No file names given.");
+    lexer.openSourceFile("input.txt");
+  else
+    Ada.Text_IO.Put_Line("Arguments given");
+    lexer.openSourceFile(Ada.Command_Line.Argument(1));
+  end if;
+
+
+   
 
    symbol_table.insert_entry(common.tub("PUTSTRING"), 0, id_value_pkg.init(common.id_PROCEDURE_NAME), symbol_table.LastEntry);
    symbol_table.insert_entry(common.tub("PUTINTEGER"), 0, id_value_pkg.init(common.id_PROCEDURE_NAME), symbol_table.LastEntry);
+   symbol_table.insert_entry(common.tub("PUTFLOAT"), 0, id_value_pkg.init(common.id_PROCEDURE_NAME), symbol_table.LastEntry);
+   symbol_table.insert_entry(common.tub("GETINTEGER"), 0, id_value_pkg.init(common.id_PROCEDURE_NAME), symbol_table.LastEntry);
+   symbol_table.insert_entry(common.tub("GETFLOAT"), 0, id_value_pkg.init(common.id_PROCEDURE_NAME), symbol_table.LastEntry);
+   symbol_table.insert_entry(common.tub("GETSTRING"), 0, id_value_pkg.init(common.id_PROCEDURE_NAME), symbol_table.LastEntry);
+   symbol_table.insert_entry(common.tub("GETBOOL"), 0, id_value_pkg.init(common.id_PROCEDURE_NAME), symbol_table.LastEntry);
+   symbol_table.insert_entry(common.tub("PUTBOOL"), 0, id_value_pkg.init(common.id_PROCEDURE_NAME), symbol_table.LastEntry);
+
+   --These need to be set for all standard functions
+   symbol_table.lookupHash(common.tub("PUTINTEGER"),0).return_type := common.tub("i32");
+   symbol_table.lookupHash(common.tub("GETINTEGER"),0).return_type := common.tub("i32");
+   symbol_table.lookupHash(common.tub("PUTSTRING"),0).return_type := common.tub("i32");
+   symbol_table.lookupHash(common.tub("GETSTRING"),0).return_type := common.tub("i8*");
+   symbol_table.lookupHash(common.tub("PUTFLOAT"),0).return_type := common.tub("i32");
+   symbol_table.lookupHash(common.tub("GETFLOAT"),0).return_type := common.tub("double");
+   symbol_table.lookupHash(common.tub("PUTBOOL"),0).return_type := common.tub("i32");
+   symbol_table.lookupHash(common.tub("GETBOOL"),0).return_type := common.tub("i32");
 
 
    if run_test = 1 then
@@ -59,7 +86,7 @@ begin
       id_value_pkg.test(test_entry);
    else
       parser.parser_main;
-      Ada.Text_IO.Put_Line("------- Generate Preorder ------");
+      --Ada.Text_IO.Put_Line("------- Generate Preorder ------");
 
       code_gen.open_program_file;
       code_gen.gen_program_header;
