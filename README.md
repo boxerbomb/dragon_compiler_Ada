@@ -15,13 +15,15 @@ once it is built it can be run with:
 
 ex: `./main ./main testPgms/correct/iterativeFib.src`
 
+### LLVM output file will alwasy be called output.ll
+
 To run the file either use the LLVM interpreter `lli`(installed with `apt install llvm-runtime`):
   `lli output.ll`
   
  or create a native binary with Clang:
- `clang -o program output.ll`
+ `clang -o <desired_name> output.ll`
  
- `./program`
+ `./<desired_name>`
 
 
 # Current Issues
