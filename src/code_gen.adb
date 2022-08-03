@@ -98,7 +98,7 @@ package body code_gen is
 
       -- BoilerPlate Code
       Ada.Text_IO.Put_Line(F,"; ModuleID = """& common.ub2s(parser.found_program_name) &"""");
-      Ada.Text_IO.Put_Line(F,"target triple = """"");
+      Ada.Text_IO.Put_Line(F,"target triple = ""x86_64-pc-linux-gnu""");
       Ada.Text_IO.Put_Line(F,"target datalayout = """"");
       Ada.Text_IO.Put_Line(F,"@""fmt_double"" = constant [4 x i8] c""%lf\00""");
       Ada.Text_IO.Put_Line(F,"@""fmt_string"" = constant [3 x i8] c""%s\00""");
@@ -1223,7 +1223,7 @@ package body code_gen is
          --  return returned_value;
       elsif common.ub2s(in_node.Name) = "Variable_Value" then
          var_name_tree := get_child_of_branch(in_node,common.b_VARIABLE_NAME);
-         Ada.Text_IO.Put_Line("Parsing Variable value with name: "&common.ub2s(var_name_tree.Name));
+         --Ada.Text_IO.Put_Line("Parsing Variable value with name: "&common.ub2s(var_name_tree.Name));
 
          -- writes and returns a T value to be used as an index for reading arrays, will still write a statment with a t-value equal to zero if unneeded
          index_tree := get_child_of_branch(in_node, common.b_INDEX);
