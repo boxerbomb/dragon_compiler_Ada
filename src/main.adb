@@ -7,6 +7,7 @@ with parser;
 with code_gen;
 with symbol_table;
 with id_value_pkg;
+with Ada.Command_Line;
 
 -- This is just used in a compiler test, it can be removed
 with id_value_pkg;
@@ -24,6 +25,14 @@ procedure Main is
 
    test_entry : id_value_pkg.id_value;
 begin
+
+     if Ada.Command_Line.Argument_Count = 0 then
+    Ada.Text_IO.Put_Line("Error - No file names given.");
+  else
+    Ada.Text_IO.Put_Line("ARguments given");
+  end if;
+
+
    lexer.openSourceFile;
 
    symbol_table.insert_entry(common.tub("PUTSTRING"), 0, id_value_pkg.init(common.id_PROCEDURE_NAME), symbol_table.LastEntry);
