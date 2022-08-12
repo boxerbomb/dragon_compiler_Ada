@@ -34,4 +34,6 @@ In order to achieve this, I allocate memeory each time a string is set.
 ### Float constants must be declared with a decimal point to avoid type-conflict
 ### There is no implicit type casting
 
+![tree](final_tree.png?raw=true "Abstract Syntax Tree")
+
 
